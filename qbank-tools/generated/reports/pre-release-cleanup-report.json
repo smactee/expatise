@@ -1,0 +1,424 @@
+{
+  "generatedAt": "2026-05-15T07:42:57.043Z",
+  "scope": "Pre-release cleanup/performance stabilization after read-only size audit.",
+  "changedByThisPass": {
+    "source": [
+      "next.config.ts"
+    ],
+    "generatedReports": [
+      "qbank-tools/generated/reports/pre-release-size-audit.json",
+      "qbank-tools/generated/reports/pre-release-size-audit.md",
+      "qbank-tools/generated/reports/pre-release-cleanup-report.json",
+      "qbank-tools/generated/reports/pre-release-cleanup-report.md",
+      "qbank-tools/generated/reports/qbank-integrity-audit.json",
+      "qbank-tools/generated/reports/qbank-integrity-audit.md"
+    ],
+    "decisionBundle": "qbank-tools/history/fr-decision-bundle-20260515T164028+0900",
+    "cleanupArchive": "qbank-tools/generated/archive/fr/pre-release-cleanup-20260515T164028+0900",
+    "generatedBuildOutputs": [
+      "out/",
+      "android/app/src/main/assets/public/"
+    ]
+  },
+  "sizes": {
+    "beforeOut": {
+      "exists": true,
+      "bytes": 57814108,
+      "size": "55.1 MB"
+    },
+    "afterOut": {
+      "exists": true,
+      "bytes": 48289066,
+      "size": "46.1 MB"
+    },
+    "outDeltaBytes": -9525042,
+    "outDeltaSize": "9.08 MB",
+    "beforeSourceMaps": {
+      "count": 66,
+      "bytes": 9637755,
+      "size": "9.19 MB",
+      "largestFiles": [
+        {
+          "path": "out/_next/static/chunks/f5221a1f4d1cfe0a.js.map",
+          "bytes": 1807307,
+          "ext": ".map",
+          "size": "1.72 MB"
+        },
+        {
+          "path": "out/_next/static/chunks/780f468bfa65b495.js.map",
+          "bytes": 1807304,
+          "ext": ".map",
+          "size": "1.72 MB"
+        },
+        {
+          "path": "out/_next/static/chunks/e5df545aa62e831d.js.map",
+          "bytes": 1078480,
+          "ext": ".map",
+          "size": "1.03 MB"
+        },
+        {
+          "path": "out/_next/static/chunks/bc21b40724c63953.js.map",
+          "bytes": 1036790,
+          "ext": ".map",
+          "size": "1012.5 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/a5c1aa01aeb413ea.js.map",
+          "bytes": 681287,
+          "ext": ".map",
+          "size": "665.3 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/5a7d6287739b8967.js.map",
+          "bytes": 337528,
+          "ext": ".map",
+          "size": "329.6 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/8812c6c01d60cc7d.js.map",
+          "bytes": 166692,
+          "ext": ".map",
+          "size": "162.8 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/2989aac324c878d6.js.map",
+          "bytes": 165514,
+          "ext": ".map",
+          "size": "161.6 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/3f184effc320d560.js.map",
+          "bytes": 153215,
+          "ext": ".map",
+          "size": "149.6 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/b416ccb73ccd22ce.js.map",
+          "bytes": 145863,
+          "ext": ".map",
+          "size": "142.4 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/f7a8ca4b5d81a2af.js.map",
+          "bytes": 144798,
+          "ext": ".map",
+          "size": "141.4 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/ec3b87e26107cef8.js.map",
+          "bytes": 139812,
+          "ext": ".map",
+          "size": "136.5 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/d4e910b721c92acc.js.map",
+          "bytes": 135440,
+          "ext": ".map",
+          "size": "132.3 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/569380528fed7762.js.map",
+          "bytes": 127592,
+          "ext": ".map",
+          "size": "124.6 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/4104a14f30e610b8.js.map",
+          "bytes": 121803,
+          "ext": ".map",
+          "size": "118.9 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/ae12e16cb882ad37.js.map",
+          "bytes": 121779,
+          "ext": ".map",
+          "size": "118.9 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/a6dad97d9634a72d.js.map",
+          "bytes": 115717,
+          "ext": ".map",
+          "size": "113.0 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/71f03516aa5aa886.css.map",
+          "bytes": 115546,
+          "ext": ".map",
+          "size": "112.8 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/c9cb7e5d974d9d3d.js.map",
+          "bytes": 104487,
+          "ext": ".map",
+          "size": "102.0 KB"
+        },
+        {
+          "path": "out/_next/static/chunks/2e471813fdfabeb9.js.map",
+          "bytes": 102638,
+          "ext": ".map",
+          "size": "100.2 KB"
+        }
+      ]
+    },
+    "afterSourceMaps": {
+      "count": 1,
+      "bytes": 115717,
+      "size": "113.0 KB",
+      "largestFiles": [
+        {
+          "path": "out/_next/static/chunks/a6dad97d9634a72d.js.map",
+          "bytes": 115717,
+          "ext": ".map",
+          "size": "113.0 KB"
+        }
+      ]
+    },
+    "androidWebAssetsAfterSync": {
+      "bytes": 48289066,
+      "size": "46.1 MB"
+    },
+    "importsFrAfterCleanup": {
+      "fileCount": 1,
+      "screenshotCount": 0,
+      "bytes": 8358,
+      "size": "8.16 KB"
+    }
+  },
+  "largestRemainingAssets": {
+    "qbankImages": [
+      {
+        "path": "public/qbank/2023-test1/images/p59-638.png",
+        "bytes": 320199,
+        "ext": ".png",
+        "size": "312.7 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/img_8a1ecb217a73dc66d6b053c0f0d691e1.jpeg",
+        "bytes": 244925,
+        "ext": ".jpeg",
+        "size": "239.2 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/img_a123f96a5e756eef08f7abc6b2d765b1.jpeg",
+        "bytes": 228607,
+        "ext": ".jpeg",
+        "size": "223.2 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/img_97eafa9b7591870879419b31853e0c33.png",
+        "bytes": 227687,
+        "ext": ".png",
+        "size": "222.4 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/img_49222e285638a0de0ce9af26c17ce473.png",
+        "bytes": 225199,
+        "ext": ".png",
+        "size": "219.9 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/img_8222d61bfd3c0ad92c9e5347c7541e06.png",
+        "bytes": 224523,
+        "ext": ".png",
+        "size": "219.3 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/p65-677.png",
+        "bytes": 195296,
+        "ext": ".png",
+        "size": "190.7 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/img_replacement_q0876_688845c8900b.jpeg",
+        "bytes": 155388,
+        "ext": ".jpeg",
+        "size": "151.7 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/img_71e9c9f575a4363ecf3aaa56063a7ad4.png",
+        "bytes": 150451,
+        "ext": ".png",
+        "size": "146.9 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/images/img_1fe3cb75793b614923e3ab91c8d834fc.png",
+        "bytes": 149695,
+        "ext": ".png",
+        "size": "146.2 KB"
+      }
+    ],
+    "qbankJson": [
+      {
+        "path": "public/qbank/2023-test1/translations.ru.json",
+        "bytes": 2925231,
+        "ext": ".json",
+        "size": "2.79 MB"
+      },
+      {
+        "path": "public/qbank/2023-test1/translations.fr.json",
+        "bytes": 2583725,
+        "ext": ".json",
+        "size": "2.46 MB"
+      },
+      {
+        "path": "public/qbank/2023-test1/translations.ja.json",
+        "bytes": 2525124,
+        "ext": ".json",
+        "size": "2.41 MB"
+      },
+      {
+        "path": "public/qbank/2023-test1/questions.json",
+        "bytes": 1325285,
+        "ext": ".json",
+        "size": "1.26 MB"
+      },
+      {
+        "path": "public/qbank/2023-test1/questions.raw.json",
+        "bytes": 1101669,
+        "ext": ".json",
+        "size": "1.05 MB"
+      },
+      {
+        "path": "public/qbank/2023-test1/translations.ko.json",
+        "bytes": 558588,
+        "ext": ".json",
+        "size": "545.5 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/image-color-tags.json",
+        "bytes": 504316,
+        "ext": ".json",
+        "size": "492.5 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/image-tag-locales.json",
+        "bytes": 65482,
+        "ext": ".json",
+        "size": "63.9 KB"
+      },
+      {
+        "path": "public/qbank/2023-test1/tags.patch.json",
+        "bytes": 28830,
+        "ext": ".json",
+        "size": "28.2 KB"
+      }
+    ],
+    "outFiles": [
+      {
+        "path": "out/qbank/2023-test1/translations.ru.json",
+        "bytes": 2925231,
+        "ext": ".json",
+        "size": "2.79 MB"
+      },
+      {
+        "path": "out/qbank/2023-test1/translations.fr.json",
+        "bytes": 2583725,
+        "ext": ".json",
+        "size": "2.46 MB"
+      },
+      {
+        "path": "out/qbank/2023-test1/translations.ja.json",
+        "bytes": 2525124,
+        "ext": ".json",
+        "size": "2.41 MB"
+      },
+      {
+        "path": "out/images/auth/onboarding-girl.png",
+        "bytes": 2117709,
+        "ext": ".png",
+        "size": "2.02 MB"
+      },
+      {
+        "path": "out/images/auth/login-screen.png",
+        "bytes": 2012358,
+        "ext": ".png",
+        "size": "1.92 MB"
+      },
+      {
+        "path": "out/qbank/2023-test1/questions.json",
+        "bytes": 1325285,
+        "ext": ".json",
+        "size": "1.26 MB"
+      },
+      {
+        "path": "out/images/auth/login-screen2.png",
+        "bytes": 1160338,
+        "ext": ".png",
+        "size": "1.11 MB"
+      },
+      {
+        "path": "out/qbank/2023-test1/questions.raw.json",
+        "bytes": 1101669,
+        "ext": ".json",
+        "size": "1.05 MB"
+      },
+      {
+        "path": "out/qbank/2023-test1/translations.ko.json",
+        "bytes": 558588,
+        "ext": ".json",
+        "size": "545.5 KB"
+      },
+      {
+        "path": "out/qbank/2023-test1/image-color-tags.json",
+        "bytes": 504316,
+        "ext": ".json",
+        "size": "492.5 KB"
+      }
+    ]
+  },
+  "safeOptimizationsApplied": [
+    {
+      "change": "Disabled production browser source maps in next.config.ts.",
+      "evidence": "Source maps in out dropped from 66 files / 9.19 MB to 1 files / 113.0 KB.",
+      "behaviorRisk": "Low: release build no longer ships debug source maps; runtime app behavior unchanged."
+    },
+    {
+      "change": "Archived regenerable French batch directories out of imports/fr.",
+      "evidence": "19 batch dirs, 992 files, 902 screenshots, 642.0 MB moved to archive.",
+      "behaviorRisk": "Low: imports/fr batch artifacts are not shipped in out/ and non-screenshot decision/source JSON was preserved first."
+    }
+  ],
+  "intentionallyDeferred": [
+    "Mass qbank image recompression/conversion: useful but needs visual QA, especially for sign readability.",
+    "Qbank/translation JSON lazy-load architecture changes: possible post-release, but too risky immediately before Play Store upload.",
+    "Deleting generated reports/staging: not shipped in out/ and useful for release traceability.",
+    "Removing the last small .map file manually from out/: only 113 KB remains, likely emitted by Next/Turbopack; not worth a custom postbuild hook before release."
+  ],
+  "frenchPreservation": {
+    "decisionBundlePath": "qbank-tools/history/fr-decision-bundle-20260515T164028+0900",
+    "decisionBundleFileCount": 352,
+    "decisionBundleSize": "77.95 MB",
+    "archivePath": "qbank-tools/generated/archive/fr/pre-release-cleanup-20260515T164028+0900",
+    "archivedBatchDirCount": 19,
+    "archivedFileCount": 992,
+    "archivedScreenshotCount": 902,
+    "archivedSize": "642.0 MB",
+    "hardDeletedFiles": 0,
+    "note": "Generated batch dirs were moved to archive; no production qbank data was deleted."
+  },
+  "shippedGeneratedCheck": {
+    "generatedReportsOrStagingInOutCount": 0,
+    "generatedReportsOrStagingInOut": []
+  },
+  "validation": {
+    "auditQbankIntegrity": {
+      "passed": true,
+      "criticalBlockers": 0,
+      "warnings": 19,
+      "command": "npm run audit-qbank-integrity"
+    },
+    "build": {
+      "passed": true,
+      "command": "npm run build"
+    },
+    "capacitorSyncAndroid": {
+      "passed": true,
+      "command": "npx cap sync android"
+    }
+  },
+  "remainingReleaseBlockers": [],
+  "remainingRisks": [
+    "qbank integrity audit reports 19 warnings but 0 critical blockers; review warnings separately if release policy requires warning-free output.",
+    "The shipped app still includes about 34.5 MB of qbank data/images; deeper reductions should be post-release work with visual and offline-loading QA."
+  ]
+}

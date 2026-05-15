@@ -1,8 +1,8 @@
 {
   "meta": {
     "locale": "ja",
-    "translatedQuestions": 984,
-    "generatedAt": "2026-05-05T12:09:18.845Z",
+    "translatedQuestions": 1007,
+    "generatedAt": "2026-05-14T13:13:15.482Z",
     "mergedBatches": [
       "batch-001",
       "batch-002",
@@ -36,7 +36,8 @@
     "backfillMerges": [
       "missing-qid-backfill-2026-05-03T14:49:23.099Z",
       "missing-qid-backfill-2026-05-04T11:24:32.682Z",
-      "missing-qid-backfill-2026-05-04T13:01:26.291Z"
+      "missing-qid-backfill-2026-05-04T13:01:26.291Z",
+      "missing-qid-backfill-2026-05-14T13:13:15.482Z"
     ],
     "qidSyncRuns": [
       "ko-ja-qid-sync-2026-05-05T12:09:18.845Z"
@@ -63165,142 +63166,1770 @@
       ]
     },
     "q0986": {
-      "qid": "q0986",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "危険な道路で対向車に遭遇した場合、あなたは______。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0986_o1": "速度を落とさない。",
+        "q0986_o2": "中央に位置する。",
+        "q0986_o3": "加速する。",
+        "q0986_o4": "速度を減らすか停止し、他の車に道を譲る。"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "速度を落とさない。",
+          "sourceTextBody": "速度を落とさない。",
+          "canonicalOptionId": "q0986_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Do not reduce your speed.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "中央に位置する。",
+          "sourceTextBody": "中央に位置する。",
+          "canonicalOptionId": "q0986_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Position yourself in the center.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "加速する。",
+          "sourceTextBody": "加速する。",
+          "canonicalOptionId": "q0986_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Accelerate.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "速度を減らすか停止し、他の車に道を譲る。",
+          "sourceTextBody": "速度を減らすか停止し、他の車に道を譲る。",
+          "canonicalOptionId": "q0986_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Reduce speed or stop and give way to the other vehicle.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "速度を落とさない。",
+          "sourceTextBody": "速度を落とさない。",
+          "canonicalOptionId": "q0986_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Do not reduce your speed.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "中央に位置する。",
+          "sourceTextBody": "中央に位置する。",
+          "canonicalOptionId": "q0986_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Position yourself in the center.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "加速する。",
+          "sourceTextBody": "加速する。",
+          "canonicalOptionId": "q0986_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Accelerate.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "速度を減らすか停止し、他の車に道を譲る。",
+          "sourceTextBody": "速度を減らすか停止し、他の車に道を譲る。",
+          "canonicalOptionId": "q0986_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Reduce speed or stop and give way to the other vehicle.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0987": {
-      "qid": "q0987",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "廃車が完全に修理された場合、使用できますか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0988": {
-      "qid": "q0988",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "国家の規制によって使用不可能と見なされた車両は登録できません。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0989": {
-      "qid": "q0989",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "非自動車が交通を通過しようとしている場合、あなたはどうすべきですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0989_o1": "クラクションを鳴らして警告する",
+        "q0989_o2": "加速する",
+        "q0989_o3": "減速して通らせる",
+        "q0989_o4": "近づいて加速する"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "クラクションを鳴らして警告する",
+          "sourceTextBody": "クラクションを鳴らして警告する",
+          "canonicalOptionId": "q0989_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "加速する",
+          "sourceTextBody": "加速する",
+          "canonicalOptionId": "q0989_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "減速して通らせる",
+          "sourceTextBody": "減速して通らせる",
+          "canonicalOptionId": "q0989_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Slow down and let pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "近づいて加速する",
+          "sourceTextBody": "近づいて加速する",
+          "canonicalOptionId": "q0989_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Get closer and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "クラクションを鳴らして警告する",
+          "sourceTextBody": "クラクションを鳴らして警告する",
+          "canonicalOptionId": "q0989_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "加速する",
+          "sourceTextBody": "加速する",
+          "canonicalOptionId": "q0989_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "減速して通らせる",
+          "sourceTextBody": "減速して通らせる",
+          "canonicalOptionId": "q0989_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Slow down and let pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "近づいて加速する",
+          "sourceTextBody": "近づいて加速する",
+          "canonicalOptionId": "q0989_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Get closer and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q0991": {
-      "qid": "q0991",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "物損事故が発生した場合、本来退避すべきであったにもかかわらず事故現場に残っていた運転者に対して、警察官には質問する権利がない。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "high",
+      "reviewStatus": "ready"
     },
     "q0992": {
-      "qid": "q0992",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "運転免許の更新はいつ申請しなければなりませんか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0992_o1": "有効期限が切れたとき",
+        "q0992_o2": "違反点の累積期限が終わったとき",
+        "q0992_o3": "違反点の累積期限が終わり、累積点数が11点未満のとき",
+        "q0992_o4": "違反点の累積期限が終わり、累積点数が11点以上のとき"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "有効期限が切れたとき",
+          "sourceTextBody": "有効期限が切れたとき",
+          "canonicalOptionId": "q0992_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "once its validity date has expired",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "違反点の累積期限が終わったとき",
+          "sourceTextBody": "違反点の累積期限が終わったとき",
+          "canonicalOptionId": "q0992_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "違反点の累積期限が終わり、累積点数が11点未満のとき",
+          "sourceTextBody": "違反点の累積期限が終わり、累積点数が11点未満のとき",
+          "canonicalOptionId": "q0992_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with less than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "違反点の累積期限が終わり、累積点数が11点以上のとき",
+          "sourceTextBody": "違反点の累積期限が終わり、累積点数が11点以上のとき",
+          "canonicalOptionId": "q0992_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with more than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "有効期限が切れたとき",
+          "sourceTextBody": "有効期限が切れたとき",
+          "canonicalOptionId": "q0992_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "once its validity date has expired",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "違反点の累積期限が終わったとき",
+          "sourceTextBody": "違反点の累積期限が終わったとき",
+          "canonicalOptionId": "q0992_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "違反点の累積期限が終わり、累積点数が11点未満のとき",
+          "sourceTextBody": "違反点の累積期限が終わり、累積点数が11点未満のとき",
+          "canonicalOptionId": "q0992_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with less than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "違反点の累積期限が終わり、累積点数が11点以上のとき",
+          "sourceTextBody": "違反点の累積期限が終わり、累積点数が11点以上のとき",
+          "canonicalOptionId": "q0992_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with more than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0993": {
-      "qid": "q0993",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "道路に水たまりがある場合、どうすればよいですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0993_o1": "減速してゆっくり通過する",
+        "q0993_o2": "加速して通過する",
+        "q0993_o3": "速度を維持する",
+        "q0993_o4": "ギアを下げて加速する"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "減速してゆっくり通過する",
+          "sourceTextBody": "減速してゆっくり通過する",
+          "canonicalOptionId": "q0993_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slow down and pass slowly",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "加速して通過する",
+          "sourceTextBody": "加速して通過する",
+          "canonicalOptionId": "q0993_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerate and pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "速度を維持する",
+          "sourceTextBody": "速度を維持する",
+          "canonicalOptionId": "q0993_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "keep the speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ギアを下げて加速する",
+          "sourceTextBody": "ギアを下げて加速する",
+          "canonicalOptionId": "q0993_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "downshift and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "減速してゆっくり通過する",
+          "sourceTextBody": "減速してゆっくり通過する",
+          "canonicalOptionId": "q0993_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slow down and pass slowly",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "加速して通過する",
+          "sourceTextBody": "加速して通過する",
+          "canonicalOptionId": "q0993_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerate and pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "速度を維持する",
+          "sourceTextBody": "速度を維持する",
+          "canonicalOptionId": "q0993_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "keep the speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ギアを下げて加速する",
+          "sourceTextBody": "ギアを下げて加速する",
+          "canonicalOptionId": "q0993_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "downshift and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q0994": {
-      "qid": "q0994",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "前の車が右折のため信号待ちをしているとき、どうすればよいですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0994_o1": "その車の左に曲がる",
+        "q0994_o2": "右から曲がる",
+        "q0994_o3": "クラクションを鳴らして前の車に通してもらう",
+        "q0994_o4": "列に並んで待つ"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "その車の左に曲がる",
+          "sourceTextBody": "その車の左に曲がる",
+          "canonicalOptionId": "q0994_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn to its left",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "右から曲がる",
+          "sourceTextBody": "右から曲がる",
+          "canonicalOptionId": "q0994_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "take the turn by the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "クラクションを鳴らして前の車に通してもらう",
+          "sourceTextBody": "クラクションを鳴らして前の車に通してもらう",
+          "canonicalOptionId": "q0994_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "honk so that the vehicle in front lets us pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "列に並んで待つ",
+          "sourceTextBody": "列に並んで待つ",
+          "canonicalOptionId": "q0994_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "wait in the line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "その車の左に曲がる",
+          "sourceTextBody": "その車の左に曲がる",
+          "canonicalOptionId": "q0994_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn to its left",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "右から曲がる",
+          "sourceTextBody": "右から曲がる",
+          "canonicalOptionId": "q0994_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "take the turn by the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "クラクションを鳴らして前の車に通してもらう",
+          "sourceTextBody": "クラクションを鳴らして前の車に通してもらう",
+          "canonicalOptionId": "q0994_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "honk so that the vehicle in front lets us pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "列に並んで待つ",
+          "sourceTextBody": "列に並んで待つ",
+          "canonicalOptionId": "q0994_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "wait in the line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0995": {
-      "qid": "q0995",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "以下の状況でハザードランプを点灯することはできますか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0995_o1": "前方の車両についていく",
+        "q0995_o2": "渋滞のとき",
+        "q0995_o3": "故障のため停車する",
+        "q0995_o4": "後続車両の進行方向を誘導する"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "前方の車両についていく",
+          "sourceTextBody": "前方の車両についていく",
+          "canonicalOptionId": "q0995_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "follow the vehicles ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "渋滞のとき",
+          "sourceTextBody": "渋滞のとき",
+          "canonicalOptionId": "q0995_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "during a traffic jam",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "故障のため停車する",
+          "sourceTextBody": "故障のため停車する",
+          "canonicalOptionId": "q0995_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop due to a breakdown",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "後続車両の進行方向を誘導する",
+          "sourceTextBody": "後続車両の進行方向を誘導する",
+          "canonicalOptionId": "q0995_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "guide the direction for following vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "前方の車両についていく",
+          "sourceTextBody": "前方の車両についていく",
+          "canonicalOptionId": "q0995_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "follow the vehicles ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "渋滞のとき",
+          "sourceTextBody": "渋滞のとき",
+          "canonicalOptionId": "q0995_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "during a traffic jam",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "故障のため停車する",
+          "sourceTextBody": "故障のため停車する",
+          "canonicalOptionId": "q0995_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop due to a breakdown",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "後続車両の進行方向を誘導する",
+          "sourceTextBody": "後続車両の進行方向を誘導する",
+          "canonicalOptionId": "q0995_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "guide the direction for following vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q0996": {
-      "qid": "q0996",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "正面からの車が私たちの車線に入ってきた場合、どうすればよいですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0996_o1": "道路の真ん中に寄って運転する",
+        "q0996_o2": "通過させる",
+        "q0996_o3": "ハイビームを点灯する",
+        "q0996_o4": "相手に右にバックさせる"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "道路の真ん中に寄って運転する",
+          "sourceTextBody": "道路の真ん中に寄って運転する",
+          "canonicalOptionId": "q0996_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "move toward the middle of the road to drive",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "通過させる",
+          "sourceTextBody": "通過させる",
+          "canonicalOptionId": "q0996_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "let them pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ハイビームを点灯する",
+          "sourceTextBody": "ハイビームを点灯する",
+          "canonicalOptionId": "q0996_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "flash your headlights at them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "相手に右にバックさせる",
+          "sourceTextBody": "相手に右にバックさせる",
+          "canonicalOptionId": "q0996_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "force them to reverse to the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "道路の真ん中に寄って運転する",
+          "sourceTextBody": "道路の真ん中に寄って運転する",
+          "canonicalOptionId": "q0996_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "move toward the middle of the road to drive",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "通過させる",
+          "sourceTextBody": "通過させる",
+          "canonicalOptionId": "q0996_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "let them pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "ハイビームを点灯する",
+          "sourceTextBody": "ハイビームを点灯する",
+          "canonicalOptionId": "q0996_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "flash your headlights at them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "相手に右にバックさせる",
+          "sourceTextBody": "相手に右にバックさせる",
+          "canonicalOptionId": "q0996_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "force them to reverse to the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0998": {
-      "qid": "q0998",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "どの候補者が現行犯で捕まった後、免許申請を3年間拒否される可能性がありますか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0998_o1": "喫煙者",
+        "q0998_o2": "ドラッグ使用者",
+        "q0998_o3": "インスリン注射を受けている人",
+        "q0998_o4": "アルコール依存症者"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "喫煙者",
+          "sourceTextBody": "喫煙者",
+          "canonicalOptionId": "q0998_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "smokers",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "ドラッグ使用者",
+          "sourceTextBody": "ドラッグ使用者",
+          "canonicalOptionId": "q0998_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drug users",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "インスリン注射を受けている人",
+          "sourceTextBody": "インスリン注射を受けている人",
+          "canonicalOptionId": "q0998_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "people on insulin injections",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "アルコール依存症者",
+          "sourceTextBody": "アルコール依存症者",
+          "canonicalOptionId": "q0998_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "alcoholics",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "喫煙者",
+          "sourceTextBody": "喫煙者",
+          "canonicalOptionId": "q0998_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "smokers",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "ドラッグ使用者",
+          "sourceTextBody": "ドラッグ使用者",
+          "canonicalOptionId": "q0998_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drug users",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "インスリン注射を受けている人",
+          "sourceTextBody": "インスリン注射を受けている人",
+          "canonicalOptionId": "q0998_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "people on insulin injections",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "アルコール依存症者",
+          "sourceTextBody": "アルコール依存症者",
+          "canonicalOptionId": "q0998_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "alcoholics",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0999": {
-      "qid": "q0999",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "交通が遅く、他の車両が混雑している区間に合流してくるとき、どうすればいいですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0999_o1": "クラクションを鳴らして通過を防ぐ",
+        "q0999_o2": "加速して前の車両に続いて合流を防ぐ",
+        "q0999_o3": "丁寧に合流を許可し、安全な距離を保つ",
+        "q0999_o4": "合流しようとする車両を強制的に退出させる"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "クラクションを鳴らして通過を防ぐ",
+          "sourceTextBody": "クラクションを鳴らして通過を防ぐ",
+          "canonicalOptionId": "q0999_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk and prevent them from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "加速して前の車両に続いて合流を防ぐ",
+          "sourceTextBody": "加速して前の車両に続いて合流を防ぐ",
+          "canonicalOptionId": "q0999_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate and follow the vehicles ahead to prevent them from merging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "丁寧に合流を許可し、安全な距離を保つ",
+          "sourceTextBody": "丁寧に合流を許可し、安全な距離を保つ",
+          "canonicalOptionId": "q0999_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Politely let them merge and maintain a safe distance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "合流しようとする車両を強制的に退出させる",
+          "sourceTextBody": "合流しようとする車両を強制的に退出させる",
+          "canonicalOptionId": "q0999_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Force the vehicle trying to merge to leave",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "クラクションを鳴らして通過を防ぐ",
+          "sourceTextBody": "クラクションを鳴らして通過を防ぐ",
+          "canonicalOptionId": "q0999_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk and prevent them from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "加速して前の車両に続いて合流を防ぐ",
+          "sourceTextBody": "加速して前の車両に続いて合流を防ぐ",
+          "canonicalOptionId": "q0999_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate and follow the vehicles ahead to prevent them from merging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "丁寧に合流を許可し、安全な距離を保つ",
+          "sourceTextBody": "丁寧に合流を許可し、安全な距離を保つ",
+          "canonicalOptionId": "q0999_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Politely let them merge and maintain a safe distance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "合流しようとする車両を強制的に退出させる",
+          "sourceTextBody": "合流しようとする車両を強制的に退出させる",
+          "canonicalOptionId": "q0999_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Force the vehicle trying to merge to leave",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1001": {
-      "qid": "q1001",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "高速道路で車両を反対方向に回転させてはいけません。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1002": {
-      "qid": "q1002",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "ひょうが覆った道路を運転すると、車両の安定性が低下し、急ブレーキをかけるとスリップしやすくなります。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1003": {
-      "qid": "q1003",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "連続して運転できる最大時間は何時間ですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1003_o1": "4時間",
+        "q1003_o2": "6時間",
+        "q1003_o3": "8時間",
+        "q1003_o4": "10時間"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "4時間",
+          "sourceTextBody": "4時間",
+          "canonicalOptionId": "q1003_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "4 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "6時間",
+          "sourceTextBody": "6時間",
+          "canonicalOptionId": "q1003_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "6 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "8時間",
+          "sourceTextBody": "8時間",
+          "canonicalOptionId": "q1003_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "8 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "10時間",
+          "sourceTextBody": "10時間",
+          "canonicalOptionId": "q1003_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "10 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "4時間",
+          "sourceTextBody": "4時間",
+          "canonicalOptionId": "q1003_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "4 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "6時間",
+          "sourceTextBody": "6時間",
+          "canonicalOptionId": "q1003_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "6 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "8時間",
+          "sourceTextBody": "8時間",
+          "canonicalOptionId": "q1003_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "8 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "10時間",
+          "sourceTextBody": "10時間",
+          "canonicalOptionId": "q1003_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "10 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q1004": {
-      "qid": "q1004",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "霧の場合、何が起こる可能性がありますか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1004_o1": "エンジンが停止する原因となる",
+        "q1004_o2": "ウィングでスライドし、事故を引き起こす",
+        "q1004_o3": "交通密度が増加する",
+        "q1004_o4": "視界が悪くなる"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "エンジンが停止する原因となる",
+          "sourceTextBody": "エンジンが停止する原因となる",
+          "canonicalOptionId": "q1004_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "cause the engine to shut off",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "ウィングでスライドし、事故を引き起こす",
+          "sourceTextBody": "ウィングでスライドし、事故を引き起こす",
+          "canonicalOptionId": "q1004_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "slide on the wing and cause an accident",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "交通密度が増加する",
+          "sourceTextBody": "交通密度が増加する",
+          "canonicalOptionId": "q1004_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "increase traffic density",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "視界が悪くなる",
+          "sourceTextBody": "視界が悪くなる",
+          "canonicalOptionId": "q1004_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce visibility",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "エンジンが停止する原因となる",
+          "sourceTextBody": "エンジンが停止する原因となる",
+          "canonicalOptionId": "q1004_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "cause the engine to shut off",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "ウィングでスライドし、事故を引き起こす",
+          "sourceTextBody": "ウィングでスライドし、事故を引き起こす",
+          "canonicalOptionId": "q1004_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "slide on the wing and cause an accident",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "交通密度が増加する",
+          "sourceTextBody": "交通密度が増加する",
+          "canonicalOptionId": "q1004_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "increase traffic density",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "視界が悪くなる",
+          "sourceTextBody": "視界が悪くなる",
+          "canonicalOptionId": "q1004_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce visibility",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q1005": {
-      "qid": "q1005",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "運転中の喫煙は安全に影響を与えることはない。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "high",
+      "reviewStatus": "ready"
     },
     "q1006": {
-      "qid": "q1006",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "危険なカーブを通過する際に許可されている最大速度は何ですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1006_o1": "15 km/h",
+        "q1006_o2": "20 km/h",
+        "q1006_o3": "30 km/h",
+        "q1006_o4": "40 km/h"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "15 km/h",
+          "sourceTextBody": "15 km/h",
+          "canonicalOptionId": "q1006_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "15 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "20 km/h",
+          "sourceTextBody": "20 km/h",
+          "canonicalOptionId": "q1006_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "20 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "30 km/h",
+          "sourceTextBody": "30 km/h",
+          "canonicalOptionId": "q1006_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "40 km/h",
+          "sourceTextBody": "40 km/h",
+          "canonicalOptionId": "q1006_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "15 km/h",
+          "sourceTextBody": "15 km/h",
+          "canonicalOptionId": "q1006_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "15 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "20 km/h",
+          "sourceTextBody": "20 km/h",
+          "canonicalOptionId": "q1006_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "20 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "30 km/h",
+          "sourceTextBody": "30 km/h",
+          "canonicalOptionId": "q1006_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "40 km/h",
+          "sourceTextBody": "40 km/h",
+          "canonicalOptionId": "q1006_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1007": {
-      "qid": "q1007",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "ミニバスが高速道路を100 km/h未満で走行している場合、どのくらいの安全距離を確保しなければなりませんか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1007_o1": "少なくとも50 m",
+        "q1007_o2": "少なくとも30 m",
+        "q1007_o3": "少なくとも20 m",
+        "q1007_o4": "少なくとも10 m"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "少なくとも50 m",
+          "sourceTextBody": "少なくとも50 m",
+          "canonicalOptionId": "q1007_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "at least 50 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "少なくとも30 m",
+          "sourceTextBody": "少なくとも30 m",
+          "canonicalOptionId": "q1007_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "at least 30 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "少なくとも20 m",
+          "sourceTextBody": "少なくとも20 m",
+          "canonicalOptionId": "q1007_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "at least 20 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "少なくとも10 m",
+          "sourceTextBody": "少なくとも10 m",
+          "canonicalOptionId": "q1007_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "at least 10 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "少なくとも50 m",
+          "sourceTextBody": "少なくとも50 m",
+          "canonicalOptionId": "q1007_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "at least 50 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "少なくとも30 m",
+          "sourceTextBody": "少なくとも30 m",
+          "canonicalOptionId": "q1007_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "at least 30 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "少なくとも20 m",
+          "sourceTextBody": "少なくとも20 m",
+          "canonicalOptionId": "q1007_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "at least 20 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "少なくとも10 m",
+          "sourceTextBody": "少なくとも10 m",
+          "canonicalOptionId": "q1007_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "at least 10 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q1008": {
-      "qid": "q1008",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "このランプが点灯した場合、エンジンにガソリンを注ぐ必要があります。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "high",
+      "reviewStatus": "ready"
     },
     "q1009": {
-      "qid": "q1009",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "タイヤのパンクを避けるために、どの行動を取るべきですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1009_o1": "タイヤの空気圧を下げる",
+        "q1009_o2": "定期的にタイヤをチェックする",
+        "q1009_o3": "タイヤの傷を掃除する",
+        "q1009_o4": "ひび割れやひどく損傷したタイヤを交換する"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "タイヤの空気圧を下げる",
+          "sourceTextBody": "タイヤの空気圧を下げる",
+          "canonicalOptionId": "q1009_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Lower the tire pressure",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "定期的にタイヤをチェックする",
+          "sourceTextBody": "定期的にタイヤをチェックする",
+          "canonicalOptionId": "q1009_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Check your tires periodically",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "タイヤの傷を掃除する",
+          "sourceTextBody": "タイヤの傷を掃除する",
+          "canonicalOptionId": "q1009_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Clean the tire scratches",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ひび割れやひどく損傷したタイヤを交換する",
+          "sourceTextBody": "ひび割れやひどく損傷したタイヤを交換する",
+          "canonicalOptionId": "q1009_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Replace the cracked or badly damaged tire",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "タイヤの空気圧を下げる",
+          "sourceTextBody": "タイヤの空気圧を下げる",
+          "canonicalOptionId": "q1009_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Lower the tire pressure",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "定期的にタイヤをチェックする",
+          "sourceTextBody": "定期的にタイヤをチェックする",
+          "canonicalOptionId": "q1009_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Check your tires periodically",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "タイヤの傷を掃除する",
+          "sourceTextBody": "タイヤの傷を掃除する",
+          "canonicalOptionId": "q1009_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Clean the tire scratches",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "ひび割れやひどく損傷したタイヤを交換する",
+          "sourceTextBody": "ひび割れやひどく損傷したタイヤを交換する",
+          "canonicalOptionId": "q1009_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Replace the cracked or badly damaged tire",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q1011": {
-      "qid": "q1011",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "運転中に学生の集団に出会ったら、どうすべきですか？",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1011_o1": "加速して通り過ぎる",
+        "q1011_o2": "止まって進行権を譲る",
+        "q1011_o3": "減速して低速で通過する",
+        "q1011_o4": "クラクションを鳴らして急がせる"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "加速して通り過ぎる",
+          "sourceTextBody": "加速して通り過ぎる",
+          "canonicalOptionId": "q1011_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "pass by accelerating in advance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "止まって進行権を譲る",
+          "sourceTextBody": "止まって進行権を譲る",
+          "canonicalOptionId": "q1011_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop and yield the right of way",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "減速して低速で通過する",
+          "sourceTextBody": "減速して低速で通過する",
+          "canonicalOptionId": "q1011_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slow down and pass at reduced speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "クラクションを鳴らして急がせる",
+          "sourceTextBody": "クラクションを鳴らして急がせる",
+          "canonicalOptionId": "q1011_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "keep honking to hurry them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "加速して通り過ぎる",
+          "sourceTextBody": "加速して通り過ぎる",
+          "canonicalOptionId": "q1011_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "pass by accelerating in advance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "止まって進行権を譲る",
+          "sourceTextBody": "止まって進行権を譲る",
+          "canonicalOptionId": "q1011_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop and yield the right of way",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "減速して低速で通過する",
+          "sourceTextBody": "減速して低速で通過する",
+          "canonicalOptionId": "q1011_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slow down and pass at reduced speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "クラクションを鳴らして急がせる",
+          "sourceTextBody": "クラクションを鳴らして急がせる",
+          "canonicalOptionId": "q1011_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "keep honking to hurry them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1012": {
-      "qid": "q1012",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "記念物や公共施設に衝突した運転者は、気にせず運転を続けることができます。",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "high",
+      "reviewStatus": "ready"
     }
   }
 }

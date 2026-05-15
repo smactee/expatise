@@ -1,0 +1,983 @@
+{
+  "meta": {
+    "generatedAt": "2026-05-14T13:06:29.401Z",
+    "source": "english_master_backfill",
+    "lang": "ru",
+    "dataset": "2023-test1",
+    "applyRequested": false,
+    "productionModified": false,
+    "limit": null,
+    "sourcePaths": {
+      "masterQuestions": "public/qbank/2023-test1/questions.json",
+      "productionTranslations": "public/qbank/2023-test1/translations.ru.json",
+      "imageColorTags": "public/qbank/2023-test1/image-color-tags.json"
+    },
+    "outputPath": "qbank-tools/generated/staging/backfill.ru.missing-qids.json"
+  },
+  "counts": {
+    "masterQids": 1006,
+    "productionTranslations": 984,
+    "autoPropagationPlaceholders": 23,
+    "missingQids": 23,
+    "emittedItems": 23
+  },
+  "missingQids": [
+    "q0986",
+    "q0987",
+    "q0988",
+    "q0989",
+    "q0991",
+    "q0992",
+    "q0993",
+    "q0994",
+    "q0995",
+    "q0996",
+    "q0998",
+    "q0999",
+    "q1001",
+    "q1002",
+    "q1003",
+    "q1004",
+    "q1005",
+    "q1006",
+    "q1007",
+    "q1008",
+    "q1009",
+    "q1011",
+    "q1012"
+  ],
+  "items": [
+    {
+      "qid": "q0986",
+      "number": 986,
+      "type": "mcq",
+      "englishPrompt": "When your vehicle encounters an oncoming vehicle on a dangerous road, you should______.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0986_o1",
+          "text": "Do not reduce your speed."
+        },
+        {
+          "key": "B",
+          "id": "q0986_o2",
+          "text": "Position yourself in the center."
+        },
+        {
+          "key": "C",
+          "id": "q0986_o3",
+          "text": "Accelerate."
+        },
+        {
+          "key": "D",
+          "id": "q0986_o4",
+          "text": "Reduce speed or stop and give way to the other vehicle."
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "topic": "right-of-way",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#right-of-way",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0987",
+      "number": 987,
+      "type": "row",
+      "englishPrompt": "If an end-of-life vehicle undergoes a complete repair, can it be used?",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0988",
+      "number": 988,
+      "type": "row",
+      "englishPrompt": "A vehicle considered unusable under national regulations cannot be registered.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0989",
+      "number": 989,
+      "type": "mcq",
+      "englishPrompt": "What should you do if a non-motorized vehicle is trying to pass through traffic?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0989_o1",
+          "text": "Honk to warn"
+        },
+        {
+          "key": "B",
+          "id": "q0989_o2",
+          "text": "Accelerate"
+        },
+        {
+          "key": "C",
+          "id": "q0989_o3",
+          "text": "Slow down and let pass"
+        },
+        {
+          "key": "D",
+          "id": "q0989_o4",
+          "text": "Get closer and accelerate"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0991",
+      "number": 991,
+      "type": "row",
+      "englishPrompt": "In the event of an accident causing property damage, the police officer does not have the right to question drivers who remained at the scene of the accident but should have been evacuated.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "topic": "vehicle-registration",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0992",
+      "number": 992,
+      "type": "mcq",
+      "englishPrompt": "When must the driver apply for renewal of their driving license?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0992_o1",
+          "text": "once its validity date has expired"
+        },
+        {
+          "key": "B",
+          "id": "q0992_o2",
+          "text": "once the period for accumulating penalty points has ended"
+        },
+        {
+          "key": "C",
+          "id": "q0992_o3",
+          "text": "once the period for accumulating penalty points has ended with less than 11 points accumulated"
+        },
+        {
+          "key": "D",
+          "id": "q0992_o4",
+          "text": "once the period for accumulating penalty points has ended with more than 11 points accumulated"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "topic": "license",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 3
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#points-system",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0993",
+      "number": 993,
+      "type": "mcq",
+      "englishPrompt": "What should you do if there is accumulated water on the road?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0993_o1",
+          "text": "slow down and pass slowly"
+        },
+        {
+          "key": "B",
+          "id": "q0993_o2",
+          "text": "accelerate and pass"
+        },
+        {
+          "key": "C",
+          "id": "q0993_o3",
+          "text": "keep the speed"
+        },
+        {
+          "key": "D",
+          "id": "q0993_o4",
+          "text": "downshift and accelerate"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "A",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0994",
+      "number": 994,
+      "type": "mcq",
+      "englishPrompt": "What should you do when the vehicle in front is waiting for the green light to turn right?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0994_o1",
+          "text": "turn to its left"
+        },
+        {
+          "key": "B",
+          "id": "q0994_o2",
+          "text": "take the turn by the right"
+        },
+        {
+          "key": "C",
+          "id": "q0994_o3",
+          "text": "honk so that the vehicle in front lets us pass"
+        },
+        {
+          "key": "D",
+          "id": "q0994_o4",
+          "text": "wait in the line"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "topic": "traffic-lights",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#traffic-lights",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0995",
+      "number": 995,
+      "type": "mcq",
+      "englishPrompt": "Can the activation of the hazard warning lights be used in the following situations?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0995_o1",
+          "text": "follow the vehicles ahead"
+        },
+        {
+          "key": "B",
+          "id": "q0995_o2",
+          "text": "during a traffic jam"
+        },
+        {
+          "key": "C",
+          "id": "q0995_o3",
+          "text": "stop due to a breakdown"
+        },
+        {
+          "key": "D",
+          "id": "q0995_o4",
+          "text": "guide the direction for following vehicles"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "topic": "expressway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#expressway",
+            "score": 2
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0996",
+      "number": 996,
+      "type": "mcq",
+      "englishPrompt": "If the oncoming vehicle is in our lane, what should you do?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0996_o1",
+          "text": "move toward the middle of the road to drive"
+        },
+        {
+          "key": "B",
+          "id": "q0996_o2",
+          "text": "let them pass"
+        },
+        {
+          "key": "C",
+          "id": "q0996_o3",
+          "text": "flash your headlights at them"
+        },
+        {
+          "key": "D",
+          "id": "q0996_o4",
+          "text": "force them to reverse to the right"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "B",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0998",
+      "number": 998,
+      "type": "mcq",
+      "englishPrompt": "Which candidates can have their license application refused for three years after being caught in the act?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0998_o1",
+          "text": "smokers"
+        },
+        {
+          "key": "B",
+          "id": "q0998_o2",
+          "text": "drug users"
+        },
+        {
+          "key": "C",
+          "id": "q0998_o3",
+          "text": "people on insulin injections"
+        },
+        {
+          "key": "D",
+          "id": "q0998_o4",
+          "text": "alcoholics"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "B",
+      "topic": "violations-penalties",
+      "subtopic": "license",
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 2
+          },
+          {
+            "tag": "#license",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q0999",
+      "number": 999,
+      "type": "mcq",
+      "englishPrompt": "What should you do when traffic is slow and other vehicles are merging into the congested section?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0999_o1",
+          "text": "Honk and prevent them from passing"
+        },
+        {
+          "key": "B",
+          "id": "q0999_o2",
+          "text": "Accelerate and follow the vehicles ahead to prevent them from merging"
+        },
+        {
+          "key": "C",
+          "id": "q0999_o3",
+          "text": "Politely let them merge and maintain a safe distance"
+        },
+        {
+          "key": "D",
+          "id": "q0999_o4",
+          "text": "Force the vehicle trying to merge to leave"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1001",
+      "number": 1001,
+      "type": "row",
+      "englishPrompt": "You must not turn the vehicle around in the opposite direction on the highway.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "topic": "expressway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#expressway",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1002",
+      "number": 1002,
+      "type": "row",
+      "englishPrompt": "When driving on a hail-covered road, vehicle stability is reduced, making it easy to skid if you brake sharply.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1003",
+      "number": 1003,
+      "type": "mcq",
+      "englishPrompt": "What is the maximum number of consecutive hours one can drive?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1003_o1",
+          "text": "4 hours"
+        },
+        {
+          "key": "B",
+          "id": "q1003_o2",
+          "text": "6 hours"
+        },
+        {
+          "key": "C",
+          "id": "q1003_o3",
+          "text": "8 hours"
+        },
+        {
+          "key": "D",
+          "id": "q1003_o4",
+          "text": "10 hours"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "A",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1004",
+      "number": 1004,
+      "type": "mcq",
+      "englishPrompt": "What can happen in case of fog?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1004_o1",
+          "text": "cause the engine to shut off"
+        },
+        {
+          "key": "B",
+          "id": "q1004_o2",
+          "text": "slide on the wing and cause an accident"
+        },
+        {
+          "key": "C",
+          "id": "q1004_o3",
+          "text": "increase traffic density"
+        },
+        {
+          "key": "D",
+          "id": "q1004_o4",
+          "text": "reduce visibility"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1005",
+      "number": 1005,
+      "type": "row",
+      "englishPrompt": "Smoking while driving cannot have an impact on safety.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1006",
+      "number": 1006,
+      "type": "mcq",
+      "englishPrompt": "What is the maximum speed allowed when passing through a dangerous curve?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1006_o1",
+          "text": "15 km/h"
+        },
+        {
+          "key": "B",
+          "id": "q1006_o2",
+          "text": "20 km/h"
+        },
+        {
+          "key": "C",
+          "id": "q1006_o3",
+          "text": "30 km/h"
+        },
+        {
+          "key": "D",
+          "id": "q1006_o4",
+          "text": "40 km/h"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1007",
+      "number": 1007,
+      "type": "mcq",
+      "englishPrompt": "If a minibus is driving on the highway at less than 100 km/h, what safety distance must it keep?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1007_o1",
+          "text": "at least 50 m"
+        },
+        {
+          "key": "B",
+          "id": "q1007_o2",
+          "text": "at least 30 m"
+        },
+        {
+          "key": "C",
+          "id": "q1007_o3",
+          "text": "at least 20 m"
+        },
+        {
+          "key": "D",
+          "id": "q1007_o4",
+          "text": "at least 10 m"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "A",
+      "topic": "expressway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#expressway",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1008",
+      "number": 1008,
+      "type": "row",
+      "englishPrompt": "When this light comes on, you need to pour gasoline into the engine.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_b564bb5061f7b52e40500214725f59e2.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_b564bb5061f7b52e40500214725f59e2.jpeg"
+      ],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1009",
+      "number": 1009,
+      "type": "mcq",
+      "englishPrompt": "To avoid a tire puncture, which action should be taken?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1009_o1",
+          "text": "Lower the tire pressure"
+        },
+        {
+          "key": "B",
+          "id": "q1009_o2",
+          "text": "Check your tires periodically"
+        },
+        {
+          "key": "C",
+          "id": "q1009_o3",
+          "text": "Clean the tire scratches"
+        },
+        {
+          "key": "D",
+          "id": "q1009_o4",
+          "text": "Replace the cracked or badly damaged tire"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "B",
+      "topic": "vehicle-registration",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1011",
+      "number": 1011,
+      "type": "mcq",
+      "englishPrompt": "What should you do when you encounter a group of students while driving?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1011_o1",
+          "text": "pass by accelerating in advance"
+        },
+        {
+          "key": "B",
+          "id": "q1011_o2",
+          "text": "stop and yield the right of way"
+        },
+        {
+          "key": "C",
+          "id": "q1011_o3",
+          "text": "slow down and pass at reduced speed"
+        },
+        {
+          "key": "D",
+          "id": "q1011_o4",
+          "text": "keep honking to hurry them"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "topic": "right-of-way",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#right-of-way",
+            "score": 2
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    },
+    {
+      "qid": "q1012",
+      "number": 1012,
+      "type": "row",
+      "englishPrompt": "A driver who hits monuments or public installations can continue driving without worrying.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "translationStatus": "needs_generation",
+      "reviewStatus": "pending"
+    }
+  ]
+}

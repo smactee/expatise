@@ -1,0 +1,80 @@
+{
+  "generatedAt": "2026-05-14T13:13:03.479Z",
+  "source": "codex-manual-backfill-review-overrides",
+  "lang": "ja",
+  "reviewedPath": "qbank-tools/generated/staging/backfill.ja.reviewed.json",
+  "needsFixPath": "qbank-tools/generated/staging/backfill.ja.needs-fix.json",
+  "overrideCount": 4,
+  "reviewedCountAfter": 23,
+  "needsFixCountAfter": 0,
+  "overrides": [
+    {
+      "qid": "q0991",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "wrong-logic",
+          "message": "元の英語の文の論理が変わっている。"
+        }
+      ],
+      "appliedFix": {
+        "prompt": "物損事故が発生した場合、本来退避すべきであったにもかかわらず事故現場に残っていた運転者に対して、警察官には質問する権利がない。"
+      },
+      "reason": "Manual override after source/translation inspection with targeted wording or option fix."
+    },
+    {
+      "qid": "q1005",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "translation_error",
+          "message": "英語の正しい意味を保持していない。"
+        }
+      ],
+      "appliedFix": {
+        "prompt": "運転中の喫煙は安全に影響を与えることはない。"
+      },
+      "reason": "Manual override after source/translation inspection with targeted wording or option fix."
+    },
+    {
+      "qid": "q1008",
+      "type": "row",
+      "correctOptionKey": "Right",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "translation_error",
+          "message": "英語の正しい意味を保持していない。"
+        }
+      ],
+      "appliedFix": {
+        "prompt": "このランプが点灯した場合、エンジンにガソリンを注ぐ必要があります。"
+      },
+      "reason": "Manual override after source/translation inspection with targeted wording or option fix."
+    },
+    {
+      "qid": "q1012",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "error",
+          "code": "wrong-meaning",
+          "message": "翻訳文は元の英語と異なる論理的意味を持っています。"
+        }
+      ],
+      "appliedFix": {
+        "prompt": "記念物や公共施設に衝突した運転者は、気にせず運転を続けることができます。"
+      },
+      "reason": "Manual override after source/translation inspection with targeted wording or option fix."
+    }
+  ]
+}

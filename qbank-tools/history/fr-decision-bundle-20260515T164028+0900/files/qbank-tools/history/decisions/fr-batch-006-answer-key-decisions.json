@@ -1,0 +1,153 @@
+{
+  "generatedAt": "2026-05-11T02:46:22.966Z",
+  "lang": "fr",
+  "batchId": "batch-006",
+  "dataset": "2023-test1",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/fr-batch-006-workbench-decisions.json",
+  "items": [
+    {
+      "qid": "q0367",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Clear round speed-limit sign '90' in image. q0367 correct text = 90 km/h; source option D = 90 km/h, so map master answer to source D."
+    },
+    {
+      "qid": "q0478",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Exact q0478 intersection image match; safe action is to pass only after confirming it is safe. French D is the only option with that meaning."
+    },
+    {
+      "qid": "q0841",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image is a red-bordered circular sign '3.5' with vertical arrows = height limit. q0841 master correct = '3.5m height limit' which corresponds to source option A."
+    },
+    {
+      "qid": "q0803",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Source road marking is the same central-circle marking as q0803. French D=cercle central maps to the master correct answer."
+    },
+    {
+      "qid": "q0791",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue rectangular sign with right-turn arrow visible. q0868 master correct = 'turn right'. Source option B = 'tourner à droite' → map to B."
+    },
+    {
+      "qid": "q0788",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Single red slash over blue circle is no long stopping/no long parking, matching q0788. French correct row is C; previous D confused it with full no parking."
+    },
+    {
+      "qid": "q0175",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Source asks effect of rain; correct meaning is 'road is wet, slippery and visibility poor' which matches q0175. In this localized option set that meaning is option B."
+    },
+    {
+      "qid": "q0629",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Dashboard image and extracted answer indicate coolant level low; q0629 matches ('lack of coolant'). Localized correct option is D."
+    },
+    {
+      "qid": "q0154",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Question asks what to do before restarting from roadside; correct action is to observe surroundings. That meaning corresponds to q0154; in this localized option set it's option C."
+    },
+    {
+      "qid": "q0480",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image clearly shows a '110' speed-limit sign. q0480 has 110km/h as the correct numeric meaning; in this localized option ordering 110 corresponds to B. Some machine matches conflict, so moderate risk."
+    },
+    {
+      "qid": "q0662",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Green ETC lane sign exactly matches q0662. French A=voie de telepeage maps to the master ETC-lane answer."
+    },
+    {
+      "qid": "q0981",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk approveExistingQid: Source asks forged Carte Grise/registration certificate penalty points. q0981 raw master prompt and KO/JA translations are forged vehicle transit permit with the same 12/6/3/2 options; normalized English prompt appears drifted. French A=12."
+    },
+    {
+      "qid": "q0503",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Scenario image and prompt ask who to yield to when going straight; correct behavior is to yield to vehicle from the right. q0503 expresses 'yield to vehicle from right' — localized option B matches."
+    },
+    {
+      "qid": "q0706",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Guide arrow marking means right turn ahead and matches q0706 image. French A=tourner a droite maps to master correct D."
+    },
+    {
+      "qid": "q0496",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Question asks licence ban after fleeing an accident constituting a crime; q0496's correct answer is 'for lifetime' which matches source option C ('Toute la vie')."
+    },
+    {
+      "qid": "q0584",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Dashboard shows red battery symbol (+/-). Visual semantics and top candidate q0584 indicate charging/charging-circuit malfunction; that corresponds to source option D. There is a conflicting OCR/extracted key (B), so moderate risk."
+    },
+    {
+      "qid": "q0889",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Sign shows horn in red prohibition circle — meaning 'no honking'. q0889 has 'no honking' as the correct meaning; source option C is 'défense de klaxonner'. Top machine candidate (q0657) had conflicting mapping, so flagged moderate risk. Rejected top matcher: Top matcher q0657's suggested correct option conflicts with the visual meaning ('should honk' vs actual prohibition); candidates disagree."
+    },
+    {
+      "qid": "q0626",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Question about seat belt function; q0626's correct answer is 'to reduce injuries of driver and passengers', matching source option A."
+    },
+    {
+      "qid": "q0399",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image clearly shows a '120' speed sign. q0399 has correctOptionText 120 and matches the visual. Top machine candidate q0367 suggested different value (90), so flagged moderate risk due to candidate conflict. Rejected top matcher: Top matcher q0367 predicts 90km/h which conflicts with the visible '120' sign and with q0399 image candidate."
+    },
+    {
+      "qid": "q0771",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Source road sign is a direction sign and exactly matches q0771. French D=signal de direction maps to the master answer."
+    },
+    {
+      "qid": "q0878",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue rectangular lane sign means straight-going lane and matches q0878. French A=aller tout droit maps to master correct D."
+    },
+    {
+      "qid": "q0813",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Yellow warning/slow sign matches q0813. French C=circuler a basse vitesse is the localized answer for passing slowly."
+    },
+    {
+      "qid": "q0144",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Question about narrow mountain road: correct action is 'reduce speed or stop and yield' which corresponds to Q0144 semantics. Machine candidate q0144 present; map to local option B (reduce speed/stop)."
+    },
+    {
+      "qid": "q0888",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Yellow triangular warning sign with worker pictogram = roadworks. Top candidate q0888 has identical options and correct = construction zone → source option B ('tronson en travaux'). Strong image match."
+    }
+  ]
+}

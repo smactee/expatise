@@ -1,0 +1,254 @@
+# Backfill Quality Review (fr)
+
+Generated at: 2026-05-14T06:21:57.935Z
+
+## Summary
+
+- AI review used: yes
+- Model: gpt-4o-mini
+- Input items: 228
+- Approved: 197
+- Needs fix: 2
+- Reject: 29
+- Below confidence threshold: 12
+- Answer-key logic risk: 29
+- Wrong-language heuristic rejects: 0
+- Production modified: no
+
+## Rejected
+
+- q0018: reject, confidence 0.95; answerLogicMismatch: La traduction inverse l'intention de l'anglais. L'option correcte est 'Wrong' mais la traduction implique que c'est 'Right'.
+- q0025: reject, confidence 0.93; answerLogicMismatch: La traduction indique qu'utiliser un rapport de vitesse élevé est correct, mais c'est 'Wrong' dans l'original.
+- q0084: reject, confidence 1.00; incorrect-claim: La déclaration traduite indique qu'il n'y a pas d'impact de fumer sur la conduite sécuritaire, tandis que c'est faux.
+- q0226: reject, confidence 0.95; incorrect-representation: La déclaration traduite inverse le sens original concernant les limites de vitesse.
+- q0260: reject, confidence 0.90; misleading: La traduction laisse entendre que l'action est correcte, ce qui est faux.
+- q0261: reject, confidence 0.85; incorrect_statement: La déclaration traduit la conduite de façon permissive, ce qui n'est pas le cas.
+- q0275: reject, confidence 0.90; misleading: La peine indiquée semble sous-estimée pour ce comportement.
+- q0302: reject, confidence 0.95; answer-logic: La traduction de l'énoncé mène à une interprétation qui inverse la logique de réponse.
+- q0325: reject, confidence 0.93; answer-logic: La traduction suggère une affirmation incorrecte par rapport au vrai statut légal.
+- q0336: reject, confidence 0.92; answer-logic: L'affirmation indique une action illégale.
+- q0352: reject, confidence 1.00; wrong-logic: La traduction fait passer un conseil dangereux.
+- q0358: reject, confidence 1.00; wrong-logic: La traduction encourage une pratique illégale.
+- q0359: reject, confidence 1.00; wrong-logic: La traduction laisse entendre une interprétation abusive de la loi.
+- q0462: reject, confidence 0.90; wrong-penalty-translation: Mauvaise traduction du terme 'penalty'.
+- q0488: reject, confidence 0.00; option_mapping_error: Option meanings do not match English options.
+- q0514: reject, confidence 0.90; incorrect-option-translation: L'option traduite pour 'l'appareil audio n'est pas éteint' ne correspond pas à l'original 'l'audio device is not closed'.
+- q0575: reject, confidence 0.85; logic-error: La traduction inverse la signification de l'énoncé anglais par rapport à la réalité.
+- q0640: reject, confidence 0.00; translation-inversion: Translation changes the meaning from 'May turn right' to 'Can turn right'.
+- q0904: reject, confidence 0.95; incorrect-logic: La traduction inverse le sens de la proposition.
+- q0908: reject, confidence 0.93; incorrect-logic: La traduction inverse le sens de la proposition.
+- q0913: reject, confidence 0.95; wrong-answer-logic: La traduction inverse le sens de l'option correcte.
+- q0918: reject, confidence 0.92; wrong-answer-logic: La traduction fournit une information incorrecte concernant la révocation du permis.
+- q0921: reject, confidence 0.95; option-conveyance: L'énoncé traduit contredit la logique du questionnaire original.
+- q0945: reject, confidence 0.85; translation_issue: La traduction ne respecte pas le sens de l'original.
+- q0947: reject, confidence 0.95; meaningMismatch: La traduction ne respecte pas le même sens que l'énoncé source.
+- q0950: reject, confidence 0.95; meaningMismatch: La traduction ne respecte pas le même sens que l'énoncé source.
+- q0973: reject, confidence 0.90; logic-error: La proposion anglaise est faux mais la traduction ne respecte pas cette fausse vérité.
+- q0983: reject, confidence 1.00; meaning-misalignment: La déclaration implique que les véhicules doivent céder le passage alors que c'est faux.
+- q0984: reject, confidence 1.00; meaning-misalignment: La déclaration suggère un fonctionnement incorrect des feux de brouillard.
+
+## Needs Fix
+
+- q0863: needs_fix, confidence 0.90; incorrect_translation: La traduction de l'option A ne correspond pas à la signification correcte.
+- q0929: needs_fix, confidence 0.00; mistranslation: Erreur de traduction dans les options. 'rappel de pentes continues de deux ou plus à l'avance' devrait être 'rappel de pentes continues de deux ou plus en montée à l'avance'.
+
+## Approved
+
+- q0011: confidence 1.00; La traduction préserve la même proposition vraie que l'original anglais.
+- q0027: confidence 1.00; La traduction préserve la même proposition vraie que l'original anglais.
+- q0030: confidence 1.00; La traduction préserve la même proposition vraie que l'original anglais.
+- q0034: confidence 1.00; La traduction préserve la même proposition vraie que l'original anglais.
+- q0038: confidence 1.00; La traduction préserve la même proposition vraie que l'original anglais.
+- q0044: confidence 1.00; La traduction préserve la même proposition vraie que l'original anglais.
+- q0046: confidence 1.00; La traduction préserve correctement le sens de la déclaration originale.
+- q0049: confidence 1.00; La traduction est fidèle à l'original et maintient la logique de réponse.
+- q0057: confidence 1.00; La traduction est exacte et reflète bien le message initial.
+- q0064: confidence 1.00; La traduction respecte le sens et la structure de la déclaration d'origine.
+- q0069: confidence 1.00; La traduction est correcte et préserve la logique de l'original.
+- q0104: confidence 1.00; La traduction est fidèle et correcte par rapport à la déclaration originale.
+- q0105: confidence 1.00; La traduction et les options de réponse sont conformes à l'original.
+- q0113: confidence 1.00; La traduction est fidèle et correcte.
+- q0122: confidence 1.00; La traduction est précise et correspondante à l'original.
+- q0123: confidence 1.00; La traduction respecte le sens original et est correcte.
+- q0125: confidence 1.00; La traduction est fidèle aux significations des options originales.
+- q0133: confidence 1.00; La traduction est correcte et les options sont fidèles.
+- q0136: confidence 1.00; La traduction est adéquate et respecte le sens de la question originale.
+- q0151: confidence 1.00; La traduction est précise et conserve l'intégralité des détails.
+- q0156: confidence 1.00; La traduction est correcte et les options correspondent bien.
+- q0161: confidence 0.95; La traduction préserve le sens exact de la question et des options.
+- q0163: confidence 0.95; La traduction est fidèle et maintient l'ordre et le sens des options.
+- q0169: confidence 0.95; Tous les éléments de la traduction respectent ceux de l'original.
+- q0170: confidence 0.95; La traduction reproduit fidèlement le sens et la logique des options.
+- q0171: confidence 0.95; La traduction conserve le sens de la question originale et la logique des réponses.
+- q0172: confidence 0.95; Les phrases traduites sont conformes à l'original.
+- q0173: confidence 0.95; La traduction est précise et suit le même schéma que l'original.
+- q0174: confidence 0.95; Tous les détails sont correctement traduits et conformes à l'original.
+- q0176: confidence 1.00; La traduction est fidèlement conforme à l'original.
+- q0181: confidence 1.00; La traduction est précise et respecte la logique des réponses.
+- q0183: confidence 1.00; La traduction est correcte et conforme à l'énoncé source.
+- q0209: confidence 1.00; La traduction reflète fidèlement le contenu de la question d'origine.
+- q0210: confidence 1.00; La traduction est fidèle et précise.
+- q0211: confidence 1.00; La traduction respecte bien l'original.
+- q0224: confidence 1.00; La traduction est conforme et exacte.
+- q0247: confidence 1.00; La traduction préserve le sens et la logique de la réponse correcte.
+- q0250: confidence 1.00; La traduction est fidèle au sens d'origine et à la logique des réponses.
+- q0251: confidence 1.00; La traduction est correcte et correspond à l'énoncé original.
+- q0264: confidence 1.00; La traduction maintient la logique de la réponse et le sens de l'original.
+- q0265: confidence 1.00; La traduction est fidèle et respecte le sens légal de l'énoncé.
+- q0286: confidence 1.00; La proposition est traduite correctement et conserve la logique de réponse.
+- q0298: confidence 1.00; La traduction préserve parfaitement le sens et la logique de la réponse.
+- q0320: confidence 1.00; La proposition est traduite de manière claire et conserve la logique correcte.
+- q0337: confidence 1.00; La traduction est correcte et respecte la logique de l'énoncé original.
+- q0338: confidence 1.00; La proposition est traduite correctement avec une précision du contenu numérique.
+- q0340: confidence 1.00; La traduction préserve le sens original.
+- q0349: confidence 1.00; La traduction est fidèle au texte source.
+- q0350: confidence 1.00; La traduction transmet correctement l'idée originale.
+- q0351: confidence 1.00; La phrase traduite est conforme au sens de l'anglais.
+- q0354: confidence 1.00; La traduction respecte la norme du texte original.
+- q0360: confidence 1.00; La traduction préserve le sens et la logique de la réponse correctement.
+- q0361: confidence 1.00; La traduction respecte l'énoncé source tout en maintenant la logique de la réponse.
+- q0362: confidence 1.00; La traduction est fidèle et toutes les options sont correctement traduites.
+- q0382: confidence 1.00; La traduction préserve le sens et la logique de la réponse exactement comme dans l'original.
+- q0384: confidence 1.00; Les options sont traduites avec précision et la logique de la réponse est maintenue.
+- q0388: confidence 1.00; La traduction est exacte et maintient l'intégrité des valeurs et de la logique.
+- q0393: confidence 1.00; La traduction respecte complètement l'énoncé original et les options.
+- q0398: confidence 1.00; La traduction est fidèle et les options correspondent aux significations requises.
+- q0403: confidence 1.00; La traduction est fidèle à l'original et respecte la logique des réponses.
+- q0411: confidence 1.00; La traduction est précise et maintient la logique des réponses.
+- q0418: confidence 1.00; La traduction d'une question complexe est correcte et conforme.
+- q0425: confidence 1.00; La traduction respecte l'intention originale et les choix de réponses.
+- q0431: confidence 1.00; La traduction est exacte et reflète bien la structure de la question d'origine.
+- q0434: confidence 1.00; La traduction est fidèle à l'original et respecte les options.
+- q0435: confidence 1.00; La question et les réponses sont traduites correctement.
+- q0437: confidence 1.00; La traduction est précise et respecte l'intention de l'original.
+- q0441: confidence 1.00; La traduction préserve parfaitement le sens et l'ordre des options.
+- q0446: confidence 1.00; La traduction conserve le sens de la question et les options sont correctement traduites.
+- q0458: confidence 1.00; La traduction est fidèle à l'original et les options sont bien conservées.
+- q0459: confidence 1.00; La traduction est correcte, reflète fidèlement l'original et les options correspondent.
+- q0468: confidence 1.00; La traduction est correcte avec des options bien conservées.
+- q0473: confidence 1.00; La traduction respecte le sens de la question et les options.
+- q0482: confidence 1.00; Correctement traduit, les options correspondent à l'original.
+- q0489: confidence 0.95; La traduction conserve le sens et la logique de réponse de l'original.
+- q0490: confidence 0.96; La traduction respecte la signification et la logique des réponses de l'original.
+- q0492: confidence 0.92; La traduction est fidèle à l'original et la logique est respectée.
+- q0495: confidence 0.97; La traduction est précise et conserve la logique de réponse.
+- q0497: confidence 0.95; La traduction est correcte et conforme à l'original.
+- q0505: confidence 0.96; La traduction respecte l'original et la logique des réponses.
+- q0511: confidence 0.94; La traduction est fidèle et maintient la structure de l'original.
+- q0512: confidence 1.00; La traduction est fidèle au texte source et respecte l'ordre des options.
+- q0516: confidence 1.00; La traduction est complète et fidèle au texte source.
+- q0526: confidence 1.00; La traduction est correcte et respecte le format d'affirmation correcte.
+- q0532: confidence 1.00; La traduction est fidèle et maintient la justesse de la déclaration.
+- q0534: confidence 1.00; La traduction est correcte et correspond à la déclaration source.
+- q0538: confidence 1.00; La traduction est précise et conforme à l'affirmation originale.
+- q0540: confidence 1.00; La traduction est exacte et respecte le sens de la phrase anglaise.
+- q0542: confidence 1.00; La traduction préserve exactement le sens de l'énoncé en anglais.
+- q0552: confidence 1.00; La traduction est fidèle à l'énoncé original en anglais.
+- q0555: confidence 1.00; La traduction respecte l'énoncé source et sa logique.
+- q0567: confidence 1.00; La signification est intacte dans la traduction.
+- q0569: confidence 1.00; La traduction est conforme à l'énoncé en anglais.
+- q0570: confidence 1.00; La traduction préserve le sens et la structure de l'énoncé original.
+- q0577: confidence 1.00; Les options sont bien traduites et correspondent à l'énoncé original.
+- q0593: confidence 1.00; La traduction est correcte et préserve le sens.
+- q0596: confidence 1.00; La traduction est correcte et préserve le sens.
+- q0606: confidence 1.00; La traduction est correcte et préserve le sens.
+- q0612: confidence 1.00; La traduction est correcte et préserve le sens.
+- q0621: confidence 1.00; La traduction est correcte et préserve le sens.
+- q0628: confidence 1.00; La traduction est correcte et préserve le sens.
+- q0632: confidence 1.00; La traduction est correcte et préserve le sens.
+- q0638: confidence 1.00; La traduction est correcte et préserve le sens.
+- q0644: confidence 1.00; Translation accurately reflects the original proposition and maintains correct answer logic.
+- q0646: confidence 1.00; Translation correctly captures the original meaning.
+- q0655: confidence 1.00; Translation of prompt and options aligns perfectly with the English master.
+- q0659: confidence 1.00; Translation matches the meaning of the original question and choices.
+- q0668: confidence 1.00; Translation accurately reflects the original meaning.
+- q0670: confidence 1.00; Translation remains faithful to the English master.
+- q0675: confidence 1.00; Translation maintains the same question and option meanings as the source.
+- q0687: confidence 1.00; La traduction est fidèle à l'original.
+- q0694: confidence 1.00; La traduction est correcte et correspond à la question initiale.
+- q0697: confidence 1.00; La traduction respecte les choix proposés et leur signification.
+- q0702: confidence 1.00; La traduction est précise et conforme à l'original.
+- q0717: confidence 1.00; La traduction est correcte, reflétant fidèlement les options de l'original.
+- q0720: confidence 1.00; La traduction est adéquate et respecte les sens originaux.
+- q0721: confidence 1.00; La traduction est fidèle à l'original et tous les éléments sont précis.
+- q0723: confidence 1.00; La traduction est correcte et maintient la cohérence avec l'original.
+- q0727: confidence 1.00; La traduction préserve bien le sens et la logique de réponse.
+- q0735: confidence 1.00; La traduction est exacte et respecte la logique des réponses.
+- q0736: confidence 1.00; La signification et les options sont fidèles à l'original.
+- q0739: confidence 1.00; La traduction respecte la signification du panneau et maintient la logique.
+- q0747: confidence 1.00; La signification du panneau correspond parfaitement à l'original.
+- q0748: confidence 1.00; La traduction est précise et les options sont bien alignées.
+- q0760: confidence 1.00; La signification est correctement traduite, rien à redire.
+- q0786: confidence 1.00; La traduction respecte le sens et la structure de l'original.
+- q0792: confidence 1.00; La traduction est fidèle et conserve la logique des options et la signification.
+- q0810: confidence 1.00; La traduction est correcte et l'ordre des options est respecté.
+- q0826: confidence 1.00; La traduction préserve la signification et respecte l'ordre des options.
+- q0829: confidence 1.00; La traduction est fidèle et correspond à la logique des réponses.
+- q0833: confidence 1.00; La traduction est adéquate et l'ordre des options est maintenu.
+- q0834: confidence 1.00; Tous les éléments de la traduction sont corrects et cohérents.
+- q0851: confidence 1.00; La signification du panneau est bien traduite et respecte l'original.
+- q0854: confidence 1.00; La traduction conserve la logique des options et la signification.
+- q0861: confidence 1.00; La traduction conserve le sens et l'ordre des options.
+- q0865: confidence 1.00; La traduction préserve le sens correct et l'ordre des options.
+- q0881: confidence 1.00; La traduction est adéquate et respectueuse des détails.
+- q0897: confidence 1.00; La traduction correspond parfaitement au sens de la question.
+- q0898: confidence 1.00; La traduction est fidèle et correcte.
+- q0900: confidence 1.00; La traduction respecte le sens original.
+- q0901: confidence 1.00; La traduction est précise et conforme.
+- q0902: confidence 1.00; La traduction préserve le sens et la logique de l'option correcte.
+- q0903: confidence 1.00; La traduction est correcte et conserve la logique vraie/fausse.
+- q0905: confidence 1.00; La traduction est fidèle et la logique vraie/fausse est respectée.
+- q0907: confidence 1.00; La traduction est correcte et reflète la proposition originale.
+- q0909: confidence 1.00; La traduction est exacte et forme une question appropriée.
+- q0910: confidence 1.00; La traduction reflète correctement le sens de l'original.
+- q0911: confidence 1.00; La traduction est fidèle à la déclaration source en anglais.
+- q0912: confidence 1.00; La traduction respecte la structure et le sens de l'original.
+- q0914: confidence 1.00; La traduction préserve le sens et l'ordre des options.
+- q0915: confidence 1.00; La traduction est correcte et reflète fidèlement la version anglaise.
+- q0916: confidence 1.00; La traduction est en accord avec l'énoncé source.
+- q0917: confidence 1.00; La traduction est exacte et respecte l'original.
+- q0919: confidence 1.00; La traduction préserve le sens de l'énoncé original.
+- q0920: confidence 1.00; Les options et le sens sont bien préservés.
+- q0922: confidence 1.00; La traduction est fidèle et toutes les options sont correctes.
+- q0923: confidence 1.00; Les options sont bien traduites et l'énoncé est exact.
+- q0924: confidence 1.00; La traduction conserve le sens original parfaitement.
+- q0925: confidence 1.00; Les traductions des options sont fidèles et logiques.
+- q0926: confidence 1.00; La traduction est correcte et respecte l'énoncé original.
+- q0930: confidence 1.00; La traduction préserve le sens et la logique de réponse correcte.
+- q0931: confidence 1.00; La traduction est correcte et conforme.
+- q0932: confidence 1.00; La traduction respecte le sens de l'énoncé d'origine.
+- q0933: confidence 1.00; La traduction est précise et cohérente.
+- q0934: confidence 1.00; La traduction reflète correctement le sens de l'anglais.
+- q0935: confidence 1.00; Traduction conforme aux attentes.
+- q0936: confidence 1.00; La traduction respecte le message et est exacte.
+- q0937: confidence 1.00; La traduction préserve le même sens que l'original en anglais.
+- q0938: confidence 1.00; La traduction est fidèle et correcte par rapport à l'original.
+- q0940: confidence 1.00; La signification est correctement conservée.
+- q0941: confidence 1.00; La traduction est conforme et révélatrice.
+- q0942: confidence 1.00; La traduction est exacte et respecte le sens original.
+- q0943: confidence 1.00; Le sens original est préservé en français.
+- q0944: confidence 1.00; La traduction est claire et précise.
+- q0946: confidence 1.00; La traduction est correcte et respecte l'énoncé source.
+- q0949: confidence 1.00; La traduction est fidèle à l'énoncé source.
+- q0951: confidence 1.00; La traduction est correcte et respecte l'énoncé source.
+- q0953: confidence 1.00; La traduction est fidèle à l'énoncé source.
+- q0954: confidence 1.00; La traduction est correcte et respecte l'énoncé source.
+- q0955: confidence 1.00; La traduction est fidèle à l'énoncé source.
+- q0957: confidence 1.00; La traduction préserve le même sens que l'anglais.
+- q0958: confidence 1.00; La traduction est fidèle et correcte.
+- q0959: confidence 1.00; La traduction reflète correctement le sens de l'original.
+- q0960: confidence 1.00; La traduction maintient la même signification que l'anglais.
+- q0961: confidence 1.00; La traduction est précise et identique à l'original.
+- q0962: confidence 1.00; La traduction est correcte et fidèle au texte source.
+- q0963: confidence 1.00; La traduction respecte le sens donné dans l'anglais.
+- q0965: confidence 1.00; La traduction correspond parfaitement à l'original.
+- q0966: confidence 1.00; La traduction préserve le sens exact de l'original.
+- q0967: confidence 1.00; La traduction est fidèle et correcte.
+- q0968: confidence 1.00; La traduction est précise et correspond au texte source.
+- q0969: confidence 1.00; La traduction reflète fidèlement le sens de l'original.
+- q0970: confidence 1.00; La traduction et les options correspondent bien.
+- q0971: confidence 1.00; La traduction est fidèle et bien formulée.
+- q0972: confidence 1.00; La traduction préserve parfaitement le sens original.
+- q0976: confidence 1.00; La traduction préserve exactement le sens de la proposition originale en anglais.
+- q0977: confidence 1.00; La traduction conserve le sens des options et la clé de réponse correcte est maintenue intacte.
+

@@ -24,6 +24,16 @@ const LANGUAGE_CONFIGS = {
     terminologyInstruction: "Use natural, exam-appropriate Japanese traffic, driving, legal, road-sign, and dashboard terminology.",
     scriptInstruction: "Use Japanese kanji/kana. Do not output Russian, Cyrillic, English-only text, Chinese-only text, or romaji.",
   },
+  ko: {
+    code: "ko",
+    englishName: "Korean",
+    nativeName: "한국어",
+    outputLabel: "Korean / 한국어",
+    textExample: "한국어 문장",
+    optionExample: "한국어 선택지",
+    terminologyInstruction: "Use natural, exam-appropriate Korean traffic, driving, legal, road-sign, and dashboard terminology.",
+    scriptInstruction: "Use Korean Hangul. Do not output Japanese, Chinese, Russian, Cyrillic, or English-only text.",
+  },
   ru: {
     code: "ru",
     englishName: "Russian",
@@ -117,6 +127,31 @@ export function detectWrongLanguage(text, lang) {
     return { wrong: false, reason: "", counts };
   }
 
+  if (config.code === "ko") {
+    if (counts.japanese > 0) {
+      return {
+        wrong: true,
+        reason: "contains Japanese/Chinese script while target language is Korean / 한국어",
+        counts,
+      };
+    }
+    if (counts.cyrillic > 0) {
+      return {
+        wrong: true,
+        reason: "contains Cyrillic/Russian script while target language is Korean / 한국어",
+        counts,
+      };
+    }
+    if (counts.hangul === 0 && counts.latin >= 10) {
+      return {
+        wrong: true,
+        reason: "contains no Hangul and appears to be English/romanized text while target language is Korean / 한국어",
+        counts,
+      };
+    }
+    return { wrong: false, reason: "", counts };
+  }
+
   if (config.code === "ru") {
     if (counts.japanese > 0) {
       return {
@@ -167,6 +202,7 @@ export function languageScriptCounts(text) {
   const value = String(text ?? "");
   return {
     japanese: countMatches(value, /[\u3040-\u30ff\u3400-\u9fff]/gu),
+    hangul: countMatches(value, /[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]/gu),
     cyrillic: countMatches(value, /[\u0400-\u04ff]/gu),
     latin: countMatches(value, /[A-Za-z]/g),
   };

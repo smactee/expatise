@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-05-11T02:46:24.626Z",
+  "lang": "fr",
+  "batchId": "batch-006",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.fr.batch-006.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-batch-006-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.28.01.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "En cas d'accident ayant causé des dommages matériels, l'agent de police n'est pas en droit d'interpeller les conducteurs restés sur les lieux de l'accident qui auraient dû être évacués.",
+      "promptGlossEn": "In the event of an accident causing material damage, the police officer does not have the right to question drivers who remained at the scene of the accident but should have left.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "A Yes",
+        "B No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:accidents"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:accidents",
+          "signal": "accident",
+          "weight": 1.15
+        }
+      ],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Source claims police do NOT have right to question drivers who remained but should have left; top candidate q0250 gives similar statement and labels it Wrong. That maps to source option B (No). Slight wording differences lower confidence.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

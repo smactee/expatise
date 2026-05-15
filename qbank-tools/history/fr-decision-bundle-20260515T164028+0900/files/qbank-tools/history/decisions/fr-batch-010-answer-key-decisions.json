@@ -1,0 +1,165 @@
+{
+  "generatedAt": "2026-05-11T12:06:11.781Z",
+  "lang": "fr",
+  "batchId": "batch-010",
+  "dataset": "2023-test1",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/fr-batch-010-workbench-decisions.json",
+  "items": [
+    {
+      "qid": "q0471",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Exact semantic match to q0471 (driver flees causing death → prison >7 years). Local correct option D matches master D."
+    },
+    {
+      "qid": "q0464",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image shows traffic police signalling; q0464 (stop and wait) matches. Local option D = 's'arrêter et attendre' corresponds to q0464 answer."
+    },
+    {
+      "qid": "q0442",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Source asks how to turn right; q0442's correct answer is to yield to oncoming left-turning vehicle. Local option A matches that meaning. Machine top candidate differed, so confidence reduced. Rejected top matcher: Machine top match (q0510) is about speed limits and is unrelated to this image/question."
+    },
+    {
+      "qid": "q0509",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Rejected q0114: it is specifically about temporary stopping in snowy conditions and its distractor rows differ. Source asks the generic roadside-stopping light question; source answer C is hazard lights, so this should be a new localized question rather than a broad q0114 approval."
+    },
+    {
+      "qid": "q0782",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Sign is triangular warning showing a hump/bump; q0782 means 'speed bump ahead'. Local options C and D both reference bumps; D ('ralentisseur de type dos-d'ane') most directly maps to 'speed bump'."
+    },
+    {
+      "qid": "q0830",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Road marking arrow points left/merge left; q0830 correct = 'left curve or merge left'. Local option A matches exactly."
+    },
+    {
+      "qid": "q0763",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image shows arrows for straight and right; q0746 correct = 'go straight or turn right'. Local option C corresponds to that meaning."
+    },
+    {
+      "qid": "q0752",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image: circular red-bordered '40' = speed limit 40 km/h. q0752 correct master choice is 'maximum speed limit 40 km/h' (master D) which corresponds to the source option B (vitesse maximale limitée à 40 km/h)."
+    },
+    {
+      "qid": "q0787",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk keepUnresolved: Image shows a blank red-bordered circular prohibition sign but is visually ambiguous (no pictogram). Candidate matches are weak/mismatched. Cannot confidently map to an existing qid or to one of the provided answer texts (no-entry vs no-vehicles etc.)."
+    },
+    {
+      "qid": "q0494",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Source is valid and has answer A=12 points, but no close master qid was found for driving a vehicle category that does not match the license class. q0981 and q0487 are different offences despite sharing the 12/6/3/2 option set."
+    },
+    {
+      "qid": "q0882",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Sign shows 'X008' rectangular route marker. q0882 correctOption = county/district road No. which maps to source option C (numéro de la voie du district)."
+    },
+    {
+      "qid": "q0622",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows right-turn indicator arrow illuminated (right arrow green). q0622 in candidate list corresponds to 'right-turn signal flashes' — maps to source option B ('le clignotant de virage à droite s'allume'). Some candidate conflict exists (other qids suggest sidelights), so moderate risk."
+    },
+    {
+      "qid": "q0899",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image shows police hand signals; q0899 master answer is 'stop' which corresponds to source option B (s'arrêter). Visual/human semantics align with candidate."
+    },
+    {
+      "qid": "q0467",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Question asks best place to stop by roadside; q0467 correct master text is 'stop in the parking area' which matches source option C ('l'intérieur d'une place de parking délimitée par le marquage au sol')."
+    },
+    {
+      "qid": "q0837",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Triple red crossbuck indicates multiple railway tracks (multi-crossing). Top candidate q0837 means 'multi-crossing'; that meaning corresponds to source option D."
+    },
+    {
+      "qid": "q0798",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Actual image and image-color-tags match q0798: G15 entrance-ahead sign with 2 km and entry arrow. Local option B is highway entrance warning. Rejected top matcher q0366 as unrelated and q0799 because it is the beginning sign without the 2 km entrance-ahead wording."
+    },
+    {
+      "qid": "q0599",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image shows a speed dial with odometer. q0599 = 'speed and mileage meter' matches; source option B is 'Indicateur de vitesse et kilomètre-compteur'."
+    },
+    {
+      "qid": "q0506",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: q0506 correct answer is 'criminal detention and a fine'; source option A 'détention et amende' corresponds to that meaning."
+    },
+    {
+      "qid": "q0619",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image shows a turn-signal stalk; q0619 correct = 'turn signals'. Source option B = 'les clignotants' matches."
+    },
+    {
+      "qid": "q0797",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Actual source stripe orientation matches q0797 red/white obstacle marker for passing by the right side. Local option D is circulation a droite. This uses image orientation rather than the unrelated top matcher."
+    },
+    {
+      "qid": "q0842",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows '40' with diagonal strike indicating end/lift of 40 km/h limit. Candidate q0842 means '40km/hr speed limit ban is lifted' — source option C corresponds to that meaning."
+    },
+    {
+      "qid": "q0744",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Direct image and option-row match: source road marking is the same white 80 marking as q0744, and option A maps to minimum speed limit 80 km/h. The option rows align; approve q0744 with local key A."
+    },
+    {
+      "qid": "q0824",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Sign is a green highway direction sign with an arrow pointing left. q0824's meaning is 'highway left exit ahead' — that maps to the source's option D (sortie gauche)."
+    },
+    {
+      "qid": "q0676",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Direct master search found q0676 with the same prompt: white broken-line area on the far left side. Option rows align exactly; local A is the multi-passenger special lane."
+    },
+    {
+      "qid": "q0177",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Near-match correction: q0177 is the closest prompt and option-row match for being overtaken by another vehicle. q0970 adds a following-vehicle condition not present in the French source. Local option B maps to reduce speed and keep right."
+    },
+    {
+      "qid": "q0686",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Actual sign and image-color-tags match q0686: blue car lane sign. Option-row comparison maps the master correct answer lane for motor vehicles to French option C, not the prior create-new key A."
+    }
+  ]
+}

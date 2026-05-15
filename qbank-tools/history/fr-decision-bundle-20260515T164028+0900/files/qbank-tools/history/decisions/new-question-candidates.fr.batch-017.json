@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-05-13T08:19:19.325Z",
+  "lang": "fr",
+  "batchId": "batch-017",
+  "dataset": "2023-test1",
+  "sourceDecisionPath": "qbank-tools/generated/staging/new-question-decisions.fr.batch-017.json",
+  "items": [
+    {
+      "candidateId": "nqc-fr-batch-017-001",
+      "sourceLang": "fr",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.44.49 1.png",
+      "effectiveQuestionType": "ROW",
+      "promptRawJa": "Le conducteur qui a heurté les monuments ou les installations publiques peut poursuivre sa route sans s'inquiéter.",
+      "promptGlossEn": "A driver who hits monuments or public installations can continue driving without worrying.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": "B",
+      "correctAnswerRaw": "No",
+      "newQuestionLocalAnswerKey": "B",
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "linkedExistingAssetCandidate": null,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: No candidate in shortlist exactly addresses 'hitting monuments or public installations' obligation to stop/report; source correct answer is 'No' (B). Create new localized question as no clear existing qid matches. Rejected top matcher: Top candidates were not about responsibility after hitting public installations; none matched semantics closely enough to reuse.",
+      "status": "pending-superset-review"
+    }
+  ]
+}

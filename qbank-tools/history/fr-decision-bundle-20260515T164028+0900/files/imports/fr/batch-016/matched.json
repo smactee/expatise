@@ -1,0 +1,4961 @@
+{
+  "generatedAt": "2026-05-09T02:44:12.457Z",
+  "lang": "fr",
+  "batchId": "batch-016",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.43.52.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.43.52.png",
+      "promptRawJa": "Le conducteur du véhicule doit demander de renouveler son permis de conduire combien de temps avant son expiration ?",
+      "promptGlossEn": "How long before its expiration must the driver apply to renew their driver's license?",
+      "optionsRawJa": [
+        "A 30 jours",
+        "B 60 jours",
+        "C 90 jours",
+        "D 6 mois"
+      ],
+      "optionsGlossEn": [
+        "A 30 days",
+        "B 60 days",
+        "C 90 days",
+        "D 6 months"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "visualObjectTags": [],
+      "visualColorTags": [],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [],
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:license",
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 0.511,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:license",
+          "signal": "license",
+          "weight": 1.15
+        },
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.1
+        }
+      ],
+      "visualEvidenceAvailable": false,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": null,
+      "sourceOptionCount": 4,
+      "optionCountReliable": true,
+      "expectedObjectTags": [],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": null,
+      "mcqFingerprint": {
+        "normalizedPrompt": "how long before its expiration must driver apply to renew their driver' license",
+        "normalizedCorrectAnswer": "",
+        "normalizedOptions": [
+          "30 days",
+          "60 days",
+          "90 days",
+          "6 month"
+        ],
+        "promptAllTokens": [
+          "how",
+          "long",
+          "before",
+          "its",
+          "expiration",
+          "must",
+          "driver",
+          "apply",
+          "to",
+          "renew",
+          "their",
+          "driver'",
+          "license"
+        ],
+        "answerAllTokens": [],
+        "optionAllTokenSets": [
+          [
+            "30",
+            "days"
+          ],
+          [
+            "60",
+            "days"
+          ],
+          [
+            "90",
+            "days"
+          ],
+          [
+            "6",
+            "month"
+          ]
+        ],
+        "promptTokens": [
+          "long",
+          "before",
+          "expiration",
+          "apply",
+          "renew",
+          "driver'",
+          "license"
+        ],
+        "answerTokens": [],
+        "promptPhraseTokens": [
+          "long before",
+          "before expiration",
+          "expiration apply",
+          "apply renew",
+          "renew driver'",
+          "driver' license",
+          "long before expiration",
+          "before expiration apply",
+          "expiration apply renew",
+          "apply renew driver'",
+          "renew driver' license"
+        ],
+        "answerPhraseTokens": [],
+        "optionTokens": [
+          "days",
+          "month"
+        ],
+        "optionTokenSets": [
+          [
+            "days"
+          ],
+          [
+            "days"
+          ],
+          [
+            "days"
+          ],
+          [
+            "month"
+          ]
+        ],
+        "optionPhraseTokens": [],
+        "optionPhraseTokenSets": [
+          [],
+          [],
+          [],
+          []
+        ],
+        "optionConceptTokens": [
+          "days",
+          "month"
+        ],
+        "optionConceptTokenSets": [
+          [
+            "days"
+          ],
+          [
+            "days"
+          ],
+          [
+            "days"
+          ],
+          [
+            "month"
+          ]
+        ],
+        "optionConceptSignatures": [
+          "days",
+          "days",
+          "days",
+          "month"
+        ],
+        "promptDistinctiveTokens": [
+          "before",
+          "expiration",
+          "driver'",
+          "license"
+        ],
+        "answerDistinctiveTokens": [],
+        "optionDistinctiveTokens": [],
+        "distinctiveOptionConcepts": [],
+        "keywordTokens": [
+          "long",
+          "before",
+          "expiration",
+          "apply",
+          "renew",
+          "driver'",
+          "license",
+          "days",
+          "month"
+        ],
+        "rareKeywords": [
+          "before",
+          "expiration",
+          "driver'",
+          "license"
+        ],
+        "optionSetSignature": "30 days || 6 month || 60 days || 90 days",
+        "alignedOptionSetSignature": "30 days || 6 month || 60 days || 90 days",
+        "optionConceptSetSignature": "days || days || days || month",
+        "numericSignals": {
+          "tokens": [
+            "30",
+            "60",
+            "90",
+            "6"
+          ],
+          "values": [
+            "30",
+            "60",
+            "90",
+            "6"
+          ]
+        },
+        "promptNumericSignals": {
+          "tokens": [],
+          "values": []
+        },
+        "answerNumericSignals": {
+          "tokens": [],
+          "values": []
+        },
+        "optionNumericSignals": [
+          {
+            "tokens": [
+              "30"
+            ],
+            "values": [
+              "30"
+            ]
+          },
+          {
+            "tokens": [
+              "60"
+            ],
+            "values": [
+              "60"
+            ]
+          },
+          {
+            "tokens": [
+              "90"
+            ],
+            "values": [
+              "90"
+            ]
+          },
+          {
+            "tokens": [
+              "6"
+            ],
+            "values": [
+              "6"
+            ]
+          }
+        ],
+        "topic": "road-safety",
+        "subtopics": [
+          "road-safety:license",
+          "traffic-signals:road-signs"
+        ],
+        "hasImage": false
+      },
+      "localizedText": {
+        "prompt": "Le conducteur du véhicule doit demander de renouveler son permis de conduire combien de temps avant son expiration ?",
+        "options": [
+          "A 30 jours",
+          "B 60 jours",
+          "C 90 jours",
+          "D 6 mois"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "How long before its expiration must the driver apply to renew their driver's license?",
+        "options": [
+          "A 30 days",
+          "B 60 days",
+          "C 90 days",
+          "D 6 months"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0420",
+        "number": 420,
+        "score": 77.167,
+        "scoreGap": 26.716,
+        "scoreBreakdown": {
+          "optionScore": 0.834,
+          "glossScore": 0.239,
+          "promptScore": 0.239,
+          "promptSimilarity": 0.239,
+          "rawPromptSimilarity": 0.239,
+          "englishPromptSimilarity": 0.239,
+          "bridgePromptSimilarity": 0.024,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "optionSimilarity": 1,
+          "englishOptionSimilarity": 1,
+          "syntheticOptionSimilarity": 0,
+          "localizedOptionSimilarity": 0,
+          "localizedOptionGlossSimilarity": 0,
+          "optionSetScore": 1,
+          "optionSignatureScore": 0.806,
+          "optionSignatureDominance": 0.838,
+          "optionConceptPairing": 1,
+          "optionConceptCoverage": 1,
+          "optionConceptExactSet": 1,
+          "alignedOptionSimilarity": 0.8,
+          "optionFingerprint": 1,
+          "englishOptionFingerprint": 1,
+          "syntheticOptionFingerprint": 0,
+          "localizedOptionFingerprint": 0,
+          "optionExactSet": 1,
+          "optionRareCoverage": 1,
+          "optionRowKeywordScore": 1,
+          "mirrorAgreement": 0,
+          "localizedAgreement": 0.2,
+          "answerScore": 0.5,
+          "answerGlossScore": 0.5,
+          "correctAnswerMeaning": 0.5,
+          "englishCorrectAnswerMeaning": 0.5,
+          "syntheticCorrectAnswerMeaning": 0,
+          "localizedCorrectAnswerMeaning": 0.5,
+          "localizedCorrectGlossMeaning": 0.5,
+          "keywordScore": 0.526,
+          "bridgeKeywordScore": 0.514,
+          "localizedKeywordSupport": 0.2,
+          "promptKeywordScore": 0.394,
+          "promptPhraseScore": 0.147,
+          "answerKeywordScore": 0.15,
+          "answerPhraseScore": 0.5,
+          "optionKeywordScore": 1,
+          "optionPhraseScore": 0.5,
+          "optionConceptKeywordScore": 1,
+          "optionConceptDistinctiveScore": 0.5,
+          "rareKeywordScore": 0.526,
+          "numberScore": 1,
+          "numberExactOverlap": 1,
+          "numberValueOverlap": 1,
+          "numericGroupScore": 0.86,
+          "numericGroupPenalty": 0,
+          "numericIntentMismatchPenalty": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "numberConflictPenalty": 0,
+          "imageScore": 0.5,
+          "rawImageScore": 0.5,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "visualScore": 0,
+          "visualObjectScore": 0.5,
+          "visualColorScore": 0.5,
+          "dominantColorScore": 0.5,
+          "visualNumberScore": 0.5,
+          "visualLayoutScore": 0.5,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 0.5,
+          "structuralAgreement": 0.903,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.5,
+          "imageColorAgreement": 0.5,
+          "priorBonus": 0,
+          "topicWeighting": 0.5,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "localizedGlossSimilarity": 0,
+          "bridgeLocalizedAgreement": 0.2,
+          "multilingualSupportScore": 0.2,
+          "totalScore": 68.925,
+          "baseScore": 68.925,
+          "rerankAdjustment": 8.242
+        },
+        "candidateTopicTruth": {
+          "topic": "no-image",
+          "subtopics": [],
+          "tags": [
+            "no-image"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 486,
+        "candidateCountAfterStructuralFilter": 209,
+        "candidateCountAfterMcqShortlist": 40,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 209,
+        "structuralSoftCandidateCount": 209,
+        "mcqShortlistApplied": true,
+        "mcqShortlistMode": "mcq-answer-option-number-shortlist",
+        "mcqShortlistTopScore": 0.682,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "mcq-text",
+        "decisionReasonCodes": [
+          "option-signature-dominant",
+          "mcq-top2-option-separated"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "mcq-text",
+          "topScore": 77.167,
+          "rank2Score": 50.451,
+          "scoreGap": 26.716,
+          "thresholds": {
+            "reviewFloor": 43,
+            "autoMatchThreshold": 70,
+            "autoGapThreshold": 8
+          },
+          "signalAgreement": {
+            "agreementScore": 0.7,
+            "strongSignalCount": 2,
+            "weakSignalCount": 0,
+            "signalSpread": 0.761,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.239,
+              "keyword": 0.86,
+              "image": 0.5,
+              "multilingual": 0.2,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.244,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "option-signature-dominant",
+            "mcq-top2-option-separated"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Le conducteur du véhicule doit demander de renouveler son permis de conduire combien de temps avant son expiration ?",
+        "explanation": "",
+        "options": {
+          "q0420_o1": "A 30 jours",
+          "q0420_o2": "B 60 jours",
+          "q0420_o3": "C 90 jours",
+          "q0420_o4": "D 6 mois"
+        },
+        "warnings": [
+          "Option IDs were mapped by position only. Review before merge."
+        ]
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0420",
+          "number": 420,
+          "type": "MCQ",
+          "score": 77.167,
+          "scoreBreakdown": {
+            "optionScore": 0.834,
+            "glossScore": 0.239,
+            "promptScore": 0.239,
+            "promptSimilarity": 0.239,
+            "rawPromptSimilarity": 0.239,
+            "englishPromptSimilarity": 0.239,
+            "bridgePromptSimilarity": 0.024,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 1,
+            "englishOptionSimilarity": 1,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 1,
+            "optionSignatureScore": 0.806,
+            "optionSignatureDominance": 0.838,
+            "optionConceptPairing": 1,
+            "optionConceptCoverage": 1,
+            "optionConceptExactSet": 1,
+            "alignedOptionSimilarity": 0.8,
+            "optionFingerprint": 1,
+            "englishOptionFingerprint": 1,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 1,
+            "optionRareCoverage": 1,
+            "optionRowKeywordScore": 1,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.2,
+            "answerScore": 0.5,
+            "answerGlossScore": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0.5,
+            "keywordScore": 0.526,
+            "bridgeKeywordScore": 0.514,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.394,
+            "promptPhraseScore": 0.147,
+            "answerKeywordScore": 0.15,
+            "answerPhraseScore": 0.5,
+            "optionKeywordScore": 1,
+            "optionPhraseScore": 0.5,
+            "optionConceptKeywordScore": 1,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.526,
+            "numberScore": 1,
+            "numberExactOverlap": 1,
+            "numberValueOverlap": 1,
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.2,
+            "multilingualSupportScore": 0.2,
+            "totalScore": 68.925,
+            "baseScore": 68.925,
+            "rerankAdjustment": 8.242
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 1,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "60 days"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "90 days"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "90 days"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "60 days"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "6"
+              }
+            ],
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "30"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "60"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "90"
+                },
+                "candidate": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "90 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "candidate": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "90 days"
+                },
+                "candidate": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "90 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must",
+            "sourceFeatureKeywords": [
+              "must",
+              "apply",
+              "before",
+              "expiration",
+              "license",
+              "months",
+              "renew",
+              "their",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "before",
+              "change",
+              "expiration",
+              "license",
+              "months"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Order-agnostic MCQ option-set alignment separated the candidate from near-misses.",
+              "Canonical option-signature matching strongly supported the MCQ candidate.",
+              "Option-signature evidence dominated final MCQ disambiguation.",
+              "Distinctive option-row keywords strongly supported the candidate.",
+              "Whole-option-set concept coverage matched the candidate unusually well.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Numeric or unit evidence matched between source and candidate.",
+              "English semantic option matching still supported the top candidate.",
+              "Rare option-combination fingerprint increased candidate separation.",
+              "Candidate shares a near-exact normalized option set.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "Change driving license before of expiration.",
+          "syntheticJaPrompt": "change driving license before expiration",
+          "translatedPrompt": "운전면허 갱신은 만료일 며칠 전에 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "60 days",
+              "translatedText": "만료일 60일 전"
+            },
+            {
+              "id": "B",
+              "text": "30 days",
+              "translatedText": "만료일 30일 전"
+            },
+            {
+              "id": "C",
+              "text": "90 days",
+              "translatedText": "만료일 90일 전"
+            },
+            {
+              "id": "D",
+              "text": "6 months",
+              "translatedText": "만료일 6개월 전"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0420_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "90 days",
+            "correctOptionTranslatedText": "만료일 90일 전",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0447",
+          "number": 447,
+          "type": "MCQ",
+          "score": 50.451,
+          "scoreBreakdown": {
+            "optionScore": 0.494,
+            "glossScore": 0.263,
+            "promptScore": 0.263,
+            "promptSimilarity": 0.263,
+            "rawPromptSimilarity": 0.263,
+            "englishPromptSimilarity": 0.263,
+            "bridgePromptSimilarity": 0.075,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.66,
+            "englishOptionSimilarity": 0.66,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.546,
+            "optionSignatureScore": 0.434,
+            "optionSignatureDominance": 0.482,
+            "optionConceptPairing": 0.75,
+            "optionConceptCoverage": 0.506,
+            "optionConceptExactSet": 0.5,
+            "alignedOptionSimilarity": 0.442,
+            "optionFingerprint": 0.515,
+            "englishOptionFingerprint": 0.515,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0.5,
+            "optionRareCoverage": 0.506,
+            "optionRowKeywordScore": 0.506,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.2,
+            "answerScore": 0.5,
+            "answerGlossScore": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0.5,
+            "keywordScore": 0.372,
+            "bridgeKeywordScore": 0.372,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.147,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0.15,
+            "answerPhraseScore": 0.5,
+            "optionKeywordScore": 0.506,
+            "optionPhraseScore": 0.5,
+            "optionConceptKeywordScore": 0.506,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.247,
+            "numberScore": 0.483,
+            "numberExactOverlap": 0.333,
+            "numberValueOverlap": 0.333,
+            "numericGroupScore": 0.491,
+            "numericGroupPenalty": 0.42,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0.125,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.2,
+            "multilingualSupportScore": 0.2,
+            "totalScore": 46.909,
+            "baseScore": 46.909,
+            "rerankAdjustment": 3.542
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "60 days"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "90 days"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              },
+              {
+                "values": [
+                  40
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "40 days"
+              },
+              {
+                "values": [
+                  40
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "40"
+              },
+              {
+                "values": [
+                  50
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "50 days"
+              },
+              {
+                "values": [
+                  50
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "50"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "60 days"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              }
+            ],
+            "numericGroupScore": 0.491,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-group-match",
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "30"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "60"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "90"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "90 days"
+                },
+                "candidate": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must",
+            "sourceFeatureKeywords": [
+              "must",
+              "apply",
+              "before",
+              "expiration",
+              "license",
+              "months",
+              "renew",
+              "their",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "changed",
+              "information",
+              "license",
+              "should",
+              "within",
+              "apply",
+              "whose"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive option-row keywords strongly supported the candidate.",
+              "English semantic option matching still supported the top candidate.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "Within how long should a driver whose information has changed apply for new license?",
+          "syntheticJaPrompt": "within how long べき 運転者 whose information has changed apply new license。",
+          "translatedPrompt": "신상 정보가 변경된 운전자는 몇 일 이내에 면허증을 신청(또는 갱신)해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "30 days",
+              "translatedText": "30일"
+            },
+            {
+              "id": "B",
+              "text": "40 days",
+              "translatedText": "40일"
+            },
+            {
+              "id": "C",
+              "text": "50 days",
+              "translatedText": "50일"
+            },
+            {
+              "id": "D",
+              "text": "60 days",
+              "translatedText": "60일"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0447_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "30 days",
+            "correctOptionTranslatedText": "30일",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0362",
+          "number": 362,
+          "type": "MCQ",
+          "score": 37.158,
+          "scoreBreakdown": {
+            "optionScore": 0.333,
+            "glossScore": 0.191,
+            "promptScore": 0.191,
+            "promptSimilarity": 0.191,
+            "rawPromptSimilarity": 0.191,
+            "englishPromptSimilarity": 0.191,
+            "bridgePromptSimilarity": 0.06,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.409,
+            "englishOptionSimilarity": 0.409,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.236,
+            "optionSignatureScore": 0.215,
+            "optionSignatureDominance": 0.288,
+            "optionConceptPairing": 0.25,
+            "optionConceptCoverage": 0.494,
+            "optionConceptExactSet": 0.5,
+            "alignedOptionSimilarity": 0.2,
+            "optionFingerprint": 0.309,
+            "englishOptionFingerprint": 0.309,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0.25,
+            "optionRareCoverage": 0.494,
+            "optionRowKeywordScore": 0.5,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.2,
+            "answerScore": 0.5,
+            "answerGlossScore": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0.5,
+            "keywordScore": 0.353,
+            "bridgeKeywordScore": 0.353,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.066,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0.15,
+            "answerPhraseScore": 0.5,
+            "optionKeywordScore": 0.494,
+            "optionPhraseScore": 0.5,
+            "optionConceptKeywordScore": 0.494,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.163,
+            "numberScore": 0.293,
+            "numberExactOverlap": 0.143,
+            "numberValueOverlap": 0.143,
+            "numericGroupScore": 0.123,
+            "numericGroupPenalty": 0.42,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0.188,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.2,
+            "multilingualSupportScore": 0.2,
+            "totalScore": 35.524,
+            "baseScore": 35.524,
+            "rerankAdjustment": 1.634
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "60 days"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "90 days"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  12
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "12 m"
+              },
+              {
+                "values": [
+                  12
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "12"
+              },
+              {
+                "values": [
+                  18
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "18 m"
+              },
+              {
+                "values": [
+                  18
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "18"
+              },
+              {
+                "values": [
+                  16
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "16 m"
+              },
+              {
+                "values": [
+                  16
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "16"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "6"
+              }
+            ],
+            "numericGroupScore": 0.123,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value",
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "30"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "60"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "90"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "candidate": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "90 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must",
+            "sourceFeatureKeywords": [
+              "must",
+              "apply",
+              "before",
+              "expiration",
+              "license",
+              "months",
+              "renew",
+              "their",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "applied",
+              "license",
+              "period",
+              "probation",
+              "first",
+              "months",
+              "motor"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive option-row keywords strongly supported the candidate.",
+              "English semantic option matching still supported the top candidate.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "How long is the period of probation of a motor vehicle driver who has applied for a driver license for the first time?",
+          "syntheticJaPrompt": "how long period probation motor 車両 運転者 who has applied 運転者 license first time。",
+          "translatedPrompt": "운전면허를 처음 취득하는 자동차 운전자의 실습기간은 얼마인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "18 months",
+              "translatedText": "18개월"
+            },
+            {
+              "id": "B",
+              "text": "16 months",
+              "translatedText": "16개월"
+            },
+            {
+              "id": "C",
+              "text": "12 months",
+              "translatedText": "12개월"
+            },
+            {
+              "id": "D",
+              "text": "6 months",
+              "translatedText": "6개월"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0362_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "12 months",
+            "correctOptionTranslatedText": "12개월",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0508",
+          "number": 508,
+          "type": "MCQ",
+          "score": 33.14,
+          "scoreBreakdown": {
+            "optionScore": 0.3,
+            "glossScore": 0.181,
+            "promptScore": 0.181,
+            "promptSimilarity": 0.181,
+            "rawPromptSimilarity": 0.181,
+            "englishPromptSimilarity": 0.181,
+            "bridgePromptSimilarity": 0.046,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.344,
+            "englishOptionSimilarity": 0.344,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.2,
+            "optionSignatureScore": 0.159,
+            "optionSignatureDominance": 0.241,
+            "optionConceptPairing": 0.25,
+            "optionConceptCoverage": 0.348,
+            "optionConceptExactSet": 0.333,
+            "alignedOptionSimilarity": 0.2,
+            "optionFingerprint": 0.26,
+            "englishOptionFingerprint": 0.26,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0.25,
+            "optionRareCoverage": 0.348,
+            "optionRowKeywordScore": 0.5,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.2,
+            "answerScore": 0.5,
+            "answerGlossScore": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0.5,
+            "keywordScore": 0.316,
+            "bridgeKeywordScore": 0.316,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0.15,
+            "answerPhraseScore": 0.5,
+            "optionKeywordScore": 0.348,
+            "optionPhraseScore": 0.5,
+            "optionConceptKeywordScore": 0.348,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.1,
+            "numberScore": 0.293,
+            "numberExactOverlap": 0.143,
+            "numberValueOverlap": 0.143,
+            "numericGroupScore": 0.123,
+            "numericGroupPenalty": 0.42,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0.188,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0.05,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.2,
+            "multilingualSupportScore": 0.2,
+            "totalScore": 32.606,
+            "baseScore": 32.606,
+            "rerankAdjustment": 0.534
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years",
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "60 days"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "90 days"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  12
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "12 m"
+              },
+              {
+                "values": [
+                  12
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "12"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "6"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "2 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "3 m"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              }
+            ],
+            "numericGroupScore": 0.123,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value",
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "30"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "60"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "90"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "candidate": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "90 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [
+              "before-vs-after"
+            ],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must",
+            "sourceFeatureKeywords": [
+              "must",
+              "apply",
+              "before",
+              "expiration",
+              "license",
+              "months",
+              "renew",
+              "their",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "higher",
+              "license",
+              "obtain",
+              "period",
+              "permission",
+              "probation",
+              "after",
+              "first",
+              "level",
+              "month",
+              "months",
+              "motorized",
+              "obtains",
+              "years"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "How long is the period of probation after a driver obtains his driving license for the first time or the permission to drive higher level vehicles?",
+          "syntheticJaPrompt": "how long period probation after 車両 運転者 obtain his driving license first time or permission drive higher level 車両。",
+          "translatedPrompt": "자동차 운전자가 처음으로 운전면허를 취득하거나 상위 등급 차량 운전 허가를 받을 때의 실습기간은 얼마인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "6 months",
+              "translatedText": "6개월"
+            },
+            {
+              "id": "B",
+              "text": "12 months",
+              "translatedText": "12개월"
+            },
+            {
+              "id": "C",
+              "text": "2 years",
+              "translatedText": "2년"
+            },
+            {
+              "id": "D",
+              "text": "3 months",
+              "translatedText": "3개월"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0508_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "12 months",
+            "correctOptionTranslatedText": "12개월",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0474",
+          "number": 474,
+          "type": "MCQ",
+          "score": 29.907,
+          "scoreBreakdown": {
+            "optionScore": 0.311,
+            "glossScore": 0.016,
+            "promptScore": 0.016,
+            "promptSimilarity": 0.016,
+            "rawPromptSimilarity": 0.016,
+            "englishPromptSimilarity": 0.016,
+            "bridgePromptSimilarity": 0.006,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.405,
+            "englishOptionSimilarity": 0.405,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.236,
+            "optionSignatureScore": 0.215,
+            "optionSignatureDominance": 0.288,
+            "optionConceptPairing": 0.25,
+            "optionConceptCoverage": 0.494,
+            "optionConceptExactSet": 0.5,
+            "alignedOptionSimilarity": 0.2,
+            "optionFingerprint": 0.309,
+            "englishOptionFingerprint": 0.309,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0.25,
+            "optionRareCoverage": 0.494,
+            "optionRowKeywordScore": 0.5,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.2,
+            "answerScore": 0.5,
+            "answerGlossScore": 0.5,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.5,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0.5,
+            "keywordScore": 0.335,
+            "bridgeKeywordScore": 0.335,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0.15,
+            "answerPhraseScore": 0.5,
+            "optionKeywordScore": 0.494,
+            "optionPhraseScore": 0.5,
+            "optionConceptKeywordScore": 0.494,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.061,
+            "numberScore": 0.293,
+            "numberExactOverlap": 0.143,
+            "numberValueOverlap": 0.143,
+            "numericGroupScore": 0.123,
+            "numericGroupPenalty": 0.42,
+            "numericIntentMismatchPenalty": 0.28,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0.188,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.2,
+            "multilingualSupportScore": 0.2,
+            "totalScore": 28.273,
+            "baseScore": 28.273,
+            "rerankAdjustment": 1.634
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "months",
+                "points"
+              ],
+              "modifier": null,
+              "promptFamily": "penalty"
+            },
+            "numericIntentReasonCodes": [
+              "duration-vs-penalty-conflict",
+              "prompt-family-mismatch"
+            ],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "60 days"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "90 days"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  12
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "12 m"
+              },
+              {
+                "values": [
+                  12
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "12"
+              },
+              {
+                "values": [
+                  14
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "14 m"
+              },
+              {
+                "values": [
+                  14
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "14"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "6"
+              },
+              {
+                "values": [
+                  10
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "10 m"
+              },
+              {
+                "values": [
+                  10
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "10"
+              }
+            ],
+            "numericGroupScore": 0.123,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value",
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "30"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "60"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "90"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "candidate": {
+                  "values": [
+                    6
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "6 m"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    30
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "30 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "60 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "days",
+                  "comparator": "exact",
+                  "text": "90 days"
+                },
+                "candidate": {
+                  "values": [
+                    12
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "12 m"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must",
+            "sourceFeatureKeywords": [
+              "must",
+              "apply",
+              "before",
+              "expiration",
+              "license",
+              "months",
+              "renew",
+              "their",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "accumulated",
+              "penalty",
+              "recording",
+              "regulation",
+              "violating",
+              "cycle",
+              "months",
+              "points",
+              "regulations"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive option-row keywords strongly supported the candidate.",
+              "Numeric intent or prompt-family mismatch reduced confidence.",
+              "English semantic option matching still supported the top candidate.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "The cycle for recording the accumulated penalty points for violating road traffic regulations is __________.",
+          "syntheticJaPrompt": "cycle recording accumulated penalty point violating road traffic regulation __________",
+          "translatedPrompt": "도로교통법 위반으로 누적된 벌점의 기록 주기는 얼마인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "14 months",
+              "translatedText": "14개월"
+            },
+            {
+              "id": "B",
+              "text": "12 months",
+              "translatedText": "12개월"
+            },
+            {
+              "id": "C",
+              "text": "6 months",
+              "translatedText": "6개월"
+            },
+            {
+              "id": "D",
+              "text": "10 months",
+              "translatedText": "10개월"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0474_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "12 months",
+            "correctOptionTranslatedText": "12개월",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.44.13 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.44.13 1.png",
+      "promptRawJa": "Pour traverser ce passage à niveau, il faut s'arrêter et observer.",
+      "promptGlossEn": "To cross this level crossing, must you stop and observe?",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "A Yes",
+        "B No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "visualObjectTags": [
+        "pov",
+        "car",
+        "red-car",
+        "triangle"
+      ],
+      "visualColorTags": [
+        "green",
+        "red",
+        "blue",
+        "white",
+        "yellow",
+        "black",
+        "gray"
+      ],
+      "visualNumberTags": [],
+      "visualLayoutTags": [
+        "pov-scene",
+        "triangular-sign",
+        "left",
+        "straight"
+      ],
+      "visualEvidenceNotes": [
+        "Embedded image shows a POV from inside a car approaching a level crossing.",
+        "There is a triangular warning sign with rails depicted, and another red car ahead on the road."
+      ],
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "visualEvidenceAvailable": true,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": "action",
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "pov",
+        "car",
+        "red-car",
+        "triangle",
+        "railroad",
+        "gray-background"
+      ],
+      "expectedColorTags": [
+        "green",
+        "red",
+        "blue",
+        "white",
+        "yellow",
+        "black",
+        "gray"
+      ],
+      "sourceIsSignHeavy": true,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [
+          "stop"
+        ],
+        "polarity": "positive",
+        "obligation": "must",
+        "signals": [
+          {
+            "slot": "action",
+            "value": "stop",
+            "signal": "stop"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Pour traverser ce passage à niveau, il faut s'arrêter et observer.",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "To cross this level crossing, must you stop and observe?",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0330",
+        "number": 330,
+        "score": 72.061,
+        "scoreGap": 20.086,
+        "scoreBreakdown": {
+          "optionScore": 0.915,
+          "glossScore": 0.411,
+          "promptSimilarity": 0.411,
+          "rawPromptSimilarity": 0.411,
+          "englishPromptSimilarity": 0.411,
+          "bridgePromptSimilarity": 0.083,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.2,
+          "localizedGlossSimilarity": 0,
+          "localizedKeywordSupport": 0.2,
+          "multilingualSupportScore": 0.2,
+          "keywordScore": 0.751,
+          "rowKeywordSignal": 0.39,
+          "rowDistinctiveKeywordScore": 0.316,
+          "rowConceptKeywordSupport": 0.4,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0.06,
+          "imageScore": 0.933,
+          "rawImageScore": 0.933,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.915,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.82,
+          "provisionalTopicAgreement": 0,
+          "structuralAgreement": 0.767,
+          "structuralPenalty": 0.16,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.933,
+          "imageColorAgreement": 0.771,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 1,
+          "conditionAlignment": 0,
+          "contextAlignment": 1,
+          "actionAlignment": 1,
+          "obligationAlignment": 0,
+          "polarityAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 65.851,
+          "baseScore": 65.851,
+          "rerankAdjustment": 6.21
+        },
+        "candidateTopicTruth": {
+          "topic": null,
+          "subtopics": [],
+          "tags": []
+        },
+        "candidateImageRef": {
+          "hasImage": true,
+          "currentAssetSrc": "/qbank/2023-test1/images/img_0a893fae0667f5fe0e9bb85787fdd671.jpeg",
+          "assetHashes": [
+            "0a893fae0667f5fe0e9bb85787fdd671"
+          ],
+          "colorTags": [
+            "blue",
+            "gray"
+          ],
+          "objectTags": [
+            "train",
+            "railroad",
+            "pov",
+            "car",
+            "red-car"
+          ]
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 498,
+        "candidateCountAfterStructuralFilter": 142,
+        "candidateCountAfterMcqShortlist": 142,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 142,
+        "structuralSoftCandidateCount": 142,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-image",
+        "decisionReasonCodes": [
+          "profile-pass"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-image",
+          "topScore": 72.061,
+          "rank2Score": 51.975,
+          "scoreGap": 20.086,
+          "thresholds": {
+            "reviewFloor": 40,
+            "autoMatchThreshold": 64,
+            "autoGapThreshold": 7
+          },
+          "signalAgreement": {
+            "agreementScore": 0.774,
+            "strongSignalCount": 3,
+            "weakSignalCount": 0,
+            "signalSpread": 0.589,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.411,
+              "keyword": 0.751,
+              "image": 0.933,
+              "multilingual": 0.2,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.257,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "profile-pass"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Pour traverser ce passage à niveau, il faut s'arrêter et observer.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0330",
+          "number": 330,
+          "type": "ROW",
+          "score": 72.061,
+          "scoreBreakdown": {
+            "optionScore": 0.915,
+            "glossScore": 0.411,
+            "promptSimilarity": 0.411,
+            "rawPromptSimilarity": 0.411,
+            "englishPromptSimilarity": 0.411,
+            "bridgePromptSimilarity": 0.083,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.751,
+            "rowKeywordSignal": 0.39,
+            "rowDistinctiveKeywordScore": 0.316,
+            "rowConceptKeywordSupport": 0.4,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.933,
+            "rawImageScore": 0.933,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.915,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.767,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.933,
+            "imageColorAgreement": 0.771,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 65.851,
+            "baseScore": 65.851,
+            "rerankAdjustment": 6.21
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": "action",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "railroad-crossing"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "context",
+                  "value": "railroad-crossing",
+                  "signal": "railroad-crossing"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "railroad-crossing"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "context",
+                  "value": "railroad-crossing",
+                  "signal": "railroad-crossing"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:railroad-crossing",
+              "action:stop"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: railroad crossing, gray background, must, pov, railroad",
+            "sourceFeatureKeywords": [
+              "railroad-crossing",
+              "stop",
+              "gray-background",
+              "must",
+              "pov",
+              "railroad",
+              "red-car",
+              "triangle",
+              "background",
+              "cross",
+              "crossing",
+              "level",
+              "observe",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "railroad-crossing",
+              "stop",
+              "pov",
+              "railroad",
+              "red-car",
+              "train",
+              "crossing",
+              "level",
+              "observe",
+              "railway",
+              "reaching",
+              "right",
+              "situation"
+            ],
+            "candidateImageTags": [
+              "train",
+              "railroad",
+              "pov",
+              "car",
+              "red-car",
+              "blue",
+              "gray",
+              "green",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.933,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "Stop the vehicle and observe when reaching the railway crossing in this situation.",
+          "syntheticJaPrompt": "stop 車両 and observe when reaching railway crossing situation。",
+          "translatedPrompt": "이 상황에서 철길 건널목에 도달하면 차량을 정차하고 관찰해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_0a893fae0667f5fe0e9bb85787fdd671.jpeg",
+            "assetHashes": [
+              "0a893fae0667f5fe0e9bb85787fdd671"
+            ],
+            "colorTags": [
+              "blue",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "blue",
+              "gray",
+              "green"
+            ],
+            "objectTags": [
+              "train",
+              "railroad",
+              "pov",
+              "car",
+              "red-car"
+            ]
+          },
+          "topic": "traffic-lights",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "stop"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0649",
+          "number": 649,
+          "type": "ROW",
+          "score": 51.975,
+          "scoreBreakdown": {
+            "optionScore": 0.475,
+            "glossScore": 0.23,
+            "promptSimilarity": 0.23,
+            "rawPromptSimilarity": 0.23,
+            "englishPromptSimilarity": 0.23,
+            "bridgePromptSimilarity": 0.082,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.517,
+            "rowKeywordSignal": 0.194,
+            "rowDistinctiveKeywordScore": 0.097,
+            "rowConceptKeywordSupport": 0.309,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0.22,
+            "promptFamilySupport": 0,
+            "imageScore": 0.822,
+            "rawImageScore": 0.822,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.475,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.755,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.822,
+            "imageColorAgreement": 0.771,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.429,
+            "conditionAlignment": 0,
+            "contextAlignment": 0.5,
+            "actionAlignment": 0.333,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 46.965,
+            "baseScore": 46.965,
+            "rerankAdjustment": 5.01
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": "sign",
+            "promptFamilyReasonCodes": [
+              "family-mismatch",
+              "sign-vs-action-conflict"
+            ],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "railroad-crossing"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "context",
+                  "value": "railroad-crossing",
+                  "signal": "railroad-crossing"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "railroad-crossing",
+                "traffic-light"
+              ],
+              "action": [
+                "stop",
+                "head-light",
+                "stop-and-wait"
+              ],
+              "polarity": "positive",
+              "obligation": "should",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "railroad-crossing",
+                  "signal": "railroad-crossing"
+                },
+                {
+                  "slot": "context",
+                  "value": "traffic-light",
+                  "signal": "traffic-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "stop-and-wait",
+                  "signal": "stop-and-wait"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:railroad-crossing",
+              "action:stop"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: railroad crossing, gray background, must, pov, railroad",
+            "sourceFeatureKeywords": [
+              "railroad-crossing",
+              "stop",
+              "gray-background",
+              "must",
+              "pov",
+              "railroad",
+              "red-car",
+              "triangle",
+              "background",
+              "cross",
+              "crossing",
+              "level",
+              "observe",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "traffic-light",
+              "railroad-crossing",
+              "stop",
+              "head-light",
+              "pov",
+              "railroad",
+              "red-car",
+              "red-light",
+              "should",
+              "stop-and-wait",
+              "train",
+              "tree",
+              "wait",
+              "alternately",
+              "alternating",
+              "crossing",
+              "flash",
+              "flashing"
+            ],
+            "candidateImageTags": [
+              "train",
+              "railroad",
+              "pov",
+              "car",
+              "red-car",
+              "tree",
+              "red-light",
+              "blue",
+              "gray",
+              "green",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.822,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Indicator/sign/action family mismatch reduced confidence.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "The alternating flashing of two red traffic light signals at a railway crossing means stop and wait.",
+          "syntheticJaPrompt": "when two red ライト railway crossing flash alternately 車両 べき stop wait。",
+          "translatedPrompt": "철길 건널목에서 두 개의 적색등이 번갈아 점멸할 때, 차량은 정지하여 기다려야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_98cacb757be29145e9505cd91eba59f5.jpeg",
+            "assetHashes": [
+              "98cacb757be29145e9505cd91eba59f5"
+            ],
+            "colorTags": [
+              "blue",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "blue",
+              "green"
+            ],
+            "objectTags": [
+              "train",
+              "railroad",
+              "pov",
+              "car",
+              "red-car",
+              "tree",
+              "railway",
+              "red-light"
+            ]
+          },
+          "topic": "traffic-lights",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "stop",
+              "head-light"
+            ],
+            "polarity": "positive",
+            "obligation": "should",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0272",
+          "number": 272,
+          "type": "ROW",
+          "score": 50.166,
+          "scoreBreakdown": {
+            "optionScore": 0.553,
+            "glossScore": 0.107,
+            "promptSimilarity": 0.107,
+            "rawPromptSimilarity": 0.107,
+            "englishPromptSimilarity": 0.107,
+            "bridgePromptSimilarity": 0.012,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.265,
+            "rowKeywordSignal": 0.025,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.167,
+            "rowContrastPenalty": 0.12,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.733,
+            "rawImageScore": 0.733,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.553,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.88,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.733,
+            "imageColorAgreement": 0.771,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.543,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0.12,
+            "assetTieBreak": 0,
+            "totalScore": 39.738,
+            "baseScore": 39.738,
+            "rerankAdjustment": 10.428
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": "action",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "railroad-crossing"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "context",
+                  "value": "railroad-crossing",
+                  "signal": "railroad-crossing"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "bicycle"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "context",
+                  "value": "bicycle",
+                  "signal": "bicycle"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:stop"
+            ],
+            "contradictionSignals": [
+              "obligation:must-vs-may"
+            ],
+            "rowContrastSignals": [
+              "obligation:must-vs-may"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: railroad crossing, gray background, must, pov, railroad",
+            "sourceFeatureKeywords": [
+              "railroad-crossing",
+              "stop",
+              "gray-background",
+              "must",
+              "pov",
+              "railroad",
+              "red-car",
+              "triangle",
+              "background",
+              "cross",
+              "crossing",
+              "level",
+              "observe",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "bicycle",
+              "stop",
+              "building",
+              "green-car",
+              "may",
+              "tree",
+              "bicycles",
+              "false",
+              "non-motorized",
+              "section",
+              "temporarily",
+              "wrong",
+              "traffic-laws"
+            ],
+            "candidateImageTags": [
+              "bicycle",
+              "car",
+              "green-car",
+              "building",
+              "tree",
+              "green",
+              "gray",
+              "blue",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.733,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "May stop temporarily in the lane for bicycles in this section.",
+          "syntheticJaPrompt": "よい stop temporarily 車線 non- 車両 section。",
+          "translatedPrompt": "이 구간의 비동력 차량 전용 차로에 일시 정차할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_fee2351995cc463449d1ad9a03ae0a60.jpeg",
+            "assetHashes": [
+              "fee2351995cc463449d1ad9a03ae0a60"
+            ],
+            "colorTags": [
+              "green",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "green",
+              "gray",
+              "blue"
+            ],
+            "objectTags": [
+              "bicycle",
+              "car",
+              "green-car",
+              "building",
+              "tree"
+            ]
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:traffic-laws"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "stop"
+            ],
+            "polarity": "positive",
+            "obligation": "may",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0633",
+          "number": 633,
+          "type": "ROW",
+          "score": 49.617,
+          "scoreBreakdown": {
+            "optionScore": 0.359,
+            "glossScore": 0.14,
+            "promptSimilarity": 0.14,
+            "rawPromptSimilarity": 0.14,
+            "englishPromptSimilarity": 0.14,
+            "bridgePromptSimilarity": 0.078,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.457,
+            "rowKeywordSignal": 0.238,
+            "rowDistinctiveKeywordScore": 0.239,
+            "rowConceptKeywordSupport": 0.212,
+            "rowContrastPenalty": 0.22,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.886,
+            "rawImageScore": 0.886,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.359,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.762,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.886,
+            "imageColorAgreement": 0.771,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.323,
+            "conditionAlignment": 0,
+            "contextAlignment": 0.5,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0.22,
+            "assetTieBreak": 0,
+            "totalScore": 43.913,
+            "baseScore": 43.913,
+            "rerankAdjustment": 5.704
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "railroad-crossing"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "context",
+                  "value": "railroad-crossing",
+                  "signal": "railroad-crossing"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection",
+                "railroad-crossing"
+              ],
+              "action": [
+                "overtake",
+                "pass",
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "overtake",
+                  "signal": "overtake"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "overtake"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "railroad-crossing",
+                  "signal": "railroad-crossing"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:railroad-crossing"
+            ],
+            "contradictionSignals": [
+              "action:stop-vs-accelerate-or-pass"
+            ],
+            "rowContrastSignals": [
+              "action:stop-vs-accelerate-or-pass"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: railroad crossing, gray background, must, pov, railroad",
+            "sourceFeatureKeywords": [
+              "railroad-crossing",
+              "stop",
+              "gray-background",
+              "must",
+              "pov",
+              "railroad",
+              "red-car",
+              "triangle",
+              "background",
+              "cross",
+              "crossing",
+              "level",
+              "observe",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "intersection",
+              "railroad-crossing",
+              "overtake",
+              "head-light",
+              "pass",
+              "pov",
+              "railroad",
+              "red-car",
+              "red-light",
+              "tree",
+              "crossing",
+              "false",
+              "level",
+              "light",
+              "possible",
+              "railway",
+              "there",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "railroad",
+              "pov",
+              "red-car",
+              "car",
+              "red-light",
+              "tree",
+              "blue",
+              "gray",
+              "green",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.886,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "Scenario context tags aligned strongly with the candidate.",
+              "Context or action contradictions reduced this candidate's rank."
+            ]
+          },
+          "prompt": "Pass the crossing as fast as possible if there is a red light at the intersection of a road or a railway crossing.",
+          "syntheticJaPrompt": "追い越し crossing as fast as possible if there red ライト 交差点 road or railway crossing。",
+          "translatedPrompt": "도로와 철로 건널목에서 적색 신호등이 켜지면 재빠르게 건널목을 통과해야한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_07d2bd2a852f61440e43f4233e854472.jpeg",
+            "assetHashes": [
+              "07d2bd2a852f61440e43f4233e854472"
+            ],
+            "colorTags": [
+              "blue",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "blue",
+              "gray",
+              "green"
+            ],
+            "objectTags": [
+              "railroad",
+              "pov",
+              "red-car",
+              "car",
+              "red-light",
+              "tree"
+            ]
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:signal-lights",
+            "traffic-signals:road-signs"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "intersection"
+            ],
+            "action": [
+              "overtake",
+              "pass",
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              },
+              {
+                "slot": "action",
+                "value": "overtake",
+                "signal": "overtake"
+              },
+              {
+                "slot": "action",
+                "value": "pass",
+                "signal": "overtake"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0236",
+          "number": 236,
+          "type": "ROW",
+          "score": 49.599,
+          "scoreBreakdown": {
+            "optionScore": 0.357,
+            "glossScore": 0.058,
+            "promptSimilarity": 0.058,
+            "rawPromptSimilarity": 0.058,
+            "englishPromptSimilarity": 0.058,
+            "bridgePromptSimilarity": 0.006,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.181,
+            "rowKeywordSignal": 0.084,
+            "rowDistinctiveKeywordScore": 0.051,
+            "rowConceptKeywordSupport": 0.034,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.8,
+            "rawImageScore": 0.8,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.357,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.887,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.8,
+            "imageColorAgreement": 0.771,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.211,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 38.453,
+            "baseScore": 38.453,
+            "rerankAdjustment": 11.146
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "railroad-crossing"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "context",
+                  "value": "railroad-crossing",
+                  "signal": "railroad-crossing"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "lane-change"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "lane-change",
+                  "signal": "lane-change"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: railroad crossing, gray background, must, pov, railroad",
+            "sourceFeatureKeywords": [
+              "railroad-crossing",
+              "stop",
+              "gray-background",
+              "must",
+              "pov",
+              "railroad",
+              "red-car",
+              "triangle",
+              "background",
+              "cross",
+              "crossing",
+              "level",
+              "observe",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "lane-change",
+              "red-car",
+              "yellow-car",
+              "changing",
+              "direction",
+              "false",
+              "lanes",
+              "method",
+              "wrong",
+              "safe-driving"
+            ],
+            "candidateImageTags": [
+              "car",
+              "yellow-car",
+              "red-car",
+              "yellow",
+              "gray",
+              "red",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.8,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "The method and direction of changing lanes by the red car is correct.",
+          "syntheticJaPrompt": "method and direction 車線変更 by red car correct。",
+          "translatedPrompt": "빨간색 차량의 차로 변경 방법과 방향이 올바르다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_53d66a06ef09c366c0b152f300e30447.jpeg",
+            "assetHashes": [
+              "53d66a06ef09c366c0b152f300e30447"
+            ],
+            "colorTags": [
+              "yellow",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "yellow",
+              "red"
+            ],
+            "objectTags": [
+              "car",
+              "yellow-car",
+              "red-car"
+            ]
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "lane-change"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "lane-change",
+                "signal": "lane-change"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

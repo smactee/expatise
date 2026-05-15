@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-05-14T13:13:03.479Z",
+  "source": "codex-manual-backfill-review-overrides",
+  "lang": "ko",
+  "reviewedPath": "qbank-tools/generated/staging/backfill.ko.reviewed.json",
+  "needsFixPath": "qbank-tools/generated/staging/backfill.ko.needs-fix.json",
+  "overrideCount": 1,
+  "reviewedCountAfter": 23,
+  "needsFixCountAfter": 0,
+  "overrides": [
+    {
+      "qid": "q0991",
+      "type": "row",
+      "correctOptionKey": "Wrong",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "warning",
+          "code": "logic-error",
+          "message": "The translation implies that police do not have the right to question drivers at the scene, which is misleading."
+        }
+      ],
+      "appliedFix": {
+        "prompt": "재산 피해를 일으킨 사고가 발생한 경우, 원래 대피했어야 했지만 사고 현장에 남아 있던 운전자에게 경찰관은 질문할 권리가 없다."
+      },
+      "reason": "Manual override after source/translation inspection with targeted wording or option fix."
+    }
+  ]
+}

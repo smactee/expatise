@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-05-14T13:13:03.479Z",
+  "source": "codex-manual-backfill-review-overrides",
+  "lang": "ru",
+  "reviewedPath": "qbank-tools/generated/staging/backfill.ru.reviewed.json",
+  "needsFixPath": "qbank-tools/generated/staging/backfill.ru.needs-fix.json",
+  "overrideCount": 3,
+  "reviewedCountAfter": 23,
+  "needsFixCountAfter": 0,
+  "overrides": [
+    {
+      "qid": "q0994",
+      "type": "mcq",
+      "correctOptionKey": "D",
+      "priorQualityStatus": "needs_fix",
+      "priorIssues": [
+        {
+          "severity": "warning",
+          "code": "translation_error",
+          "message": "Неверный перевод варианта ответа D: 'пождать в очереди' не соответствует 'wait in the line'."
+        }
+      ],
+      "appliedFix": {
+        "options": {
+          "q0994_o4": "подождать в очереди"
+        }
+      },
+      "reason": "Manual override after source/translation inspection with targeted wording or option fix."
+    },
+    {
+      "qid": "q0995",
+      "type": "mcq",
+      "correctOptionKey": "C",
+      "priorQualityStatus": "needs_fix",
+      "priorIssues": [
+        {
+          "severity": "warning",
+          "code": "translation_error",
+          "message": "Неверный перевод варианта ответа D: 'управлять движением для следующих транспортных средств' не соответствует 'guide the direction for following vehicles'."
+        }
+      ],
+      "appliedFix": {
+        "options": {
+          "q0995_o4": "указывать направление следующим позади транспортным средствам"
+        }
+      },
+      "reason": "Manual override after source/translation inspection with targeted wording or option fix."
+    },
+    {
+      "qid": "q1011",
+      "type": "mcq",
+      "correctOptionKey": "C",
+      "priorQualityStatus": "reject",
+      "priorIssues": [
+        {
+          "severity": "warning",
+          "code": "optionMismatch",
+          "message": "Correct answer logic does not align with the original English prompt."
+        }
+      ],
+      "appliedFix": {},
+      "reason": "Manual override after checking that the quality reviewer rejected a faithful translation due to answer-logic false positive."
+    }
+  ]
+}

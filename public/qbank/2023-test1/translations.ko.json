@@ -1,17 +1,20 @@
 {
   "meta": {
     "locale": "ko",
-    "translatedQuestions": 984,
+    "translatedQuestions": 1007,
     "pdfAdaptedCount": 85,
     "directCount": 678,
     "ambiguousCount": 614,
     "imageVerificationCount": 491,
     "glossaryPath": "docs/korean-qbank-glossary.md",
     "model": "gpt-5-mini",
-    "generatedAt": "2026-05-05T12:09:18.845Z",
+    "generatedAt": "2026-05-14T13:13:15.515Z",
     "pdfTemplateGuidedCount": 210,
     "qidSyncRuns": [
       "ko-ja-qid-sync-2026-05-05T12:09:18.845Z"
+    ],
+    "backfillMerges": [
+      "missing-qid-backfill-2026-05-14T13:13:15.515Z"
     ]
   },
   "questions": {
@@ -15122,142 +15125,1770 @@
       }
     },
     "q0986": {
-      "qid": "q0986",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "위험한 도로에서 마주 오는 차량을 만났을 때, 당신은 ______ 해야 합니다.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0986_o1": "속도를 줄이지 않습니다.",
+        "q0986_o2": "중앙에 위치합니다.",
+        "q0986_o3": "가속합니다.",
+        "q0986_o4": "속도를 줄이거나 정지하여 다른 차량에게 양보합니다."
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "속도를 줄이지 않습니다.",
+          "sourceTextBody": "속도를 줄이지 않습니다.",
+          "canonicalOptionId": "q0986_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Do not reduce your speed.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "중앙에 위치합니다.",
+          "sourceTextBody": "중앙에 위치합니다.",
+          "canonicalOptionId": "q0986_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Position yourself in the center.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "가속합니다.",
+          "sourceTextBody": "가속합니다.",
+          "canonicalOptionId": "q0986_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Accelerate.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "속도를 줄이거나 정지하여 다른 차량에게 양보합니다.",
+          "sourceTextBody": "속도를 줄이거나 정지하여 다른 차량에게 양보합니다.",
+          "canonicalOptionId": "q0986_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Reduce speed or stop and give way to the other vehicle.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "속도를 줄이지 않습니다.",
+          "sourceTextBody": "속도를 줄이지 않습니다.",
+          "canonicalOptionId": "q0986_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Do not reduce your speed.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "중앙에 위치합니다.",
+          "sourceTextBody": "중앙에 위치합니다.",
+          "canonicalOptionId": "q0986_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Position yourself in the center.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "가속합니다.",
+          "sourceTextBody": "가속합니다.",
+          "canonicalOptionId": "q0986_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Accelerate.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "속도를 줄이거나 정지하여 다른 차량에게 양보합니다.",
+          "sourceTextBody": "속도를 줄이거나 정지하여 다른 차량에게 양보합니다.",
+          "canonicalOptionId": "q0986_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Reduce speed or stop and give way to the other vehicle.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0987": {
-      "qid": "q0987",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "사용 종료 차량이 완전히 수리되면 사용할 수 있습니까?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0988": {
-      "qid": "q0988",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "국가 규정상 사용 불능으로 간주되는 차량은 등록할 수 없습니다.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0989": {
-      "qid": "q0989",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "비교동차가 교통을 통과하려고 할 때 당신은 무엇을 해야 합니까?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0989_o1": "경적을 울려 경고합니다.",
+        "q0989_o2": "가속합니다.",
+        "q0989_o3": "속도를 줄이고 통과하게 합니다.",
+        "q0989_o4": "가까이 가서 가속합니다."
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "경적을 울려 경고합니다.",
+          "sourceTextBody": "경적을 울려 경고합니다.",
+          "canonicalOptionId": "q0989_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "가속합니다.",
+          "sourceTextBody": "가속합니다.",
+          "canonicalOptionId": "q0989_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "속도를 줄이고 통과하게 합니다.",
+          "sourceTextBody": "속도를 줄이고 통과하게 합니다.",
+          "canonicalOptionId": "q0989_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Slow down and let pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "가까이 가서 가속합니다.",
+          "sourceTextBody": "가까이 가서 가속합니다.",
+          "canonicalOptionId": "q0989_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Get closer and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "경적을 울려 경고합니다.",
+          "sourceTextBody": "경적을 울려 경고합니다.",
+          "canonicalOptionId": "q0989_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "가속합니다.",
+          "sourceTextBody": "가속합니다.",
+          "canonicalOptionId": "q0989_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "속도를 줄이고 통과하게 합니다.",
+          "sourceTextBody": "속도를 줄이고 통과하게 합니다.",
+          "canonicalOptionId": "q0989_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Slow down and let pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "가까이 가서 가속합니다.",
+          "sourceTextBody": "가까이 가서 가속합니다.",
+          "canonicalOptionId": "q0989_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Get closer and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q0991": {
-      "qid": "q0991",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "재산 피해를 일으킨 사고가 발생한 경우, 원래 대피했어야 했지만 사고 현장에 남아 있던 운전자에게 경찰관은 질문할 권리가 없다.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "high",
+      "reviewStatus": "ready"
     },
     "q0992": {
-      "qid": "q0992",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "운전자가 면허 갱신을 신청해야 하는 시점은 언제인가요?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0992_o1": "유효기간이 만료되었을 때",
+        "q0992_o2": "벌점 누적 기간이 끝났을 때",
+        "q0992_o3": "벌점 누적 기간이 끝나고 11점 미만이었을 때",
+        "q0992_o4": "벌점 누적 기간이 끝나고 11점 이상이었을 때"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "유효기간이 만료되었을 때",
+          "sourceTextBody": "유효기간이 만료되었을 때",
+          "canonicalOptionId": "q0992_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "once its validity date has expired",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "벌점 누적 기간이 끝났을 때",
+          "sourceTextBody": "벌점 누적 기간이 끝났을 때",
+          "canonicalOptionId": "q0992_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "벌점 누적 기간이 끝나고 11점 미만이었을 때",
+          "sourceTextBody": "벌점 누적 기간이 끝나고 11점 미만이었을 때",
+          "canonicalOptionId": "q0992_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with less than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "벌점 누적 기간이 끝나고 11점 이상이었을 때",
+          "sourceTextBody": "벌점 누적 기간이 끝나고 11점 이상이었을 때",
+          "canonicalOptionId": "q0992_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with more than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "유효기간이 만료되었을 때",
+          "sourceTextBody": "유효기간이 만료되었을 때",
+          "canonicalOptionId": "q0992_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "once its validity date has expired",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "벌점 누적 기간이 끝났을 때",
+          "sourceTextBody": "벌점 누적 기간이 끝났을 때",
+          "canonicalOptionId": "q0992_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "벌점 누적 기간이 끝나고 11점 미만이었을 때",
+          "sourceTextBody": "벌점 누적 기간이 끝나고 11점 미만이었을 때",
+          "canonicalOptionId": "q0992_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with less than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "벌점 누적 기간이 끝나고 11점 이상이었을 때",
+          "sourceTextBody": "벌점 누적 기간이 끝나고 11점 이상이었을 때",
+          "canonicalOptionId": "q0992_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with more than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0993": {
-      "qid": "q0993",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "도로에 물이 고여 있을 때 어떻게 해야 하나요?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0993_o1": "속도를 줄이고 천천히 지나간다",
+        "q0993_o2": "가속하고 지나간다",
+        "q0993_o3": "속도를 유지한다",
+        "q0993_o4": "다운쉽하고 가속한다"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "속도를 줄이고 천천히 지나간다",
+          "sourceTextBody": "속도를 줄이고 천천히 지나간다",
+          "canonicalOptionId": "q0993_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slow down and pass slowly",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "가속하고 지나간다",
+          "sourceTextBody": "가속하고 지나간다",
+          "canonicalOptionId": "q0993_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerate and pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "속도를 유지한다",
+          "sourceTextBody": "속도를 유지한다",
+          "canonicalOptionId": "q0993_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "keep the speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "다운쉽하고 가속한다",
+          "sourceTextBody": "다운쉽하고 가속한다",
+          "canonicalOptionId": "q0993_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "downshift and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "속도를 줄이고 천천히 지나간다",
+          "sourceTextBody": "속도를 줄이고 천천히 지나간다",
+          "canonicalOptionId": "q0993_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slow down and pass slowly",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "가속하고 지나간다",
+          "sourceTextBody": "가속하고 지나간다",
+          "canonicalOptionId": "q0993_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerate and pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "속도를 유지한다",
+          "sourceTextBody": "속도를 유지한다",
+          "canonicalOptionId": "q0993_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "keep the speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "다운쉽하고 가속한다",
+          "sourceTextBody": "다운쉽하고 가속한다",
+          "canonicalOptionId": "q0993_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "downshift and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q0994": {
-      "qid": "q0994",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "앞차가 우회전하기 위해 신호등의 초록불을 기다리고 있을 때 어떻게 해야 하나요?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0994_o1": "왼쪽으로 회전한다",
+        "q0994_o2": "오른쪽으로 회전한다",
+        "q0994_o3": "앞차가 지나가게 하기 위해 경적을 울린다",
+        "q0994_o4": "줄을 서서 기다린다"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "왼쪽으로 회전한다",
+          "sourceTextBody": "왼쪽으로 회전한다",
+          "canonicalOptionId": "q0994_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn to its left",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "오른쪽으로 회전한다",
+          "sourceTextBody": "오른쪽으로 회전한다",
+          "canonicalOptionId": "q0994_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "take the turn by the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "앞차가 지나가게 하기 위해 경적을 울린다",
+          "sourceTextBody": "앞차가 지나가게 하기 위해 경적을 울린다",
+          "canonicalOptionId": "q0994_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "honk so that the vehicle in front lets us pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "줄을 서서 기다린다",
+          "sourceTextBody": "줄을 서서 기다린다",
+          "canonicalOptionId": "q0994_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "wait in the line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "왼쪽으로 회전한다",
+          "sourceTextBody": "왼쪽으로 회전한다",
+          "canonicalOptionId": "q0994_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn to its left",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "오른쪽으로 회전한다",
+          "sourceTextBody": "오른쪽으로 회전한다",
+          "canonicalOptionId": "q0994_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "take the turn by the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "앞차가 지나가게 하기 위해 경적을 울린다",
+          "sourceTextBody": "앞차가 지나가게 하기 위해 경적을 울린다",
+          "canonicalOptionId": "q0994_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "honk so that the vehicle in front lets us pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "줄을 서서 기다린다",
+          "sourceTextBody": "줄을 서서 기다린다",
+          "canonicalOptionId": "q0994_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "wait in the line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0995": {
-      "qid": "q0995",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "다음 상황에서 비상등을 켜는 것이 가능한가요?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0995_o1": "앞차를 따라갈 때",
+        "q0995_o2": "교통 체증 중일 때",
+        "q0995_o3": "고장으로 인해 정차할 때",
+        "q0995_o4": "뒤따르는 차량을 안내할 때"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "앞차를 따라갈 때",
+          "sourceTextBody": "앞차를 따라갈 때",
+          "canonicalOptionId": "q0995_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "follow the vehicles ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "교통 체증 중일 때",
+          "sourceTextBody": "교통 체증 중일 때",
+          "canonicalOptionId": "q0995_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "during a traffic jam",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "고장으로 인해 정차할 때",
+          "sourceTextBody": "고장으로 인해 정차할 때",
+          "canonicalOptionId": "q0995_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop due to a breakdown",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "뒤따르는 차량을 안내할 때",
+          "sourceTextBody": "뒤따르는 차량을 안내할 때",
+          "canonicalOptionId": "q0995_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "guide the direction for following vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "앞차를 따라갈 때",
+          "sourceTextBody": "앞차를 따라갈 때",
+          "canonicalOptionId": "q0995_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "follow the vehicles ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "교통 체증 중일 때",
+          "sourceTextBody": "교통 체증 중일 때",
+          "canonicalOptionId": "q0995_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "during a traffic jam",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "고장으로 인해 정차할 때",
+          "sourceTextBody": "고장으로 인해 정차할 때",
+          "canonicalOptionId": "q0995_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop due to a breakdown",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "뒤따르는 차량을 안내할 때",
+          "sourceTextBody": "뒤따르는 차량을 안내할 때",
+          "canonicalOptionId": "q0995_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "guide the direction for following vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q0996": {
-      "qid": "q0996",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "맞은편 차가 우리의 차선에 있다면 어떻게 해야 하나요?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0996_o1": "도로 중간으로 이동해서 운전한다",
+        "q0996_o2": "그들이 지나가도록 한다",
+        "q0996_o3": "그들에게 헤드라이트를 깜빡인다",
+        "q0996_o4": "그들이 오른쪽으로 후진하도록 강요한다"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "도로 중간으로 이동해서 운전한다",
+          "sourceTextBody": "도로 중간으로 이동해서 운전한다",
+          "canonicalOptionId": "q0996_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "move toward the middle of the road to drive",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "그들이 지나가도록 한다",
+          "sourceTextBody": "그들이 지나가도록 한다",
+          "canonicalOptionId": "q0996_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "let them pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "그들에게 헤드라이트를 깜빡인다",
+          "sourceTextBody": "그들에게 헤드라이트를 깜빡인다",
+          "canonicalOptionId": "q0996_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "flash your headlights at them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "그들이 오른쪽으로 후진하도록 강요한다",
+          "sourceTextBody": "그들이 오른쪽으로 후진하도록 강요한다",
+          "canonicalOptionId": "q0996_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "force them to reverse to the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "도로 중간으로 이동해서 운전한다",
+          "sourceTextBody": "도로 중간으로 이동해서 운전한다",
+          "canonicalOptionId": "q0996_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "move toward the middle of the road to drive",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "그들이 지나가도록 한다",
+          "sourceTextBody": "그들이 지나가도록 한다",
+          "canonicalOptionId": "q0996_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "let them pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "그들에게 헤드라이트를 깜빡인다",
+          "sourceTextBody": "그들에게 헤드라이트를 깜빡인다",
+          "canonicalOptionId": "q0996_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "flash your headlights at them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "그들이 오른쪽으로 후진하도록 강요한다",
+          "sourceTextBody": "그들이 오른쪽으로 후진하도록 강요한다",
+          "canonicalOptionId": "q0996_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "force them to reverse to the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0998": {
-      "qid": "q0998",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "어떤 후보자는 현행범으로 적발된 후 3년 동안 면허 신청이 거부될 수 있습니까?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0998_o1": "흡연자",
+        "q0998_o2": "약물 사용자",
+        "q0998_o3": "인슐린 주사를 받는 사람",
+        "q0998_o4": "알코올 중독자"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "흡연자",
+          "sourceTextBody": "흡연자",
+          "canonicalOptionId": "q0998_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "smokers",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "약물 사용자",
+          "sourceTextBody": "약물 사용자",
+          "canonicalOptionId": "q0998_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drug users",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "인슐린 주사를 받는 사람",
+          "sourceTextBody": "인슐린 주사를 받는 사람",
+          "canonicalOptionId": "q0998_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "people on insulin injections",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "알코올 중독자",
+          "sourceTextBody": "알코올 중독자",
+          "canonicalOptionId": "q0998_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "alcoholics",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "흡연자",
+          "sourceTextBody": "흡연자",
+          "canonicalOptionId": "q0998_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "smokers",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "약물 사용자",
+          "sourceTextBody": "약물 사용자",
+          "canonicalOptionId": "q0998_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drug users",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "인슐린 주사를 받는 사람",
+          "sourceTextBody": "인슐린 주사를 받는 사람",
+          "canonicalOptionId": "q0998_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "people on insulin injections",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "알코올 중독자",
+          "sourceTextBody": "알코올 중독자",
+          "canonicalOptionId": "q0998_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "alcoholics",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0999": {
-      "qid": "q0999",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "교통이 느리고 다른 차량이 혼잡한 구역으로 합류할 때 무엇을 해야 합니까?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0999_o1": "클락슨을 울려서 통과하지 못하게 한다",
+        "q0999_o2": "가속하여 앞차를 따라가며 합류하지 못하게 한다",
+        "q0999_o3": "정중하게 합류하도록 하고 안전거리를 유지한다",
+        "q0999_o4": "합류하려는 차량을 강제로 내쫓는다"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "클락슨을 울려서 통과하지 못하게 한다",
+          "sourceTextBody": "클락슨을 울려서 통과하지 못하게 한다",
+          "canonicalOptionId": "q0999_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk and prevent them from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "가속하여 앞차를 따라가며 합류하지 못하게 한다",
+          "sourceTextBody": "가속하여 앞차를 따라가며 합류하지 못하게 한다",
+          "canonicalOptionId": "q0999_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate and follow the vehicles ahead to prevent them from merging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "정중하게 합류하도록 하고 안전거리를 유지한다",
+          "sourceTextBody": "정중하게 합류하도록 하고 안전거리를 유지한다",
+          "canonicalOptionId": "q0999_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Politely let them merge and maintain a safe distance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "합류하려는 차량을 강제로 내쫓는다",
+          "sourceTextBody": "합류하려는 차량을 강제로 내쫓는다",
+          "canonicalOptionId": "q0999_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Force the vehicle trying to merge to leave",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "클락슨을 울려서 통과하지 못하게 한다",
+          "sourceTextBody": "클락슨을 울려서 통과하지 못하게 한다",
+          "canonicalOptionId": "q0999_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk and prevent them from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "가속하여 앞차를 따라가며 합류하지 못하게 한다",
+          "sourceTextBody": "가속하여 앞차를 따라가며 합류하지 못하게 한다",
+          "canonicalOptionId": "q0999_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate and follow the vehicles ahead to prevent them from merging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "정중하게 합류하도록 하고 안전거리를 유지한다",
+          "sourceTextBody": "정중하게 합류하도록 하고 안전거리를 유지한다",
+          "canonicalOptionId": "q0999_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Politely let them merge and maintain a safe distance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "합류하려는 차량을 강제로 내쫓는다",
+          "sourceTextBody": "합류하려는 차량을 강제로 내쫓는다",
+          "canonicalOptionId": "q0999_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Force the vehicle trying to merge to leave",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1001": {
-      "qid": "q1001",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "고속도로에서 반대 방향으로 차량을 돌려서는 안 됩니다.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1002": {
-      "qid": "q1002",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "우박으로 덮인 도로에서 운전할 때, 차량의 안정성이 감소하여 급제동할 경우 미끄러지기 쉽습니다.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1003": {
-      "qid": "q1003",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "연속해서 운전할 수 있는 최대 시간은 얼마입니까?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1003_o1": "4시간",
+        "q1003_o2": "6시간",
+        "q1003_o3": "8시간",
+        "q1003_o4": "10시간"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "4시간",
+          "sourceTextBody": "4시간",
+          "canonicalOptionId": "q1003_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "4 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "6시간",
+          "sourceTextBody": "6시간",
+          "canonicalOptionId": "q1003_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "6 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "8시간",
+          "sourceTextBody": "8시간",
+          "canonicalOptionId": "q1003_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "8 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "10시간",
+          "sourceTextBody": "10시간",
+          "canonicalOptionId": "q1003_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "10 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "4시간",
+          "sourceTextBody": "4시간",
+          "canonicalOptionId": "q1003_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "4 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "6시간",
+          "sourceTextBody": "6시간",
+          "canonicalOptionId": "q1003_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "6 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "8시간",
+          "sourceTextBody": "8시간",
+          "canonicalOptionId": "q1003_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "8 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "10시간",
+          "sourceTextBody": "10시간",
+          "canonicalOptionId": "q1003_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "10 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q1004": {
-      "qid": "q1004",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "안개가 끼었을 때 어떤 일이 발생할 수 있나요?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1004_o1": "엔진이 멈출 수 있다",
+        "q1004_o2": "날개에서 미끄러져 사고를 일으킬 수 있다",
+        "q1004_o3": "교통 밀도가 증가할 수 있다",
+        "q1004_o4": "시야가 줄어들 수 있다"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "엔진이 멈출 수 있다",
+          "sourceTextBody": "엔진이 멈출 수 있다",
+          "canonicalOptionId": "q1004_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "cause the engine to shut off",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "날개에서 미끄러져 사고를 일으킬 수 있다",
+          "sourceTextBody": "날개에서 미끄러져 사고를 일으킬 수 있다",
+          "canonicalOptionId": "q1004_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "slide on the wing and cause an accident",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "교통 밀도가 증가할 수 있다",
+          "sourceTextBody": "교통 밀도가 증가할 수 있다",
+          "canonicalOptionId": "q1004_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "increase traffic density",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "시야가 줄어들 수 있다",
+          "sourceTextBody": "시야가 줄어들 수 있다",
+          "canonicalOptionId": "q1004_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce visibility",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "엔진이 멈출 수 있다",
+          "sourceTextBody": "엔진이 멈출 수 있다",
+          "canonicalOptionId": "q1004_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "cause the engine to shut off",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "날개에서 미끄러져 사고를 일으킬 수 있다",
+          "sourceTextBody": "날개에서 미끄러져 사고를 일으킬 수 있다",
+          "canonicalOptionId": "q1004_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "slide on the wing and cause an accident",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "교통 밀도가 증가할 수 있다",
+          "sourceTextBody": "교통 밀도가 증가할 수 있다",
+          "canonicalOptionId": "q1004_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "increase traffic density",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "시야가 줄어들 수 있다",
+          "sourceTextBody": "시야가 줄어들 수 있다",
+          "canonicalOptionId": "q1004_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce visibility",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q1005": {
-      "qid": "q1005",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "운전 중에 흡연하는 것은 안전에 영향을 줄 수 없다.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1006": {
-      "qid": "q1006",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "위험한 곡선을 통과할 때 허용되는 최대 속도는 얼마인가요?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1006_o1": "15 km/h",
+        "q1006_o2": "20 km/h",
+        "q1006_o3": "30 km/h",
+        "q1006_o4": "40 km/h"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "15 km/h",
+          "sourceTextBody": "15 km/h",
+          "canonicalOptionId": "q1006_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "15 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "20 km/h",
+          "sourceTextBody": "20 km/h",
+          "canonicalOptionId": "q1006_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "20 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "30 km/h",
+          "sourceTextBody": "30 km/h",
+          "canonicalOptionId": "q1006_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "40 km/h",
+          "sourceTextBody": "40 km/h",
+          "canonicalOptionId": "q1006_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "15 km/h",
+          "sourceTextBody": "15 km/h",
+          "canonicalOptionId": "q1006_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "15 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "20 km/h",
+          "sourceTextBody": "20 km/h",
+          "canonicalOptionId": "q1006_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "20 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "30 km/h",
+          "sourceTextBody": "30 km/h",
+          "canonicalOptionId": "q1006_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "40 km/h",
+          "sourceTextBody": "40 km/h",
+          "canonicalOptionId": "q1006_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1007": {
-      "qid": "q1007",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "미니버스가 고속 도로에서 100 km/h 이하로 주행할 때, 어떤 안전 거리를 유지해야 하나요?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1007_o1": "최소 50 m",
+        "q1007_o2": "최소 30 m",
+        "q1007_o3": "최소 20 m",
+        "q1007_o4": "최소 10 m"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "최소 50 m",
+          "sourceTextBody": "최소 50 m",
+          "canonicalOptionId": "q1007_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "at least 50 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "최소 30 m",
+          "sourceTextBody": "최소 30 m",
+          "canonicalOptionId": "q1007_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "at least 30 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "최소 20 m",
+          "sourceTextBody": "최소 20 m",
+          "canonicalOptionId": "q1007_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "at least 20 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "최소 10 m",
+          "sourceTextBody": "최소 10 m",
+          "canonicalOptionId": "q1007_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "at least 10 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "최소 50 m",
+          "sourceTextBody": "최소 50 m",
+          "canonicalOptionId": "q1007_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "at least 50 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "최소 30 m",
+          "sourceTextBody": "최소 30 m",
+          "canonicalOptionId": "q1007_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "at least 30 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "최소 20 m",
+          "sourceTextBody": "최소 20 m",
+          "canonicalOptionId": "q1007_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "at least 20 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "최소 10 m",
+          "sourceTextBody": "최소 10 m",
+          "canonicalOptionId": "q1007_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "at least 10 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q1008": {
-      "qid": "q1008",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "이 경고등이 켜지면 엔진에 연료를 주입해야 합니다.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1009": {
-      "qid": "q1009",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "타이어 펑크를 피하려면 어떤 조치를 취해야 합니까?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1009_o1": "타이어 압력을 낮춘다",
+        "q1009_o2": "주기적으로 타이어를 점검한다",
+        "q1009_o3": "타이어 스크래치를 청소한다",
+        "q1009_o4": "금이 가거나 심하게 손상된 타이어를 교체한다"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "타이어 압력을 낮춘다",
+          "sourceTextBody": "타이어 압력을 낮춘다",
+          "canonicalOptionId": "q1009_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Lower the tire pressure",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "주기적으로 타이어를 점검한다",
+          "sourceTextBody": "주기적으로 타이어를 점검한다",
+          "canonicalOptionId": "q1009_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Check your tires periodically",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "타이어 스크래치를 청소한다",
+          "sourceTextBody": "타이어 스크래치를 청소한다",
+          "canonicalOptionId": "q1009_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Clean the tire scratches",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "금이 가거나 심하게 손상된 타이어를 교체한다",
+          "sourceTextBody": "금이 가거나 심하게 손상된 타이어를 교체한다",
+          "canonicalOptionId": "q1009_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Replace the cracked or badly damaged tire",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "타이어 압력을 낮춘다",
+          "sourceTextBody": "타이어 압력을 낮춘다",
+          "canonicalOptionId": "q1009_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Lower the tire pressure",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "주기적으로 타이어를 점검한다",
+          "sourceTextBody": "주기적으로 타이어를 점검한다",
+          "canonicalOptionId": "q1009_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Check your tires periodically",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "타이어 스크래치를 청소한다",
+          "sourceTextBody": "타이어 스크래치를 청소한다",
+          "canonicalOptionId": "q1009_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Clean the tire scratches",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "금이 가거나 심하게 손상된 타이어를 교체한다",
+          "sourceTextBody": "금이 가거나 심하게 손상된 타이어를 교체한다",
+          "canonicalOptionId": "q1009_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Replace the cracked or badly damaged tire",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q1011": {
-      "qid": "q1011",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "운전 중 학생들이 있는 그룹을 만났을 때 무엇을 해야 합니까?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1011_o1": "미리 가속하여 지나친다",
+        "q1011_o2": "멈추고 양보한다",
+        "q1011_o3": "속도를 줄이고 천천히 지나친다",
+        "q1011_o4": "서둘러 지나가라고 경적을 울린다"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "미리 가속하여 지나친다",
+          "sourceTextBody": "미리 가속하여 지나친다",
+          "canonicalOptionId": "q1011_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "pass by accelerating in advance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "멈추고 양보한다",
+          "sourceTextBody": "멈추고 양보한다",
+          "canonicalOptionId": "q1011_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop and yield the right of way",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "속도를 줄이고 천천히 지나친다",
+          "sourceTextBody": "속도를 줄이고 천천히 지나친다",
+          "canonicalOptionId": "q1011_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slow down and pass at reduced speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "서둘러 지나가라고 경적을 울린다",
+          "sourceTextBody": "서둘러 지나가라고 경적을 울린다",
+          "canonicalOptionId": "q1011_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "keep honking to hurry them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "미리 가속하여 지나친다",
+          "sourceTextBody": "미리 가속하여 지나친다",
+          "canonicalOptionId": "q1011_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "pass by accelerating in advance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "멈추고 양보한다",
+          "sourceTextBody": "멈추고 양보한다",
+          "canonicalOptionId": "q1011_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop and yield the right of way",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "속도를 줄이고 천천히 지나친다",
+          "sourceTextBody": "속도를 줄이고 천천히 지나친다",
+          "canonicalOptionId": "q1011_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slow down and pass at reduced speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "서둘러 지나가라고 경적을 울린다",
+          "sourceTextBody": "서둘러 지나가라고 경적을 울린다",
+          "canonicalOptionId": "q1011_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "keep honking to hurry them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1012": {
-      "qid": "q1012",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "기념비나 공공 시설을 치는 운전자는 걱정 없이 계속 운전할 수 있다.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     }
   }
 }

@@ -3,12 +3,14 @@ const BASE_QUESTION_URL = '/qbank/2023-test1/questions.json';
 const PRODUCTION_TRANSLATION_URLS: Record<string, string> = {
   ko: '/qbank/2023-test1/translations.ko.json',
   ja: '/qbank/2023-test1/translations.ja.json',
+  fr: '/qbank/2023-test1/translations.fr.json',
   ru: '/qbank/2023-test1/translations.ru.json',
 };
 
 const TRANSLATION_NOTICE_LABELS: Record<string, string> = {
   ko: 'Korean',
   ja: 'Japanese',
+  fr: 'French',
   ru: 'Russian',
 };
 

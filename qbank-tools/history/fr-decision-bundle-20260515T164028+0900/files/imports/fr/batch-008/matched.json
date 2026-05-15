@@ -1,0 +1,1696 @@
+{
+  "generatedAt": "2026-05-09T02:04:19.418Z",
+  "lang": "fr",
+  "batchId": "batch-008",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.34.40.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.34.40.png",
+      "promptRawJa": "Dans la nuit, sur la route où il n'y a pas de lampe ou la condition d'éclairage est mauvaise, il faut remplacer le feu de croisement par le feu de route. Mais le véhicule suivant roulant dans le meme sens ne peut pas utiliser le feu de route.",
+      "promptGlossEn": "At night, on a road without streetlights or with poor lighting conditions, you must replace the low beam with the high beam headlights. However, a following vehicle driving in the same direction cannot use the high beam headlights.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "visualObjectTags": [],
+      "visualColorTags": [],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [],
+      "provisionalTopic": "road-safety",
+      "provisionalSubtopics": [
+        "road-safety:road-conditions",
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 0.531,
+      "topicSignals": [
+        {
+          "topic": "road-safety",
+          "subtopic": "road-safety:road-conditions",
+          "signal": "road-condition-or-hazard",
+          "weight": 1.3
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "visualEvidenceAvailable": false,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": null,
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": {
+        "condition": [
+          "night"
+        ],
+        "context": [
+          "following-traffic"
+        ],
+        "action": [],
+        "polarity": "negative",
+        "obligation": "prohibited",
+        "signals": [
+          {
+            "slot": "condition",
+            "value": "night",
+            "signal": "night"
+          },
+          {
+            "slot": "context",
+            "value": "following-traffic",
+            "signal": "following"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Dans la nuit, sur la route où il n'y a pas de lampe ou la condition d'éclairage est mauvaise, il faut remplacer le feu de croisement par le feu de route. Mais le véhicule suivant roulant dans le meme sens ne peut pas utiliser le feu de route.",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "At night, on a road without streetlights or with poor lighting conditions, you must replace the low beam with the high beam headlights. However, a following vehicle driving in the same direction cannot use the high beam headlights.",
+        "options": [
+          "Yes",
+          "No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0080",
+        "number": 80,
+        "score": 62.2,
+        "scoreGap": 22.565,
+        "scoreBreakdown": {
+          "optionScore": 0.84,
+          "glossScore": 0.521,
+          "promptSimilarity": 0.521,
+          "rawPromptSimilarity": 0.521,
+          "englishPromptSimilarity": 0.521,
+          "bridgePromptSimilarity": 0.125,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.2,
+          "localizedGlossSimilarity": 0,
+          "localizedKeywordSupport": 0.2,
+          "multilingualSupportScore": 0.2,
+          "keywordScore": 0.65,
+          "rowKeywordSignal": 0.272,
+          "rowDistinctiveKeywordScore": 0.187,
+          "rowConceptKeywordSupport": 0.384,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "imageScore": 0.5,
+          "rawImageScore": 0.5,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.84,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 0.5,
+          "structuralAgreement": 0.825,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.5,
+          "imageColorAgreement": 0.5,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 0.9,
+          "conditionAlignment": 1,
+          "contextAlignment": 1,
+          "actionAlignment": 0.667,
+          "obligationAlignment": 1,
+          "polarityAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 56.15,
+          "baseScore": 56.15,
+          "rerankAdjustment": 6.05
+        },
+        "candidateTopicTruth": {
+          "topic": "no-image",
+          "subtopics": [],
+          "tags": [
+            "no-image"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 486,
+        "candidateCountAfterStructuralFilter": 277,
+        "candidateCountAfterMcqShortlist": 277,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 277,
+        "structuralSoftCandidateCount": 277,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-text",
+        "decisionReasonCodes": [
+          "gap-relaxed-profile"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-text",
+          "topScore": 62.2,
+          "rank2Score": 39.635,
+          "scoreGap": 22.565,
+          "thresholds": {
+            "reviewFloor": 38,
+            "autoMatchThreshold": 60,
+            "autoGapThreshold": 6
+          },
+          "signalAgreement": {
+            "agreementScore": 0.69,
+            "strongSignalCount": 3,
+            "weakSignalCount": 0,
+            "signalSpread": 0.379,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 0.9,
+              "gloss": 0.521,
+              "keyword": 0.65,
+              "image": 0.5,
+              "multilingual": 0.2,
+              "concept": 0.9
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.219,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "gap-relaxed-profile"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Dans la nuit, sur la route où il n'y a pas de lampe ou la condition d'éclairage est mauvaise, il faut remplacer le feu de croisement par le feu de route. Mais le véhicule suivant roulant dans le meme sens ne peut pas utiliser le feu de route.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0080",
+          "number": 80,
+          "type": "ROW",
+          "score": 62.2,
+          "scoreBreakdown": {
+            "optionScore": 0.84,
+            "glossScore": 0.521,
+            "promptSimilarity": 0.521,
+            "rawPromptSimilarity": 0.521,
+            "englishPromptSimilarity": 0.521,
+            "bridgePromptSimilarity": 0.125,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.65,
+            "rowKeywordSignal": 0.272,
+            "rowDistinctiveKeywordScore": 0.187,
+            "rowConceptKeywordSupport": 0.384,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.84,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.825,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.9,
+            "conditionAlignment": 1,
+            "contextAlignment": 1,
+            "actionAlignment": 0.667,
+            "obligationAlignment": 1,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 56.15,
+            "baseScore": 56.15,
+            "rerankAdjustment": 6.05
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "following-traffic"
+              ],
+              "action": [
+                "low-beam",
+                "high-beam"
+              ],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "following-traffic",
+                  "signal": "following"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                },
+                {
+                  "slot": "action",
+                  "value": "high-beam",
+                  "signal": "high-beam"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "following-traffic"
+              ],
+              "action": [
+                "head-light",
+                "low-beam",
+                "high-beam"
+              ],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "following-traffic",
+                  "signal": "following"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                },
+                {
+                  "slot": "action",
+                  "value": "high-beam",
+                  "signal": "high-beam"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:night",
+              "context:following-traffic",
+              "action:low-beam|high-beam",
+              "obligation:prohibited"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: low beam, high beam, night, must",
+            "sourceFeatureKeywords": [
+              "low-beam",
+              "high-beam",
+              "night",
+              "must",
+              "cannot",
+              "conditions",
+              "direction",
+              "following",
+              "headlights",
+              "however",
+              "lighting",
+              "replace",
+              "streetlights",
+              "without",
+              "road-conditions",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "low-beam",
+              "high-beam",
+              "night",
+              "switch",
+              "following-traffic",
+              "head-light",
+              "may",
+              "must-not",
+              "should",
+              "allowed",
+              "direction",
+              "following",
+              "light",
+              "lighting",
+              "right"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "When driving at night on a road with no or poor lighting, the driver should switch from the low beam light to the high beam light. But the vehicle following in the same direction is not allowed to use the high beam light.",
+          "syntheticJaPrompt": "when driving night road いいえ or poor lighting 運転者 べき switch low-beam ライト high-beam ライト but 後続車 same direction してはならない use high-beam ライト。",
+          "translatedPrompt": "조명이 없거나 부족한 도로에서 야간 운전 시 운전자는 하향등에서 상향등으로 전환해야 한다. 그러나 같은 방향으로 진행하는 뒤차는 상향등을 사용해서는 안 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "night"
+            ],
+            "context": [
+              "following-traffic"
+            ],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "negative",
+            "obligation": "prohibited",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "night",
+                "signal": "night"
+              },
+              {
+                "slot": "context",
+                "value": "following-traffic",
+                "signal": "following"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0101",
+          "number": 101,
+          "type": "ROW",
+          "score": 39.635,
+          "scoreBreakdown": {
+            "optionScore": 0.91,
+            "glossScore": 0.115,
+            "promptSimilarity": 0.115,
+            "rawPromptSimilarity": 0.115,
+            "englishPromptSimilarity": 0.115,
+            "bridgePromptSimilarity": 0.047,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.432,
+            "rowKeywordSignal": 0.034,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.32,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.91,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.825,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 1,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 33.585,
+            "baseScore": 33.585,
+            "rerankAdjustment": 6.05
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "following-traffic"
+              ],
+              "action": [
+                "low-beam",
+                "high-beam"
+              ],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "following-traffic",
+                  "signal": "following"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                },
+                {
+                  "slot": "action",
+                  "value": "high-beam",
+                  "signal": "high-beam"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:night"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "6"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: low beam, high beam, night, must",
+            "sourceFeatureKeywords": [
+              "low-beam",
+              "high-beam",
+              "night",
+              "must",
+              "cannot",
+              "conditions",
+              "direction",
+              "following",
+              "headlights",
+              "however",
+              "lighting",
+              "replace",
+              "streetlights",
+              "without",
+              "road-conditions",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "night",
+              "ability",
+              "becomes",
+              "daytime",
+              "observation",
+              "poorer",
+              "range",
+              "right",
+              "shorter",
+              "visibility",
+              "visibly"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "When driving at night, the driver's observation ability is visibly poorer and his visibility range becomes shorter than driving in the daytime.",
+          "syntheticJaPrompt": "when driving night 運転者 observation ability visibly poorer and his visibility range become shorter than driving daytime 6。",
+          "translatedPrompt": "야간 운전 시 운전자의 관찰 능력과 시야 거리가 주간보다 현저히 줄어든다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "night"
+            ],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "night",
+                "signal": "night"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0032",
+          "number": 32,
+          "type": "ROW",
+          "score": 38.745,
+          "scoreBreakdown": {
+            "optionScore": 0.522,
+            "glossScore": 0.184,
+            "promptSimilarity": 0.184,
+            "rawPromptSimilarity": 0.184,
+            "englishPromptSimilarity": 0.184,
+            "bridgePromptSimilarity": 0.042,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.478,
+            "rowKeywordSignal": 0.129,
+            "rowDistinctiveKeywordScore": 0.045,
+            "rowConceptKeywordSupport": 0.324,
+            "rowContrastPenalty": 0.16,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.522,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.825,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.526,
+            "conditionAlignment": 1,
+            "contextAlignment": 0,
+            "actionAlignment": 0.333,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0.16,
+            "assetTieBreak": 0,
+            "totalScore": 32.695,
+            "baseScore": 32.695,
+            "rerankAdjustment": 6.05
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "following-traffic"
+              ],
+              "action": [
+                "low-beam",
+                "high-beam"
+              ],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "following-traffic",
+                  "signal": "following"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                },
+                {
+                  "slot": "action",
+                  "value": "high-beam",
+                  "signal": "high-beam"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [],
+              "action": [
+                "stop",
+                "reduce-speed",
+                "slow",
+                "head-light",
+                "low-beam",
+                "high-beam"
+              ],
+              "polarity": "positive",
+              "obligation": "should",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                },
+                {
+                  "slot": "action",
+                  "value": "reduce-speed",
+                  "signal": "reduce-speed"
+                },
+                {
+                  "slot": "action",
+                  "value": "slow",
+                  "signal": "reduce-speed"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                },
+                {
+                  "slot": "action",
+                  "value": "high-beam",
+                  "signal": "high-beam"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:night",
+              "action:low-beam|high-beam"
+            ],
+            "contradictionSignals": [
+              "obligation:prohibited-vs-permissive"
+            ],
+            "rowContrastSignals": [
+              "obligation:prohibited-vs-permissive"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: low beam, high beam, night, must",
+            "sourceFeatureKeywords": [
+              "low-beam",
+              "high-beam",
+              "night",
+              "must",
+              "cannot",
+              "conditions",
+              "direction",
+              "following",
+              "headlights",
+              "however",
+              "lighting",
+              "replace",
+              "streetlights",
+              "without",
+              "road-conditions",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "low-beam",
+              "high-beam",
+              "slow",
+              "stop",
+              "night",
+              "switch",
+              "head-light",
+              "may",
+              "reduce-speed",
+              "should",
+              "allowed",
+              "beams",
+              "change",
+              "coming",
+              "continuous",
+              "cross",
+              "direction",
+              "forward"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action."
+            ]
+          },
+          "prompt": "WWhen you see a car at night whose driver has not switched off their high beams, you are allowed to switch your headlights from high beam to low beam to indicate this to the oncoming driver, and at the same time you should slow down and drive (or stop) on the right side of the road.",
+          "syntheticJaPrompt": "when 車両 十字 each other night 運転者 よい continuou change ライト remind 車両 coming opposite direction and same べき 減速 and go or stop right side。",
+          "translatedPrompt": "야간에 대향차와 마주칠 때 운전자는 상대 차량에 신호하기 위해 전조등을 연속으로 깜박일 수 있으며, 동시에 감속하여 진행하거나 우측에 정차해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "night"
+            ],
+            "context": [],
+            "action": [
+              "stop",
+              "reduce-speed",
+              "slow",
+              "head-light"
+            ],
+            "polarity": "positive",
+            "obligation": "should",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "night",
+                "signal": "night"
+              },
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              },
+              {
+                "slot": "action",
+                "value": "reduce-speed",
+                "signal": "reduce-speed"
+              },
+              {
+                "slot": "action",
+                "value": "slow",
+                "signal": "reduce-speed"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0061",
+          "number": 61,
+          "type": "ROW",
+          "score": 38.62,
+          "scoreBreakdown": {
+            "optionScore": 0.574,
+            "glossScore": 0.171,
+            "promptSimilarity": 0.171,
+            "rawPromptSimilarity": 0.171,
+            "englishPromptSimilarity": 0.171,
+            "bridgePromptSimilarity": 0.153,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.488,
+            "rowKeywordSignal": 0.123,
+            "rowDistinctiveKeywordScore": 0.05,
+            "rowConceptKeywordSupport": 0.338,
+            "rowContrastPenalty": 0.18,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.574,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.825,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.61,
+            "conditionAlignment": 1,
+            "contextAlignment": 0,
+            "actionAlignment": 0.5,
+            "obligationAlignment": 1,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0.18,
+            "assetTieBreak": 0,
+            "totalScore": 32.57,
+            "baseScore": 32.57,
+            "rerankAdjustment": 6.05
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "following-traffic"
+              ],
+              "action": [
+                "low-beam",
+                "high-beam"
+              ],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "following-traffic",
+                  "signal": "following"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                },
+                {
+                  "slot": "action",
+                  "value": "high-beam",
+                  "signal": "high-beam"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "head-light",
+                "low-beam"
+              ],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:night",
+              "action:low-beam",
+              "obligation:prohibited"
+            ],
+            "contradictionSignals": [
+              "action:low-beam-vs-high-beam"
+            ],
+            "rowContrastSignals": [
+              "action:low-beam-vs-high-beam"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: low beam, high beam, night, must",
+            "sourceFeatureKeywords": [
+              "low-beam",
+              "high-beam",
+              "night",
+              "must",
+              "cannot",
+              "conditions",
+              "direction",
+              "following",
+              "headlights",
+              "however",
+              "lighting",
+              "replace",
+              "streetlights",
+              "without",
+              "road-conditions",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "intersection",
+              "low-beam",
+              "night",
+              "head-light",
+              "should",
+              "alternately",
+              "false",
+              "lights",
+              "motorized",
+              "through",
+              "wrong",
+              "road-conditions",
+              "safe-driving"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate.",
+              "Context or action contradictions reduced this candidate's rank."
+            ]
+          },
+          "prompt": "When a vehicle goes at night through an intersection that has no traffic lights, the driver should not use the high and low beam lights alternately.",
+          "syntheticJaPrompt": "when 車両 goes night through 交差点 has いいえ traffic ライト 運転者 してはならない use high and low-beam ライト alternately。",
+          "translatedPrompt": "신호등이 없는 교차로를 야간에 통과할 때에는 상향등과 하향등을 번갈아 켜서는 안 된다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "road-safety",
+          "subtopics": [
+            "road-safety:road-conditions",
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [
+              "night"
+            ],
+            "context": [
+              "intersection"
+            ],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "negative",
+            "obligation": "prohibited",
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "night",
+                "signal": "night"
+              },
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0318",
+          "number": 318,
+          "type": "ROW",
+          "score": 35.853,
+          "scoreBreakdown": {
+            "optionScore": 0.432,
+            "glossScore": 0.16,
+            "promptSimilarity": 0.16,
+            "rawPromptSimilarity": 0.16,
+            "englishPromptSimilarity": 0.144,
+            "bridgePromptSimilarity": 0.16,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.44,
+            "rowKeywordSignal": 0.089,
+            "rowDistinctiveKeywordScore": 0.052,
+            "rowConceptKeywordSupport": 0.305,
+            "rowContrastPenalty": 0.18,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.432,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.825,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.408,
+            "conditionAlignment": 1,
+            "contextAlignment": 0,
+            "actionAlignment": 0.25,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0.18,
+            "assetTieBreak": 0,
+            "totalScore": 29.803,
+            "baseScore": 29.803,
+            "rerankAdjustment": 6.05
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "following-traffic"
+              ],
+              "action": [
+                "low-beam",
+                "high-beam"
+              ],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "following-traffic",
+                  "signal": "following"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                },
+                {
+                  "slot": "action",
+                  "value": "high-beam",
+                  "signal": "high-beam"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [
+                "night"
+              ],
+              "context": [
+                "crosswalk",
+                "pedestrian"
+              ],
+              "action": [
+                "head-light",
+                "pass",
+                "overtake",
+                "low-beam"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "condition",
+                  "value": "night",
+                  "signal": "night"
+                },
+                {
+                  "slot": "context",
+                  "value": "crosswalk",
+                  "signal": "crosswalk"
+                },
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "context",
+                  "value": "pedestrian",
+                  "signal": "pedestrian"
+                },
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "overtake"
+                },
+                {
+                  "slot": "action",
+                  "value": "overtake",
+                  "signal": "overtake"
+                },
+                {
+                  "slot": "action",
+                  "value": "low-beam",
+                  "signal": "low-beam"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "condition:night",
+              "action:low-beam"
+            ],
+            "contradictionSignals": [
+              "action:low-beam-vs-high-beam"
+            ],
+            "rowContrastSignals": [
+              "action:low-beam-vs-high-beam"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: low beam, high beam, night, must",
+            "sourceFeatureKeywords": [
+              "low-beam",
+              "high-beam",
+              "night",
+              "must",
+              "cannot",
+              "conditions",
+              "direction",
+              "following",
+              "headlights",
+              "however",
+              "lighting",
+              "replace",
+              "streetlights",
+              "without",
+              "road-conditions",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "crosswalk",
+              "pedestrian",
+              "low-beam",
+              "overtake",
+              "night",
+              "head-light",
+              "alternately",
+              "lights",
+              "passing",
+              "right"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Context or action contradictions reduced this candidate's rank."
+            ]
+          },
+          "prompt": "Use the high and low beam lights alternately when passing a crosswalk at night.",
+          "syntheticJaPrompt": "use high and low-beam ライト alternately when passing crosswalk night。",
+          "translatedPrompt": "야간에 횡단보도를 지날 때는 상향등과 하향등을 번갈아 사용한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [
+              "night"
+            ],
+            "context": [
+              "crosswalk"
+            ],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "condition",
+                "value": "night",
+                "signal": "night"
+              },
+              {
+                "slot": "context",
+                "value": "crosswalk",
+                "signal": "crosswalk"
+              },
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

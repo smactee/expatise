@@ -2,7 +2,7 @@
 
 import { LOCALE_REGISTRY, type Locale } from '@/messages';
 
-type FutureLanguageCode = 'zh' | 'ja' | 'es' | 'ru' | 'fr' | 'de' | 'ar';
+type FutureLanguageCode = 'zh' | 'es' | 'ru' | 'de' | 'ar';
 type PendingLanguageCode = Exclude<FutureLanguageCode, Locale>;
 type DevLanguageCode = 'ru';
 
@@ -40,7 +40,6 @@ const PENDING_LANGUAGE_OPTIONS: readonly LanguageOption[] = [
   { code: 'zh', label: '中文', enabled: isLanguageAvailable('zh'), productionReady: false },
   { code: 'es', label: 'Español', enabled: isLanguageAvailable('es'), productionReady: false },
   { code: 'ru', label: 'Русский', enabled: isLanguageAvailable('ru'), productionReady: false },
-  { code: 'fr', label: 'Français', enabled: isLanguageAvailable('fr'), productionReady: false },
   { code: 'de', label: 'Deutsch', enabled: isLanguageAvailable('de'), productionReady: false },
   { code: 'ar', label: 'العربية', enabled: isLanguageAvailable('ar'), productionReady: false },
 ];

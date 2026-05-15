@@ -1,0 +1,157 @@
+{
+  "generatedAt": "2026-05-11T11:02:55.253Z",
+  "lang": "fr",
+  "batchId": "batch-009",
+  "dataset": "2023-test1",
+  "scope": "review-preview-only",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/fr-batch-009-workbench-decisions.json",
+  "sourceFullAnswerKeyDecisionsPath": "qbank-tools/generated/staging/fr-batch-009-answer-key-decisions.json",
+  "previewQidCount": 40,
+  "excludedQids": [],
+  "items": [
+    {
+      "qid": "q0825",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Brown tourist destination sign with white pictogram and direction arrow; machine top match q0825 has identical intent (direction to tourist area). Source option C matches master correct meaning."
+    },
+    {
+      "qid": "q0604",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Red dashboard warning (exclamation in circle) indicates braking system abnormal. Machine top q0604 corresponds; source option D ('le système du frein est anormal') matches the master meaning."
+    },
+    {
+      "qid": "q0653",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Image shows parking area with white rectangular markings, but candidates disagree (parallel/horizontal vs time-limited). French options include both generic 'place de stationnement' and 'place à durée limitée' — visual evidence insufficient to disambiguate. Rejected top matcher: Top candidate q0691 (horizontal/parallel parking) is plausible but other candidates (q0653 time-limited) are close; options don't align cleanly, so unresolved."
+    },
+    {
+      "qid": "q0789",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue circular sign with white car pictogram indicates an indicative/vehicle-related sign type. Machine q0789 labels it 'indicative sign' (option C) which matches the source option C."
+    },
+    {
+      "qid": "q0840",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Blue circular sign with red border and red X usually means 'no stopping/no parking', but French options mix nuanced distinctions (temporary/long-term/no parking). Candidate matches are weak/conflicting — do not assign. Rejected top matcher: Top candidate q0787 (no passing) does not align with visual semantics; ambiguity between 'no parking' vs 'no stopping' in options prevents safe mapping."
+    },
+    {
+      "qid": "q0784",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Yellow triangular warning sign with splitting arrows likely warns of branching/obstacle and may indicate bypass left/right, but candidate pool shows mixed interpretations (bypass right/left, two-way, merging). Insufficient disambiguation to approve an existing qid. Rejected top matcher: Top candidate q0785 (bypass from right) is plausible but not definitive; visual + option set ambiguous."
+    },
+    {
+      "qid": "q0756",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue mandatory sign showing U-turn arrow. Machine top q0756 meaning 'U-turn' matches directly. Source option A 'faire demi-tour' corresponds to master correct answer."
+    },
+    {
+      "qid": "q0819",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Blue rectangular sign with white bus symbol and downward arrow indicates lane reserved for public transport buses. Top machine candidate favors BRT in its key; candidates conflict. Create new to preserve exact localized wording (A). Rejected top matcher: Top machine candidate q0819's correct option is 'BRT vehicles', which does not clearly match the localized French phrasing 'voie réservée aux bus de transport en commun'."
+    },
+    {
+      "qid": "q0849",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Visual (red light, POV) and prompt match q0849 which prohibits exceeding the stop line when going straight. The master correct (can not exceed the stop line) corresponds to source option A."
+    },
+    {
+      "qid": "q0712",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Yellow triangular sign with pedestrian figure indicates a pedestrian crossing. q0658's meaning 'crosswalk' matches the French source 'passage pour piétons' (A). Some candidate qids use slightly different phrasing ('watch for pedestrians'), so selected q0658 as best match. Rejected top matcher: Top machine candidate q0712 labels the sign as 'watch for pedestrians' which is similar but not the exact localized answer; chose q0658 which explicitly corresponds to 'crosswalk'."
+    },
+    {
+      "qid": "q0515",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk keepUnresolved: Text-only legal MCQ about fleeing after causing accident with serious injuries or deaths. Candidate qids conflict (some indicate 3~7 years, others >7 years) and the source extraction has no key. Cannot confidently map to an existing qid or pick a correct option without authoritative statute mapping. Rejected top matcher: Top machine match (q0515) suggests '3~7 years' but other candidates (e.g., q0471) indicate different sentencing; legal nuance prevents safe automatic approval."
+    },
+    {
+      "qid": "q0796",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Image shows blue rectangular chevron/delineator plates indicating a curve (chevrons pointing left). Local option B 'balise de virage' matches the visual semantics. No candidate qid clearly and unambiguously matches this exact sign meaning; create new. Rejected top matcher: Top machine candidate q0737 refers to lane-direction arrows rather than chevron curve markers; not a reliable match."
+    },
+    {
+      "qid": "q0887",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image of police officer hand signals; source answer 's'arrêter' (stop) corresponds to q0899 master answer 'stop'. In the localized option order, 'stop' is source letter C, so map to C."
+    },
+    {
+      "qid": "q0142",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Text-only MCQ about acceleration lane speed. q0142's correct value is 60 km/h which corresponds to source option D (60 km/h). Good match."
+    },
+    {
+      "qid": "q0793",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows blue rectangular sign with car + driver and passenger (HOV). q0793 corresponds to 'special lane for multi-passenger vehicles'. Source option C matches that meaning. Some candidate matches (q0686) conflict so confidence reduced."
+    },
+    {
+      "qid": "q0757",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Image shows three blue panels with arrows (left/straight/right) and Chinese text. Source options (various 'avertissement') are ambiguous relative to existing candidates; cannot confidently map to a single existing qid or option."
+    },
+    {
+      "qid": "q0759",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Green highway signs with route numbers and arrows indicate highway location/direction. q0759 ('highway location and direction indication') fits; source option C matches that meaning."
+    },
+    {
+      "qid": "q0718",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue circular sign with three white arrows forming a circle = roundabout sign. q0718 corresponds to 'running the roundabout'. Localized option D matches."
+    },
+    {
+      "qid": "q0657",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Blue circular horn symbol indicates mandatory horn (sound). q0657 encodes 'should honk'. Source first option 'obligation de klaxonner' corresponds to option A."
+    },
+    {
+      "qid": "q0743",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk keepUnresolved: Image shows a right-pointing guide arrow and the source correct answer B indicates right; top machine match (q0860) indicates left-turn/straight semantics — conflicting candidates and option-set mismatch. Do not auto-assign qid. Rejected top matcher: Top matcher q0860 describes left/straight arrow semantics that contradict the visual evidence (arrow points right)."
+    },
+    {
+      "qid": "q0186",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Prompt matches q0186; correct master answer is to slow and yield. Source option D corresponds to that meaning, so map to source letter D."
+    },
+    {
+      "qid": "q0673",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Sign is a green highway guide board with distance ('4 km') and meaning 'next exit ahead' — q0673 is the matching highway-exit-ahead item; source option A matches that meaning."
+    },
+    {
+      "qid": "q0864",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows two continuous yellow center lines; q0725 covers solid/broken yellow center lines — the impassable (no crossing the solid line) meaning matches source option B."
+    },
+    {
+      "qid": "q0452",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Image clearly shows a yellow lane marking with a taxi symbol; no top candidate in the provided matches corresponds to a taxi-lane marking. Create new localized item; correct source answer A (taxi). Rejected top matcher: Top candidates refer to dashboard indicators (open trunk/doors) and do not match the road-marking taxi symbol, so cannot reuse them."
+    }
+  ]
+}

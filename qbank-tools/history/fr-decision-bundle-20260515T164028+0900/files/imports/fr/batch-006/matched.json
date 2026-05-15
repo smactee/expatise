@@ -1,0 +1,4339 @@
+{
+  "generatedAt": "2026-05-09T01:53:20.952Z",
+  "lang": "fr",
+  "batchId": "batch-006",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.27.38 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.27.38 1.png",
+      "promptRawJa": "Sur cette intersection, il faut laisser la priorité aux véhicules qui vont aller tout droit.",
+      "promptGlossEn": "At this intersection, must you yield to vehicles going straight ahead?",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "visualObjectTags": [
+        "pov",
+        "yellow-car",
+        "intersection"
+      ],
+      "visualColorTags": [
+        "yellow",
+        "green",
+        "gray",
+        "black",
+        "white",
+        "blue"
+      ],
+      "visualNumberTags": [],
+      "visualLayoutTags": [
+        "pov-scene",
+        "intersection-diagram",
+        "straight"
+      ],
+      "visualEvidenceNotes": [
+        "View from inside a car at an intersection, yellow car ahead going straight"
+      ],
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs",
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 0.538,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        },
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "visualEvidenceAvailable": true,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": "indicator",
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "pov",
+        "yellow-car",
+        "intersection",
+        "arrow",
+        "car-icon",
+        "gray-background",
+        "yellow-car-icon",
+        "indicator",
+        "dashboard-indicator",
+        "warning-light"
+      ],
+      "expectedColorTags": [
+        "yellow",
+        "green",
+        "gray",
+        "black",
+        "white",
+        "blue"
+      ],
+      "sourceIsSignHeavy": true,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [
+          "intersection"
+        ],
+        "action": [
+          "yield"
+        ],
+        "polarity": "positive",
+        "obligation": "must",
+        "signals": [
+          {
+            "slot": "context",
+            "value": "intersection",
+            "signal": "intersection"
+          },
+          {
+            "slot": "action",
+            "value": "yield",
+            "signal": "yield"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Sur cette intersection, il faut laisser la priorité aux véhicules qui vont aller tout droit.",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "At this intersection, must you yield to vehicles going straight ahead?",
+        "options": [
+          "Yes",
+          "No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0230",
+        "number": 230,
+        "score": 77.485,
+        "scoreGap": 8.363,
+        "scoreBreakdown": {
+          "optionScore": 0.91,
+          "glossScore": 0.325,
+          "promptSimilarity": 0.325,
+          "rawPromptSimilarity": 0.325,
+          "englishPromptSimilarity": 0.325,
+          "bridgePromptSimilarity": 0.066,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.2,
+          "localizedGlossSimilarity": 0,
+          "localizedKeywordSupport": 0.2,
+          "multilingualSupportScore": 0.2,
+          "keywordScore": 0.491,
+          "rowKeywordSignal": 0.125,
+          "rowDistinctiveKeywordScore": 0.075,
+          "rowConceptKeywordSupport": 0.32,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "imageScore": 0.76,
+          "rawImageScore": 0.76,
+          "indicatorVisualScore": 0.691,
+          "indicatorVisualBoost": 6.494,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.91,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.35,
+          "provisionalTopicAgreement": 0.5,
+          "structuralAgreement": 0.816,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.72,
+          "imageColorAgreement": 0.867,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 1,
+          "conditionAlignment": 0,
+          "contextAlignment": 1,
+          "actionAlignment": 0,
+          "obligationAlignment": 0,
+          "polarityAlignment": 0,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 61.683,
+          "baseScore": 61.683,
+          "rerankAdjustment": 15.802
+        },
+        "candidateTopicTruth": {
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "tags": [
+            "proper-driving",
+            "proper-driving:safe-driving"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": true,
+          "currentAssetSrc": "/qbank/2023-test1/images/img_272906d198fa322b7660cb98b2ab8948.jpeg",
+          "assetHashes": [
+            "272906d198fa322b7660cb98b2ab8948"
+          ],
+          "colorTags": [
+            "white",
+            "gray",
+            "yellow"
+          ],
+          "objectTags": [
+            "car",
+            "pov",
+            "yellow-car",
+            "building",
+            "tree"
+          ]
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 498,
+        "candidateCountAfterStructuralFilter": 142,
+        "candidateCountAfterMcqShortlist": 142,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 142,
+        "structuralSoftCandidateCount": 142,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-image",
+        "decisionReasonCodes": [
+          "profile-pass"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-image",
+          "topScore": 77.485,
+          "rank2Score": 69.122,
+          "scoreGap": 8.363,
+          "thresholds": {
+            "reviewFloor": 40,
+            "autoMatchThreshold": 64,
+            "autoGapThreshold": 7
+          },
+          "signalAgreement": {
+            "agreementScore": 0.646,
+            "strongSignalCount": 3,
+            "weakSignalCount": 0,
+            "signalSpread": 0.675,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.325,
+              "keyword": 0.5,
+              "image": 0.76,
+              "multilingual": 0.2,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.205,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "profile-pass"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Sur cette intersection, il faut laisser la priorité aux véhicules qui vont aller tout droit.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0230",
+          "number": 230,
+          "type": "ROW",
+          "score": 77.485,
+          "scoreBreakdown": {
+            "optionScore": 0.91,
+            "glossScore": 0.325,
+            "promptSimilarity": 0.325,
+            "rawPromptSimilarity": 0.325,
+            "englishPromptSimilarity": 0.325,
+            "bridgePromptSimilarity": 0.066,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.491,
+            "rowKeywordSignal": 0.125,
+            "rowDistinctiveKeywordScore": 0.075,
+            "rowConceptKeywordSupport": 0.32,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.76,
+            "rawImageScore": 0.76,
+            "indicatorVisualScore": 0.691,
+            "indicatorVisualBoost": 6.494,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.91,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.816,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.72,
+            "imageColorAgreement": 0.867,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 61.683,
+            "baseScore": 61.683,
+            "rerankAdjustment": 15.802
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "yield",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "yield",
+                  "signal": "yield"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [],
+              "polarity": null,
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:intersection"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: intersection, dashboard indicator, arrow, car icon, gray background",
+            "sourceFeatureKeywords": [
+              "intersection",
+              "dashboard-indicator",
+              "turn-signal",
+              "yield",
+              "arrow",
+              "car-icon",
+              "gray-background",
+              "indicator",
+              "must",
+              "pov",
+              "warning-light",
+              "yellow-car",
+              "yellow-car-icon",
+              "ahead",
+              "background",
+              "dashboard",
+              "going",
+              "straight"
+            ],
+            "candidateFeatureKeywords": [
+              "intersection",
+              "building",
+              "pov",
+              "tree",
+              "yellow-car",
+              "first",
+              "right",
+              "straight-going",
+              "safe-driving"
+            ],
+            "candidateImageTags": [
+              "car",
+              "pov",
+              "yellow-car",
+              "building",
+              "tree",
+              "white",
+              "gray",
+              "yellow",
+              "blue",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.72,
+            "dominantColorMatch": 0.76,
+            "indicatorVisualMatch": 0.691,
+            "imageCandidateBoost": 6.494,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "Let the straight-going vehicle go first at this intersection.",
+          "syntheticJaPrompt": "let straight-going 車両 go first 交差点。",
+          "translatedPrompt": "이 교차로에서는 직진 차량에게 먼저 통행 우선권을 주어야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_272906d198fa322b7660cb98b2ab8948.jpeg",
+            "assetHashes": [
+              "272906d198fa322b7660cb98b2ab8948"
+            ],
+            "colorTags": [
+              "white",
+              "gray",
+              "yellow"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "blue"
+            ],
+            "objectTags": [
+              "car",
+              "pov",
+              "yellow-car",
+              "building",
+              "tree"
+            ]
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "intersection"
+            ],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "context",
+                "value": "intersection",
+                "signal": "intersection"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0554",
+          "number": 554,
+          "type": "ROW",
+          "score": 69.122,
+          "scoreBreakdown": {
+            "optionScore": 0.362,
+            "glossScore": 0.084,
+            "promptSimilarity": 0.084,
+            "rawPromptSimilarity": 0.084,
+            "englishPromptSimilarity": 0.084,
+            "bridgePromptSimilarity": 0.033,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.318,
+            "rowKeywordSignal": 0.243,
+            "rowDistinctiveKeywordScore": 0.321,
+            "rowConceptKeywordSupport": 0.034,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.84,
+            "rawImageScore": 0.84,
+            "indicatorVisualScore": 0.77,
+            "indicatorVisualBoost": 9.18,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.362,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.822,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.84,
+            "imageColorAgreement": 0.733,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.211,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 51.798,
+            "baseScore": 51.798,
+            "rerankAdjustment": 17.324
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "yield",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "yield",
+                  "signal": "yield"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: intersection, dashboard indicator, arrow, car icon, gray background",
+            "sourceFeatureKeywords": [
+              "intersection",
+              "dashboard-indicator",
+              "turn-signal",
+              "yield",
+              "arrow",
+              "car-icon",
+              "gray-background",
+              "indicator",
+              "must",
+              "pov",
+              "warning-light",
+              "yellow-car",
+              "yellow-car-icon",
+              "ahead",
+              "background",
+              "dashboard",
+              "going",
+              "straight"
+            ],
+            "candidateFeatureKeywords": [
+              "dashboard-indicator",
+              "car-icon",
+              "gray-background",
+              "head-light",
+              "indicator",
+              "open-trunk",
+              "vehicle-side-view",
+              "warning-light",
+              "yellow-car-icon",
+              "compartment",
+              "false",
+              "indicate",
+              "lights",
+              "luggage",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-trunk",
+              "vehicle-side-view",
+              "warning-light",
+              "gray-background",
+              "yellow",
+              "gray"
+            ],
+            "imageObjectMatch": 0.84,
+            "dominantColorMatch": 0.52,
+            "indicatorVisualMatch": 0.77,
+            "imageCandidateBoost": 9.18,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "It lights to indicate that luggage compartment is open.",
+          "syntheticJaPrompt": "it ライト indicate トランク 開いている。",
+          "translatedPrompt": "이 등이 켜지면 트렁크가 열려 있음을 나타낸다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_15b1126342cce905fb4f658fa489a3b8.jpeg",
+            "assetHashes": [
+              "15b1126342cce905fb4f658fa489a3b8"
+            ],
+            "colorTags": [
+              "yellow",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "yellow",
+              "gray"
+            ],
+            "objectTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-trunk",
+              "vehicle-side-view",
+              "warning-light",
+              "gray-background"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0552",
+          "number": 552,
+          "type": "ROW",
+          "score": 68.954,
+          "scoreBreakdown": {
+            "optionScore": 0.362,
+            "glossScore": 0.076,
+            "promptSimilarity": 0.076,
+            "rawPromptSimilarity": 0.076,
+            "englishPromptSimilarity": 0.076,
+            "bridgePromptSimilarity": 0.027,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.327,
+            "rowKeywordSignal": 0.254,
+            "rowDistinctiveKeywordScore": 0.335,
+            "rowConceptKeywordSupport": 0.034,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.84,
+            "rawImageScore": 0.84,
+            "indicatorVisualScore": 0.77,
+            "indicatorVisualBoost": 9.18,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.362,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.822,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.84,
+            "imageColorAgreement": 0.733,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.211,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 51.63,
+            "baseScore": 51.63,
+            "rerankAdjustment": 17.324
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "yield",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "yield",
+                  "signal": "yield"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  48
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "48"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: intersection, dashboard indicator, arrow, car icon, gray background",
+            "sourceFeatureKeywords": [
+              "intersection",
+              "dashboard-indicator",
+              "turn-signal",
+              "yield",
+              "arrow",
+              "car-icon",
+              "gray-background",
+              "indicator",
+              "must",
+              "pov",
+              "warning-light",
+              "yellow-car",
+              "yellow-car-icon",
+              "ahead",
+              "background",
+              "dashboard",
+              "going",
+              "straight"
+            ],
+            "candidateFeatureKeywords": [
+              "dashboard-indicator",
+              "car-icon",
+              "gray-background",
+              "head-light",
+              "indicator",
+              "open-door",
+              "vehicle-top-view",
+              "warning-light",
+              "yellow-car-icon",
+              "closed",
+              "false",
+              "indicate",
+              "lights",
+              "right",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-door",
+              "vehicle-top-view",
+              "warning-light",
+              "gray-background",
+              "yellow",
+              "gray"
+            ],
+            "imageObjectMatch": 0.84,
+            "dominantColorMatch": 0.52,
+            "indicatorVisualMatch": 0.77,
+            "imageCandidateBoost": 9.18,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "It lights to indicate that right door is not closed.",
+          "syntheticJaPrompt": "it ライト indicate right door not closed 48。",
+          "translatedPrompt": "이 등이 켜지면 우측 문이 열려 있음을 나타낸다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_336efcbf5a73dcff73c7b21cee411df9.jpeg",
+            "assetHashes": [
+              "336efcbf5a73dcff73c7b21cee411df9"
+            ],
+            "colorTags": [
+              "yellow",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "yellow",
+              "gray"
+            ],
+            "objectTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-door",
+              "vehicle-top-view",
+              "warning-light",
+              "gray-background"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "positive",
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0548",
+          "number": 548,
+          "type": "ROW",
+          "score": 68.867,
+          "scoreBreakdown": {
+            "optionScore": 0.362,
+            "glossScore": 0.084,
+            "promptSimilarity": 0.084,
+            "rawPromptSimilarity": 0.084,
+            "englishPromptSimilarity": 0.084,
+            "bridgePromptSimilarity": 0.032,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.301,
+            "rowKeywordSignal": 0.236,
+            "rowDistinctiveKeywordScore": 0.262,
+            "rowConceptKeywordSupport": 0.034,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.84,
+            "rawImageScore": 0.84,
+            "indicatorVisualScore": 0.77,
+            "indicatorVisualBoost": 9.18,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.362,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.822,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.84,
+            "imageColorAgreement": 0.733,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.211,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 51.543,
+            "baseScore": 51.543,
+            "rerankAdjustment": 17.324
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "yield",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "yield",
+                  "signal": "yield"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: intersection, dashboard indicator, arrow, car icon, gray background",
+            "sourceFeatureKeywords": [
+              "intersection",
+              "dashboard-indicator",
+              "turn-signal",
+              "yield",
+              "arrow",
+              "car-icon",
+              "gray-background",
+              "indicator",
+              "must",
+              "pov",
+              "warning-light",
+              "yellow-car",
+              "yellow-car-icon",
+              "ahead",
+              "background",
+              "dashboard",
+              "going",
+              "straight"
+            ],
+            "candidateFeatureKeywords": [
+              "dashboard-indicator",
+              "engine",
+              "car-icon",
+              "gray-background",
+              "head-light",
+              "indicator",
+              "open-hood",
+              "vehicle-side-view",
+              "warning-light",
+              "yellow-car-icon",
+              "compartment",
+              "false",
+              "indicate",
+              "lights",
+              "opened",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-hood",
+              "vehicle-side-view",
+              "warning-light",
+              "gray-background",
+              "yellow",
+              "gray"
+            ],
+            "imageObjectMatch": 0.84,
+            "dominantColorMatch": 0.52,
+            "indicatorVisualMatch": 0.77,
+            "imageCandidateBoost": 9.18,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "It lights to indicate that the hood engine compartment is open.",
+          "syntheticJaPrompt": "it ライト indicate エンジンルーム opened。",
+          "translatedPrompt": "이 등이 켜지면 엔진룸이 열려 있음을 나타낸다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_ddba9d1c57649262dbaa50ad81c198d1.jpeg",
+            "assetHashes": [
+              "ddba9d1c57649262dbaa50ad81c198d1"
+            ],
+            "colorTags": [
+              "yellow",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "yellow",
+              "gray"
+            ],
+            "objectTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-hood",
+              "vehicle-side-view",
+              "warning-light",
+              "gray-background"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0550",
+          "number": 550,
+          "type": "ROW",
+          "score": 67.277,
+          "scoreBreakdown": {
+            "optionScore": 0.215,
+            "glossScore": 0.091,
+            "promptSimilarity": 0.091,
+            "rawPromptSimilarity": 0.091,
+            "englishPromptSimilarity": 0.091,
+            "bridgePromptSimilarity": 0.021,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.255,
+            "rowKeywordSignal": 0.219,
+            "rowDistinctiveKeywordScore": 0.243,
+            "rowConceptKeywordSupport": 0,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.84,
+            "rawImageScore": 0.84,
+            "indicatorVisualScore": 0.77,
+            "indicatorVisualBoost": 9.18,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.215,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.822,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.84,
+            "imageColorAgreement": 0.733,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 49.953,
+            "baseScore": 49.953,
+            "rerankAdjustment": 17.324
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "intersection"
+              ],
+              "action": [
+                "yield",
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "intersection",
+                  "signal": "intersection"
+                },
+                {
+                  "slot": "action",
+                  "value": "yield",
+                  "signal": "yield"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": "negative",
+              "obligation": "prohibited",
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: intersection, dashboard indicator, arrow, car icon, gray background",
+            "sourceFeatureKeywords": [
+              "intersection",
+              "dashboard-indicator",
+              "turn-signal",
+              "yield",
+              "arrow",
+              "car-icon",
+              "gray-background",
+              "indicator",
+              "must",
+              "pov",
+              "warning-light",
+              "yellow-car",
+              "yellow-car-icon",
+              "ahead",
+              "background",
+              "dashboard",
+              "going",
+              "straight"
+            ],
+            "candidateFeatureKeywords": [
+              "dashboard-indicator",
+              "switch",
+              "car-icon",
+              "gray-background",
+              "indicator",
+              "open-door",
+              "vehicle-top-view",
+              "warning-light",
+              "yellow-car-icon",
+              "appliances",
+              "devices",
+              "electrical",
+              "false",
+              "ignition",
+              "position",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-door",
+              "vehicle-top-view",
+              "warning-light",
+              "gray-background",
+              "gray",
+              "yellow"
+            ],
+            "imageObjectMatch": 0.84,
+            "dominantColorMatch": 0.52,
+            "indicatorVisualMatch": 0.77,
+            "imageCandidateBoost": 9.18,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [
+              "dominant-color-match",
+              "image-object-match",
+              "indicator-visual-match",
+              "image-candidate-boost"
+            ],
+            "sourceIndicatorVisual": true,
+            "candidateIndicatorVisual": true,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Indicator visual tags, dominant colors, and image presence strengthened this candidate.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "Ignition switch in the ON position, the vehicle can not use electrical devices.",
+          "syntheticJaPrompt": "ignition switch position 車両 してはならない use electrical appliance。",
+          "translatedPrompt": "시동 스위치가 ON 위치에 있으면 전기 장치를 사용할 수 없다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_3dc32303d524de08f46ecc391051c6b3.jpeg",
+            "assetHashes": [
+              "3dc32303d524de08f46ecc391051c6b3"
+            ],
+            "colorTags": [
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "yellow"
+            ],
+            "objectTags": [
+              "indicator",
+              "dashboard-indicator",
+              "car-icon",
+              "yellow-car-icon",
+              "open-door",
+              "vehicle-top-view",
+              "warning-light",
+              "gray-background"
+            ]
+          },
+          "topic": "vehicle-basics",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": "negative",
+            "obligation": "prohibited",
+            "signals": []
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.27.58.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.27.58.png",
+      "promptRawJa": "Quelle est la vitesse maximale autorisée sur cette voie ?",
+      "promptGlossEn": "What is the maximum allowed speed on this road?",
+      "optionsRawJa": [
+        "A 120 km/h",
+        "B 110 km/h",
+        "C 100 km/h",
+        "D 90 km/h"
+      ],
+      "optionsGlossEn": [
+        "120 km/h",
+        "110 km/h",
+        "100 km/h",
+        "90 km/h"
+      ],
+      "correctKeyRaw": "D",
+      "correctAnswerRaw": "90 km/h",
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "visualObjectTags": [
+        "pov",
+        "90"
+      ],
+      "visualColorTags": [
+        "white",
+        "red",
+        "green",
+        "blue",
+        "gray",
+        "black"
+      ],
+      "visualNumberTags": [
+        "90"
+      ],
+      "visualLayoutTags": [
+        "pov-scene"
+      ],
+      "visualEvidenceNotes": [
+        "Embedded image is a driver's point of view on a road.",
+        "A round speed limit sign marked '90' is visible ahead."
+      ],
+      "provisionalTopic": "traffic-signals",
+      "provisionalSubtopics": [
+        "traffic-signals:road-signs"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "traffic-signals",
+          "subtopic": "traffic-signals:road-signs",
+          "signal": "sign-family",
+          "weight": 1.4
+        }
+      ],
+      "visualEvidenceAvailable": true,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": "action",
+      "sourceOptionCount": 4,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "pov",
+        "90",
+        "gray-background"
+      ],
+      "expectedColorTags": [
+        "white",
+        "red",
+        "green",
+        "blue",
+        "gray",
+        "black"
+      ],
+      "sourceIsSignHeavy": true,
+      "sourceConceptSlots": null,
+      "mcqFingerprint": {
+        "normalizedPrompt": "what is max allowed speed on this road",
+        "normalizedCorrectAnswer": "90 kmh",
+        "normalizedOptions": [
+          "120 kmh",
+          "110 kmh",
+          "100 kmh",
+          "90 kmh"
+        ],
+        "promptAllTokens": [
+          "what",
+          "is",
+          "max",
+          "allowed",
+          "speed",
+          "on",
+          "this",
+          "road"
+        ],
+        "answerAllTokens": [
+          "90",
+          "kmh"
+        ],
+        "optionAllTokenSets": [
+          [
+            "120",
+            "kmh"
+          ],
+          [
+            "110",
+            "kmh"
+          ],
+          [
+            "100",
+            "kmh"
+          ],
+          [
+            "90",
+            "kmh"
+          ]
+        ],
+        "promptTokens": [
+          "max",
+          "allowed",
+          "speed"
+        ],
+        "answerTokens": [
+          "kmh"
+        ],
+        "promptPhraseTokens": [
+          "max allowed",
+          "allowed speed",
+          "max allowed speed"
+        ],
+        "answerPhraseTokens": [],
+        "optionTokens": [
+          "kmh"
+        ],
+        "optionTokenSets": [
+          [
+            "kmh"
+          ],
+          [
+            "kmh"
+          ],
+          [
+            "kmh"
+          ],
+          [
+            "kmh"
+          ]
+        ],
+        "optionPhraseTokens": [],
+        "optionPhraseTokenSets": [
+          [],
+          [],
+          [],
+          []
+        ],
+        "optionConceptTokens": [
+          "kmh"
+        ],
+        "optionConceptTokenSets": [
+          [
+            "kmh"
+          ],
+          [
+            "kmh"
+          ],
+          [
+            "kmh"
+          ],
+          [
+            "kmh"
+          ]
+        ],
+        "optionConceptSignatures": [
+          "kmh",
+          "kmh",
+          "kmh",
+          "kmh"
+        ],
+        "promptDistinctiveTokens": [
+          "allowed"
+        ],
+        "answerDistinctiveTokens": [],
+        "optionDistinctiveTokens": [],
+        "distinctiveOptionConcepts": [],
+        "keywordTokens": [
+          "max",
+          "allowed",
+          "speed",
+          "kmh"
+        ],
+        "rareKeywords": [
+          "allowed"
+        ],
+        "optionSetSignature": "100 kmh || 110 kmh || 120 kmh || 90 kmh",
+        "alignedOptionSetSignature": "100 kmh || 110 kmh || 120 kmh || 90 kmh",
+        "optionConceptSetSignature": "kmh || kmh || kmh || kmh",
+        "numericSignals": {
+          "tokens": [
+            "90",
+            "120",
+            "110",
+            "100"
+          ],
+          "values": [
+            "90",
+            "120",
+            "110",
+            "100"
+          ]
+        },
+        "promptNumericSignals": {
+          "tokens": [],
+          "values": []
+        },
+        "answerNumericSignals": {
+          "tokens": [
+            "90"
+          ],
+          "values": [
+            "90"
+          ]
+        },
+        "optionNumericSignals": [
+          {
+            "tokens": [
+              "120"
+            ],
+            "values": [
+              "120"
+            ]
+          },
+          {
+            "tokens": [
+              "110"
+            ],
+            "values": [
+              "110"
+            ]
+          },
+          {
+            "tokens": [
+              "100"
+            ],
+            "values": [
+              "100"
+            ]
+          },
+          {
+            "tokens": [
+              "90"
+            ],
+            "values": [
+              "90"
+            ]
+          }
+        ],
+        "topic": "traffic-signals",
+        "subtopics": [
+          "traffic-signals:road-signs"
+        ],
+        "hasImage": true
+      },
+      "localizedText": {
+        "prompt": "Quelle est la vitesse maximale autorisée sur cette voie ?",
+        "options": [
+          "A 120 km/h",
+          "B 110 km/h",
+          "C 100 km/h",
+          "D 90 km/h"
+        ],
+        "correctAnswer": "90 km/h",
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "What is the maximum allowed speed on this road?",
+        "options": [
+          "120 km/h",
+          "110 km/h",
+          "100 km/h",
+          "90 km/h"
+        ],
+        "correctAnswer": "90 km/h"
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0367",
+        "number": 367,
+        "score": 108.21,
+        "scoreGap": 59.957,
+        "scoreBreakdown": {
+          "optionScore": 1,
+          "glossScore": 0.695,
+          "promptScore": 0.695,
+          "promptSimilarity": 0.695,
+          "rawPromptSimilarity": 0.732,
+          "englishPromptSimilarity": 0.695,
+          "bridgePromptSimilarity": 0.005,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "optionSimilarity": 1,
+          "englishOptionSimilarity": 0.922,
+          "syntheticOptionSimilarity": 0,
+          "localizedOptionSimilarity": 0,
+          "localizedOptionGlossSimilarity": 0,
+          "optionSetScore": 1,
+          "optionSignatureScore": 0.798,
+          "optionSignatureDominance": 0.91,
+          "optionConceptPairing": 1,
+          "optionConceptCoverage": 1,
+          "optionConceptExactSet": 1,
+          "alignedOptionSimilarity": 0.757,
+          "optionFingerprint": 1,
+          "englishOptionFingerprint": 1,
+          "syntheticOptionFingerprint": 0,
+          "localizedOptionFingerprint": 0,
+          "optionExactSet": 0.95,
+          "optionRareCoverage": 1,
+          "optionRowKeywordScore": 1,
+          "mirrorAgreement": 1,
+          "localizedAgreement": 0.467,
+          "answerScore": 0.85,
+          "answerGlossScore": 0.88,
+          "correctAnswerMeaning": 1,
+          "englishCorrectAnswerMeaning": 1,
+          "syntheticCorrectAnswerMeaning": 0,
+          "localizedCorrectAnswerMeaning": 0.5,
+          "localizedCorrectGlossMeaning": 1,
+          "keywordScore": 0.656,
+          "bridgeKeywordScore": 0.656,
+          "localizedKeywordSupport": 0.2,
+          "promptKeywordScore": 0.444,
+          "promptPhraseScore": 0.15,
+          "answerKeywordScore": 1,
+          "answerPhraseScore": 0.5,
+          "optionKeywordScore": 1,
+          "optionPhraseScore": 0.5,
+          "optionConceptKeywordScore": 1,
+          "optionConceptDistinctiveScore": 0.5,
+          "rareKeywordScore": 0.6,
+          "numberScore": 0.95,
+          "numberExactOverlap": 0.8,
+          "numberValueOverlap": 0.8,
+          "numericGroupScore": 0.86,
+          "numericGroupPenalty": 0,
+          "numericIntentMismatchPenalty": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "numberConflictPenalty": 0,
+          "imageScore": 1,
+          "rawImageScore": 1,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "visualScore": 1,
+          "visualObjectScore": 0.825,
+          "visualColorScore": 0.52,
+          "dominantColorScore": 0.5,
+          "visualNumberScore": 1,
+          "visualLayoutScore": 0.86,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.35,
+          "provisionalTopicAgreement": 0,
+          "structuralAgreement": 0.796,
+          "structuralPenalty": 0.16,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.75,
+          "imageColorAgreement": 0.733,
+          "priorBonus": 0.18,
+          "topicWeighting": 0.5,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "localizedGlossSimilarity": 0,
+          "bridgeLocalizedAgreement": 0.573,
+          "multilingualSupportScore": 0.467,
+          "totalScore": 97.178,
+          "baseScore": 97.178,
+          "rerankAdjustment": 11.032
+        },
+        "candidateTopicTruth": {
+          "topic": null,
+          "subtopics": [],
+          "tags": []
+        },
+        "candidateImageRef": {
+          "hasImage": true,
+          "currentAssetSrc": "/qbank/2023-test1/images/img_647702fb8244fca65e8d2559c3656903.jpeg",
+          "assetHashes": [
+            "647702fb8244fca65e8d2559c3656903"
+          ],
+          "colorTags": [
+            "blue",
+            "gray"
+          ],
+          "objectTags": [
+            "pov",
+            "clouds",
+            "90",
+            "countryroad",
+            "alone",
+            "lonley",
+            "highway"
+          ]
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 498,
+        "candidateCountAfterStructuralFilter": 356,
+        "candidateCountAfterMcqShortlist": 40,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 356,
+        "structuralSoftCandidateCount": 356,
+        "mcqShortlistApplied": true,
+        "mcqShortlistMode": "mcq-answer-option-number-shortlist",
+        "mcqShortlistTopScore": 0.91,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "mcq-image",
+        "decisionReasonCodes": [
+          "gap-relaxed-strong-evidence",
+          "option-signature-dominant",
+          "mcq-top2-option-separated"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "mcq-image",
+          "topScore": 108.21,
+          "rank2Score": 48.253,
+          "scoreGap": 59.957,
+          "thresholds": {
+            "reviewFloor": 44,
+            "autoMatchThreshold": 71,
+            "autoGapThreshold": 9
+          },
+          "signalAgreement": {
+            "agreementScore": 0.889,
+            "strongSignalCount": 4,
+            "weakSignalCount": 0,
+            "signalSpread": 0.305,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.695,
+              "keyword": 0.86,
+              "image": 1,
+              "multilingual": 0.467,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.531,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "gap-relaxed-strong-evidence",
+            "option-signature-dominant",
+            "mcq-top2-option-separated"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Quelle est la vitesse maximale autorisée sur cette voie ?",
+        "explanation": "",
+        "options": {
+          "q0367_o1": "A 120 km/h",
+          "q0367_o2": "B 110 km/h",
+          "q0367_o3": "C 100 km/h",
+          "q0367_o4": "D 90 km/h"
+        },
+        "warnings": [
+          "Option IDs were mapped by position only. Review before merge."
+        ]
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0367",
+          "number": 367,
+          "type": "MCQ",
+          "score": 108.21,
+          "scoreBreakdown": {
+            "optionScore": 1,
+            "glossScore": 0.695,
+            "promptScore": 0.695,
+            "promptSimilarity": 0.695,
+            "rawPromptSimilarity": 0.732,
+            "englishPromptSimilarity": 0.695,
+            "bridgePromptSimilarity": 0.005,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 1,
+            "englishOptionSimilarity": 0.922,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 1,
+            "optionSignatureScore": 0.798,
+            "optionSignatureDominance": 0.91,
+            "optionConceptPairing": 1,
+            "optionConceptCoverage": 1,
+            "optionConceptExactSet": 1,
+            "alignedOptionSimilarity": 0.757,
+            "optionFingerprint": 1,
+            "englishOptionFingerprint": 1,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0.95,
+            "optionRareCoverage": 1,
+            "optionRowKeywordScore": 1,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.85,
+            "answerGlossScore": 0.88,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.656,
+            "bridgeKeywordScore": 0.656,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.444,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 1,
+            "answerPhraseScore": 0.5,
+            "optionKeywordScore": 1,
+            "optionPhraseScore": 0.5,
+            "optionConceptKeywordScore": 1,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.6,
+            "numberScore": 0.95,
+            "numberExactOverlap": 0.8,
+            "numberValueOverlap": 0.8,
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 1,
+            "visualObjectScore": 0.825,
+            "visualColorScore": 0.52,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 1,
+            "visualLayoutScore": 0.86,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.796,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.75,
+            "imageColorAgreement": 0.733,
+            "priorBonus": 0.18,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 97.178,
+            "baseScore": 97.178,
+            "rerankAdjustment": 11.032
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-image",
+            "signalWeights": {
+              "option": 0.42,
+              "gloss": 0.16,
+              "keyword": 0.08,
+              "image": 0.22,
+              "multilingual": 0.12
+            },
+            "promptSpecificity": 0.975,
+            "genericPromptPenalty": 0.975,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 1,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": "max",
+              "promptFamily": "speed"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": "max",
+              "promptFamily": "speed"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "90 km/h"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120 km/h"
+              },
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "110 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "90 km/h"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "90km"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              },
+              {
+                "values": [
+                  27
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "27"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "100km"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120 km/h"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "120km"
+              },
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "110 km/h"
+              },
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "110km"
+              }
+            ],
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90 km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "90"
+                },
+                "candidate": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90 km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "120 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "120 km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    110
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "110 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    110
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "110 km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": true,
+            "visualMatchedTags": [
+              "pov",
+              "90",
+              "gray-background",
+              "blue",
+              "gray"
+            ],
+            "imageObjectMatch": 0.825,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: 90, gray background, may, pov",
+            "sourceFeatureKeywords": [
+              "90",
+              "gray-background",
+              "may",
+              "pov",
+              "allowed",
+              "background",
+              "maximum",
+              "speed",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "90",
+              "alone",
+              "clouds",
+              "countryroad",
+              "highway",
+              "lonley",
+              "pov",
+              "limit",
+              "speed"
+            ],
+            "candidateImageTags": [
+              "pov",
+              "clouds",
+              "90",
+              "countryroad",
+              "alone",
+              "lonley",
+              "highway",
+              "blue",
+              "gray",
+              "gray-background"
+            ],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Option comparison used unordered semantic set matching.",
+              "Correct-answer gloss alignment strongly supported the candidate.",
+              "Order-agnostic MCQ option-set alignment separated the candidate from near-misses.",
+              "Canonical option-signature matching strongly supported the MCQ candidate.",
+              "Option-signature evidence dominated final MCQ disambiguation.",
+              "Distinctive option-row keywords strongly supported the candidate.",
+              "Whole-option-set concept coverage matched the candidate unusually well.",
+              "Image-tag compatibility strongly supported the candidate before text reranking.",
+              "Visible numeral evidence matched the candidate image family.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Numeric or unit evidence matched between source and candidate.",
+              "English semantic option matching still supported the top candidate.",
+              "Rare option-combination fingerprint increased candidate separation.",
+              "Candidate shares a near-exact normalized option set.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "What is the max speed limit on this road?",
+          "syntheticJaPrompt": "max speed limit road",
+          "translatedPrompt": "이 표시의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "100 km/hr",
+              "translatedText": "시속 100km"
+            },
+            {
+              "id": "B",
+              "text": "90 km/hr",
+              "translatedText": "시속 90km"
+            },
+            {
+              "id": "C",
+              "text": "120 km/hr",
+              "translatedText": "시속 120km"
+            },
+            {
+              "id": "D",
+              "text": "110 km/hr",
+              "translatedText": "시속 110km"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0367_o2",
+            "correctOptionKey": "B",
+            "correctOptionText": "90 km/hr",
+            "correctOptionTranslatedText": "시속 90km",
+            "answerRaw": "B"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_647702fb8244fca65e8d2559c3656903.jpeg",
+            "assetHashes": [
+              "647702fb8244fca65e8d2559c3656903"
+            ],
+            "colorTags": [
+              "blue",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "blue",
+              "gray"
+            ],
+            "objectTags": [
+              "pov",
+              "clouds",
+              "90",
+              "countryroad",
+              "alone",
+              "lonley",
+              "highway"
+            ]
+          },
+          "topic": "mcq",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0490",
+          "number": 490,
+          "type": "MCQ",
+          "score": 48.253,
+          "scoreBreakdown": {
+            "optionScore": 0.253,
+            "glossScore": 0.05,
+            "promptScore": 0.05,
+            "promptSimilarity": 0.05,
+            "rawPromptSimilarity": 0.063,
+            "englishPromptSimilarity": 0.05,
+            "bridgePromptSimilarity": 0,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.035,
+            "englishOptionSimilarity": 0,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.035,
+            "optionSignatureScore": 0.004,
+            "optionSignatureDominance": 0.103,
+            "optionConceptPairing": 0,
+            "optionConceptCoverage": 0,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.032,
+            "optionFingerprint": 0.004,
+            "englishOptionFingerprint": 0,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "optionRowKeywordScore": 0.15,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.08,
+            "answerGlossScore": 0.264,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.2,
+            "bridgeKeywordScore": 0.086,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0.5,
+            "answerKeywordScore": 0,
+            "answerPhraseScore": 0.15,
+            "optionKeywordScore": 0,
+            "optionPhraseScore": 0.15,
+            "optionConceptKeywordScore": 0,
+            "optionConceptDistinctiveScore": 0.15,
+            "rareKeywordScore": 0,
+            "numberScore": 0.2,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.58,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.867,
+            "rawImageScore": 0.867,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0.867,
+            "visualObjectScore": 0.867,
+            "visualColorScore": 0.64,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.114,
+            "visualLayoutScore": 0.86,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.973,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.867,
+            "imageColorAgreement": 0.8,
+            "priorBonus": 0.18,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 45.069,
+            "baseScore": 45.069,
+            "rerankAdjustment": 3.184
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-image",
+            "signalWeights": {
+              "option": 0.42,
+              "gloss": 0.16,
+              "keyword": 0.08,
+              "image": 0.22,
+              "multilingual": 0.12
+            },
+            "promptSpecificity": 0.825,
+            "genericPromptPenalty": 0.825,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": "sign",
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": "max",
+              "promptFamily": "speed"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": null,
+              "promptFamily": "speed"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "90 km/h"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120 km/h"
+              },
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "110 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              }
+            ],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.58,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": true,
+            "visualMatchedTags": [
+              "pov",
+              "gray-background",
+              "green",
+              "blue",
+              "gray"
+            ],
+            "imageObjectMatch": 0.867,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: 90, gray background, may, pov",
+            "sourceFeatureKeywords": [
+              "90",
+              "gray-background",
+              "may",
+              "pov",
+              "allowed",
+              "background",
+              "maximum",
+              "speed",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "intersection",
+              "overtake",
+              "slow",
+              "stop",
+              "accelerate",
+              "building",
+              "neutral",
+              "observe",
+              "possible",
+              "pov",
+              "reduce",
+              "slide",
+              "speed",
+              "road-signs"
+            ],
+            "candidateImageTags": [
+              "pov",
+              "building",
+              "blue",
+              "gray",
+              "green",
+              "gray-background"
+            ],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Image-tag compatibility strongly supported the candidate before text reranking.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "How to pass this intersection?",
+          "syntheticJaPrompt": "how 追い越し 交差点。",
+          "translatedPrompt": "운전자는 이 교차로를 어떻게 통과해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "not reduce speed to pass",
+              "translatedText": "감속하지 않고 통과한다"
+            },
+            {
+              "id": "B",
+              "text": "speed up to pass as soon as possible",
+              "translatedText": "속도를 높여 가능한 빨리 통과한다"
+            },
+            {
+              "id": "C",
+              "text": "slide over in the neutral gear",
+              "translatedText": "중립 기어로 미끄러지듯 통과한다"
+            },
+            {
+              "id": "D",
+              "text": "reduce speed or stop to observe",
+              "translatedText": "감속하거나 정차하여 관찰한다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0490_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "reduce speed or stop to observe",
+            "correctOptionTranslatedText": "감속하거나 정차하여 관찰한다",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_574b2850edfe18363a617a04f9db8e39.jpeg",
+            "assetHashes": [
+              "574b2850edfe18363a617a04f9db8e39"
+            ],
+            "colorTags": [
+              "blue",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "blue",
+              "green"
+            ],
+            "objectTags": [
+              "pov",
+              "building"
+            ]
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:road-signs"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0399",
+          "number": 399,
+          "type": "MCQ",
+          "score": 47.446,
+          "scoreBreakdown": {
+            "optionScore": 0.27,
+            "glossScore": 0.632,
+            "promptScore": 0.632,
+            "promptSimilarity": 0.632,
+            "rawPromptSimilarity": 0.665,
+            "englishPromptSimilarity": 0.632,
+            "bridgePromptSimilarity": 0.011,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.027,
+            "englishOptionSimilarity": 0.009,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.027,
+            "optionSignatureScore": 0,
+            "optionSignatureDominance": 0.143,
+            "optionConceptPairing": 0,
+            "optionConceptCoverage": 0,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.027,
+            "optionFingerprint": 0.002,
+            "englishOptionFingerprint": 0.002,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "optionRowKeywordScore": 0.5,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0,
+            "answerGlossScore": 0.2,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.294,
+            "bridgeKeywordScore": 0.294,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.471,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 0,
+            "answerPhraseScore": 0.5,
+            "optionKeywordScore": 0,
+            "optionPhraseScore": 0.5,
+            "optionConceptKeywordScore": 0,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.281,
+            "numberScore": 0.12,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0.4,
+            "numericGroupScore": 0.516,
+            "numericGroupPenalty": 0.42,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0.425,
+            "imageScore": 0.8,
+            "rawImageScore": 0.8,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0.8,
+            "visualObjectScore": 0.8,
+            "visualColorScore": 0.52,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0,
+            "visualLayoutScore": 0.86,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.802,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.8,
+            "imageColorAgreement": 0.733,
+            "priorBonus": 0.18,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 50.868,
+            "baseScore": 50.868,
+            "rerankAdjustment": -3.422
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-image",
+            "signalWeights": {
+              "option": 0.42,
+              "gloss": 0.16,
+              "keyword": 0.08,
+              "image": 0.22,
+              "multilingual": 0.12
+            },
+            "promptSpecificity": 0.975,
+            "genericPromptPenalty": 0.975,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": "max",
+              "promptFamily": "speed"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh",
+                "distance"
+              ],
+              "modifier": "max",
+              "promptFamily": "speed"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "90 km/h"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120 km/h"
+              },
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "110 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120km/h"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "120km"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "60km/h"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "60km"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "90km/h"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "90km"
+              }
+            ],
+            "numericGroupScore": 0.516,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-group-match",
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "90"
+                },
+                "candidate": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "120 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "120km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    110
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "110 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "120km/h"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "120km/h"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": true,
+            "visualMatchedTags": [
+              "pov",
+              "gray-background",
+              "green",
+              "gray"
+            ],
+            "imageObjectMatch": 0.8,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: 90, gray background, may, pov",
+            "sourceFeatureKeywords": [
+              "90",
+              "gray-background",
+              "may",
+              "pov",
+              "allowed",
+              "background",
+              "maximum",
+              "speed",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "120",
+              "pov",
+              "tree",
+              "120km",
+              "highway",
+              "speed"
+            ],
+            "candidateImageTags": [
+              "pov",
+              "120",
+              "tree",
+              "green",
+              "gray",
+              "gray-background"
+            ],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Image-tag compatibility strongly supported the candidate before text reranking.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "What is the max speed on this highway?",
+          "syntheticJaPrompt": "max speed 高速道路。",
+          "translatedPrompt": "이 표시의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "60km/hr",
+              "translatedText": "시속 60km"
+            },
+            {
+              "id": "B",
+              "text": "90km/hr",
+              "translatedText": "시속 90km"
+            },
+            {
+              "id": "C",
+              "text": "90km/hr",
+              "translatedText": "시속 90km"
+            },
+            {
+              "id": "D",
+              "text": "120km/hr",
+              "translatedText": "시속 120km"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0399_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "120km/hr",
+            "correctOptionTranslatedText": "시속 120km",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_8256a285df73409f8c2484fab639aa2f.jpeg",
+            "assetHashes": [
+              "8256a285df73409f8c2484fab639aa2f"
+            ],
+            "colorTags": [
+              "green",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "green",
+              "gray"
+            ],
+            "objectTags": [
+              "pov",
+              "120",
+              "tree"
+            ]
+          },
+          "topic": "highway",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0480",
+          "number": 480,
+          "type": "MCQ",
+          "score": 44.227,
+          "scoreBreakdown": {
+            "optionScore": 0.164,
+            "glossScore": 0.632,
+            "promptScore": 0.632,
+            "promptSimilarity": 0.632,
+            "rawPromptSimilarity": 0.665,
+            "englishPromptSimilarity": 0.632,
+            "bridgePromptSimilarity": 0.011,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.058,
+            "englishOptionSimilarity": 0.027,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.058,
+            "optionSignatureScore": 0.007,
+            "optionSignatureDominance": 0.068,
+            "optionConceptPairing": 0,
+            "optionConceptCoverage": 0,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.056,
+            "optionFingerprint": 0.007,
+            "englishOptionFingerprint": 0.006,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "optionRowKeywordScore": 0.5,
+            "mirrorAgreement": 0,
+            "localizedAgreement": 0.133,
+            "answerScore": 0,
+            "answerGlossScore": 0.1,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0,
+            "keywordScore": 0.294,
+            "bridgeKeywordScore": 0.294,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.471,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 0,
+            "answerPhraseScore": 0.5,
+            "optionKeywordScore": 0,
+            "optionPhraseScore": 0.5,
+            "optionConceptKeywordScore": 0,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.281,
+            "numberScore": 0.3,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 1,
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0.3,
+            "imageScore": 0.867,
+            "rawImageScore": 0.867,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0.867,
+            "visualObjectScore": 0.867,
+            "visualColorScore": 0.52,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.08,
+            "visualLayoutScore": 0.86,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.81,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.867,
+            "imageColorAgreement": 0.733,
+            "priorBonus": 0.18,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.107,
+            "multilingualSupportScore": 0.133,
+            "totalScore": 49.487,
+            "baseScore": 49.487,
+            "rerankAdjustment": -5.26
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-image",
+            "signalWeights": {
+              "option": 0.42,
+              "gloss": 0.16,
+              "keyword": 0.08,
+              "image": 0.22,
+              "multilingual": 0.12
+            },
+            "promptSpecificity": 0.975,
+            "genericPromptPenalty": 0.975,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": "max",
+              "promptFamily": "speed"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh",
+                "distance"
+              ],
+              "modifier": "max",
+              "promptFamily": "speed"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "90 km/h"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120 km/h"
+              },
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "110 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "110km/h"
+              },
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "110km"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120km/h"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "120km"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "90km/h"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "90km"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "100km"
+              }
+            ],
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "90"
+                },
+                "candidate": {
+                  "values": [
+                    90
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "90km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "120 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "120km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    110
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "110 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    110
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "110km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100km/h"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": true,
+            "visualMatchedTags": [
+              "pov",
+              "gray-background",
+              "blue",
+              "gray"
+            ],
+            "imageObjectMatch": 0.867,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: 90, gray background, may, pov",
+            "sourceFeatureKeywords": [
+              "90",
+              "gray-background",
+              "may",
+              "pov",
+              "allowed",
+              "background",
+              "maximum",
+              "speed",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "pov",
+              "100km",
+              "110km",
+              "120km",
+              "highway",
+              "speed"
+            ],
+            "candidateImageTags": [
+              "pov",
+              "blue",
+              "gray",
+              "gray-background"
+            ],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Image-tag compatibility strongly supported the candidate before text reranking.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "What is the max speed on this highway?",
+          "syntheticJaPrompt": "max speed 高速道路。",
+          "translatedPrompt": "이 표시의 뜻은?",
+          "options": [
+            {
+              "id": "A",
+              "text": "110km/hr",
+              "translatedText": "시속 110km"
+            },
+            {
+              "id": "B",
+              "text": "120km/hr",
+              "translatedText": "시속 120km"
+            },
+            {
+              "id": "C",
+              "text": "90km/hr",
+              "translatedText": "시속 90km"
+            },
+            {
+              "id": "D",
+              "text": "100km/hr",
+              "translatedText": "시속 100km"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0480_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "110km/hr",
+            "correctOptionTranslatedText": "시속 110km",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_5747f74941b3b58cb40e0eb46e37e5b1.jpeg",
+            "assetHashes": [
+              "5747f74941b3b58cb40e0eb46e37e5b1"
+            ],
+            "colorTags": [
+              "blue",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "blue",
+              "gray"
+            ],
+            "objectTags": [
+              "pov"
+            ]
+          },
+          "topic": "highway",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0373",
+          "number": 373,
+          "type": "MCQ",
+          "score": 43.869,
+          "scoreBreakdown": {
+            "optionScore": 0.258,
+            "glossScore": 0.06,
+            "promptScore": 0.06,
+            "promptSimilarity": 0.06,
+            "rawPromptSimilarity": 0.067,
+            "englishPromptSimilarity": 0.06,
+            "bridgePromptSimilarity": 0.017,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.035,
+            "englishOptionSimilarity": 0,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.035,
+            "optionSignatureScore": 0.004,
+            "optionSignatureDominance": 0.103,
+            "optionConceptPairing": 0,
+            "optionConceptCoverage": 0,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.032,
+            "optionFingerprint": 0.004,
+            "englishOptionFingerprint": 0,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "optionRowKeywordScore": 0.15,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.116,
+            "answerGlossScore": 0.293,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.2,
+            "bridgeKeywordScore": 0.102,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 0,
+            "answerPhraseScore": 0.15,
+            "optionKeywordScore": 0,
+            "optionPhraseScore": 0.15,
+            "optionConceptKeywordScore": 0,
+            "optionConceptDistinctiveScore": 0.15,
+            "rareKeywordScore": 0,
+            "numberScore": 0.2,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.58,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.733,
+            "rawImageScore": 0.733,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0.733,
+            "visualObjectScore": 0.733,
+            "visualColorScore": 0.26,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.114,
+            "visualLayoutScore": 0.86,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.95,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.733,
+            "imageColorAgreement": 0.667,
+            "priorBonus": 0.18,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 42.395,
+            "baseScore": 42.395,
+            "rerankAdjustment": 1.474
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-image",
+            "signalWeights": {
+              "option": 0.42,
+              "gloss": 0.16,
+              "keyword": 0.08,
+              "image": 0.22,
+              "multilingual": 0.12
+            },
+            "promptSpecificity": 0.925,
+            "genericPromptPenalty": 0.925,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "sign",
+            "candidatePromptFamilyBucket": "sign",
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": "max",
+              "promptFamily": "speed"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": null,
+              "promptFamily": "speed"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "90 km/h"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120 km/h"
+              },
+              {
+                "values": [
+                  110
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "110 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              }
+            ],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.58,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": true,
+            "visualMatchedTags": [
+              "pov",
+              "gray-background",
+              "gray"
+            ],
+            "imageObjectMatch": 0.733,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: 90, gray background, may, pov",
+            "sourceFeatureKeywords": [
+              "90",
+              "gray-background",
+              "may",
+              "pov",
+              "allowed",
+              "background",
+              "maximum",
+              "speed",
+              "road-signs"
+            ],
+            "candidateFeatureKeywords": [
+              "overtake",
+              "slow",
+              "accelerate",
+              "honk",
+              "curve",
+              "middle",
+              "mountain",
+              "occupy",
+              "pov",
+              "rocky-mountain",
+              "section",
+              "sunset",
+              "along",
+              "other",
+              "reduce",
+              "speed",
+              "road-signs"
+            ],
+            "candidateImageTags": [
+              "pov",
+              "curve",
+              "mountain",
+              "rocky-mountain",
+              "sunset",
+              "yellow",
+              "gray",
+              "gray-background"
+            ],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Image-tag compatibility strongly supported the candidate before text reranking.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "How to drive in this section?",
+          "syntheticJaPrompt": "how drive section",
+          "translatedPrompt": "이 구간에서는 어떻게 운전해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "occupy the road of the other side to pass the curve",
+              "translatedText": "커브에서 반대편 차로를 침범하여 통과한다."
+            },
+            {
+              "id": "B",
+              "text": "drive along the middle of the curve",
+              "translatedText": "커브 중앙을 따라 주행한다."
+            },
+            {
+              "id": "C",
+              "text": "speed up and honk to pass",
+              "translatedText": "속도를 높이고 경적을 울려 통과한다."
+            },
+            {
+              "id": "D",
+              "text": "reduce speed and honk",
+              "translatedText": "감속하고 경적을 울린다."
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0373_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "reduce speed and honk",
+            "correctOptionTranslatedText": "감속하고 경적을 울린다.",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_2cfba658be4a687b8f3fff72d55b1075.jpeg",
+            "assetHashes": [
+              "2cfba658be4a687b8f3fff72d55b1075"
+            ],
+            "colorTags": [
+              "yellow",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "yellow",
+              "gray"
+            ],
+            "objectTags": [
+              "pov",
+              "curve",
+              "mountain",
+              "rocky-mountain",
+              "sunset"
+            ]
+          },
+          "topic": "traffic-signals",
+          "subtopics": [
+            "traffic-signals:road-signs"
+          ],
+          "conceptSlots": null
+        }
+      ]
+    }
+  ]
+}

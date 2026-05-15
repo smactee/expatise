@@ -3,6 +3,7 @@
 import type { MessageSchema } from '@/lib/i18n/types';
 
 import { en } from './en';
+import { fr } from './fr';
 import { ja } from './ja';
 import { ko } from './ko';
 
@@ -26,6 +27,10 @@ export const LOCALE_REGISTRY = {
   ja: {
     label: '日本語（ベータ）',
     messages: ja,
+  },
+  fr: {
+    label: 'Français',
+    messages: fr,
   },
 } as const satisfies Record<string, LocaleDefinition>;
 

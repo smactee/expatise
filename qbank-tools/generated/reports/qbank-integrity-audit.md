@@ -1,6 +1,6 @@
 # QBank Integrity Audit
 
-Generated: 2026-05-14T06:23:50.484Z
+Generated: 2026-05-15T07:41:33.372Z
 
 ## Executive Summary
 
@@ -8,7 +8,7 @@ Generated: 2026-05-14T06:23:50.484Z
 - Raw qids: 1008
 - Translation languages audited: 4
 - Critical blockers: 0
-- Warnings: 88
+- Warnings: 19
 - Duplicate candidates: 8
 
 ## Critical Blockers
@@ -21,77 +21,8 @@ None.
 | --- | --- | --- |
 | raw-only-qid | q0518 | qid exists in questions.raw.json but not questions.json |
 | raw-only-qid | q0906 | qid exists in questions.raw.json but not questions.json |
-| translation-missing-qid | q0986 | ja: missing production translation |
-| translation-missing-qid | q0987 | ja: missing production translation |
-| translation-missing-qid | q0988 | ja: missing production translation |
-| translation-missing-qid | q0989 | ja: missing production translation |
-| translation-missing-qid | q0991 | ja: missing production translation |
-| translation-missing-qid | q0992 | ja: missing production translation |
-| translation-missing-qid | q0993 | ja: missing production translation |
-| translation-missing-qid | q0994 | ja: missing production translation |
-| translation-missing-qid | q0995 | ja: missing production translation |
-| translation-missing-qid | q0996 | ja: missing production translation |
-| translation-missing-qid | q0998 | ja: missing production translation |
-| translation-missing-qid | q0999 | ja: missing production translation |
-| translation-missing-qid | q1001 | ja: missing production translation |
-| translation-missing-qid | q1002 | ja: missing production translation |
-| translation-missing-qid | q1003 | ja: missing production translation |
-| translation-missing-qid | q1004 | ja: missing production translation |
-| translation-missing-qid | q1005 | ja: missing production translation |
-| translation-missing-qid | q1006 | ja: missing production translation |
-| translation-missing-qid | q1007 | ja: missing production translation |
-| translation-missing-qid | q1008 | ja: missing production translation |
-| translation-missing-qid | q1009 | ja: missing production translation |
-| translation-missing-qid | q1011 | ja: missing production translation |
-| translation-missing-qid | q1012 | ja: missing production translation |
 | translation-extra-qid | q0906 | ja: translation qid is not in questions.json |
-| translation-missing-qid | q0986 | ko: missing production translation |
-| translation-missing-qid | q0987 | ko: missing production translation |
-| translation-missing-qid | q0988 | ko: missing production translation |
-| translation-missing-qid | q0989 | ko: missing production translation |
-| translation-missing-qid | q0991 | ko: missing production translation |
-| translation-missing-qid | q0992 | ko: missing production translation |
-| translation-missing-qid | q0993 | ko: missing production translation |
-| translation-missing-qid | q0994 | ko: missing production translation |
-| translation-missing-qid | q0995 | ko: missing production translation |
-| translation-missing-qid | q0996 | ko: missing production translation |
-| translation-missing-qid | q0998 | ko: missing production translation |
-| translation-missing-qid | q0999 | ko: missing production translation |
-| translation-missing-qid | q1001 | ko: missing production translation |
-| translation-missing-qid | q1002 | ko: missing production translation |
-| translation-missing-qid | q1003 | ko: missing production translation |
-| translation-missing-qid | q1004 | ko: missing production translation |
-| translation-missing-qid | q1005 | ko: missing production translation |
-| translation-missing-qid | q1006 | ko: missing production translation |
-| translation-missing-qid | q1007 | ko: missing production translation |
-| translation-missing-qid | q1008 | ko: missing production translation |
-| translation-missing-qid | q1009 | ko: missing production translation |
-| translation-missing-qid | q1011 | ko: missing production translation |
-| translation-missing-qid | q1012 | ko: missing production translation |
 | translation-extra-qid | q0906 | ko: translation qid is not in questions.json |
-| translation-missing-qid | q0986 | ru: missing production translation |
-| translation-missing-qid | q0987 | ru: missing production translation |
-| translation-missing-qid | q0988 | ru: missing production translation |
-| translation-missing-qid | q0989 | ru: missing production translation |
-| translation-missing-qid | q0991 | ru: missing production translation |
-| translation-missing-qid | q0992 | ru: missing production translation |
-| translation-missing-qid | q0993 | ru: missing production translation |
-| translation-missing-qid | q0994 | ru: missing production translation |
-| translation-missing-qid | q0995 | ru: missing production translation |
-| translation-missing-qid | q0996 | ru: missing production translation |
-| translation-missing-qid | q0998 | ru: missing production translation |
-| translation-missing-qid | q0999 | ru: missing production translation |
-| translation-missing-qid | q1001 | ru: missing production translation |
-| translation-missing-qid | q1002 | ru: missing production translation |
-| translation-missing-qid | q1003 | ru: missing production translation |
-| translation-missing-qid | q1004 | ru: missing production translation |
-| translation-missing-qid | q1005 | ru: missing production translation |
-| translation-missing-qid | q1006 | ru: missing production translation |
-| translation-missing-qid | q1007 | ru: missing production translation |
-| translation-missing-qid | q1008 | ru: missing production translation |
-| translation-missing-qid | q1009 | ru: missing production translation |
-| translation-missing-qid | q1011 | ru: missing production translation |
-| translation-missing-qid | q1012 | ru: missing production translation |
 | translation-extra-qid | q0906 | ru: translation qid is not in questions.json |
 | tags-patch-qid-not-in-master | q0518 | tags.patch.json has qid not in questions.json |
 | tags-patch-qid-not-in-master | q0906 | tags.patch.json has qid not in questions.json |
@@ -113,9 +44,9 @@ None.
 | lang | translated | coverage | placeholders | missing | extra | invalidLocaleKeys | rowMcqKeys |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | fr | 1006 | 100% | 0 | 0 | 0 | 0 | 0 |
-| ja | 984 | 97.81% | 23 | 23 | 1 | 0 | 0 |
-| ko | 984 | 97.81% | 23 | 23 | 1 | 0 | 0 |
-| ru | 984 | 97.81% | 23 | 23 | 1 | 0 | 0 |
+| ja | 1007 | 100.1% | 0 | 0 | 1 | 0 | 0 |
+| ko | 1007 | 100.1% | 0 | 0 | 1 | 0 | 0 |
+| ru | 1007 | 100.1% | 0 | 0 | 1 | 0 | 0 |
 
 ## Raw/Master Mismatch
 

@@ -1,0 +1,5308 @@
+{
+  "generatedAt": "2026-05-09T02:14:02.367Z",
+  "lang": "fr",
+  "batchId": "batch-010",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.40.19.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.40.19.png",
+      "promptRawJa": "Lorsque le véhicule circule à une vitesse de 100 km/h sur l'autoroute, il doit maintenir une distance sécuritaire de plus de 100 m entre le véhicule qui se trouve sur la même voie que lui.",
+      "promptGlossEn": "When the vehicle is traveling at a speed of 100 km/h on the highway, must it maintain a safe distance of more than 100 m from the vehicle in the same lane?",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "visualObjectTags": [],
+      "visualColorTags": [],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [],
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "visualEvidenceAvailable": false,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": "indicator",
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "car-icon",
+        "indicator",
+        "dashboard-indicator",
+        "warning-light"
+      ],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [
+          "expressway"
+        ],
+        "action": [],
+        "polarity": "positive",
+        "obligation": "must",
+        "signals": [
+          {
+            "slot": "context",
+            "value": "expressway",
+            "signal": "expressway"
+          },
+          {
+            "slot": "context",
+            "value": "expressway",
+            "signal": "expressway"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Lorsque le véhicule circule à une vitesse de 100 km/h sur l'autoroute, il doit maintenir une distance sécuritaire de plus de 100 m entre le véhicule qui se trouve sur la même voie que lui.",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "When the vehicle is traveling at a speed of 100 km/h on the highway, must it maintain a safe distance of more than 100 m from the vehicle in the same lane?",
+        "options": [
+          "Yes",
+          "No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0002",
+        "number": 2,
+        "score": 70.269,
+        "scoreGap": 47.304,
+        "scoreBreakdown": {
+          "optionScore": 0.589,
+          "glossScore": 0.474,
+          "promptSimilarity": 0.474,
+          "rawPromptSimilarity": 0.474,
+          "englishPromptSimilarity": 0.474,
+          "bridgePromptSimilarity": 0.059,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.2,
+          "localizedGlossSimilarity": 0,
+          "localizedKeywordSupport": 0.2,
+          "multilingualSupportScore": 0.2,
+          "keywordScore": 0.443,
+          "rowKeywordSignal": 0.129,
+          "rowDistinctiveKeywordScore": 0.044,
+          "rowConceptKeywordSupport": 0.243,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.79,
+          "numericGroupPenalty": 0.12,
+          "numericGroupBoost": 18.96,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0.06,
+          "imageScore": 0.5,
+          "rawImageScore": 0.5,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.589,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.82,
+          "provisionalTopicAgreement": 0.5,
+          "structuralAgreement": 0.82,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.35,
+          "imageColorAgreement": 0.5,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 0.516,
+          "conditionAlignment": 0,
+          "contextAlignment": 1,
+          "actionAlignment": 0,
+          "obligationAlignment": 0,
+          "polarityAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 63.849,
+          "baseScore": 63.849,
+          "rerankAdjustment": 6.42
+        },
+        "candidateTopicTruth": {
+          "topic": "no-image",
+          "subtopics": [],
+          "tags": [
+            "no-image"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 486,
+        "candidateCountAfterStructuralFilter": 277,
+        "candidateCountAfterMcqShortlist": 277,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 277,
+        "structuralSoftCandidateCount": 277,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-text",
+        "decisionReasonCodes": [
+          "gap-relaxed-profile"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-text",
+          "topScore": 70.269,
+          "rank2Score": 22.965,
+          "scoreGap": 47.304,
+          "thresholds": {
+            "reviewFloor": 38,
+            "autoMatchThreshold": 60,
+            "autoGapThreshold": 6
+          },
+          "signalAgreement": {
+            "agreementScore": 0.685,
+            "strongSignalCount": 3,
+            "weakSignalCount": 0,
+            "signalSpread": 0.316,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 0.79,
+              "gloss": 0.474,
+              "keyword": 0.79,
+              "image": 0.5,
+              "multilingual": 0.2,
+              "concept": 0.79
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.349,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "gap-relaxed-profile"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Lorsque le véhicule circule à une vitesse de 100 km/h sur l'autoroute, il doit maintenir une distance sécuritaire de plus de 100 m entre le véhicule qui se trouve sur la même voie que lui.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0002",
+          "number": 2,
+          "type": "ROW",
+          "score": 70.269,
+          "scoreBreakdown": {
+            "optionScore": 0.589,
+            "glossScore": 0.474,
+            "promptSimilarity": 0.474,
+            "rawPromptSimilarity": 0.474,
+            "englishPromptSimilarity": 0.474,
+            "bridgePromptSimilarity": 0.059,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.443,
+            "rowKeywordSignal": 0.129,
+            "rowDistinctiveKeywordScore": 0.044,
+            "rowConceptKeywordSupport": 0.243,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.79,
+            "numericGroupPenalty": 0.12,
+            "numericGroupBoost": 18.96,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.589,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.82,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.516,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 63.849,
+            "baseScore": 63.849,
+            "rerankAdjustment": 6.42
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "min-speed"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "min-speed",
+                  "signal": "min-speed"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "100 m"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "gt",
+                "text": "more than 100 m"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "gt",
+                "text": "above 100 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "gt",
+                "text": "greater than 100 meters"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 kilometers per hour"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "gte",
+                "text": "not less than 100 meters"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km",
+                "comparator": "exact",
+                "text": "100km"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "100"
+              }
+            ],
+            "numericGroupScore": 0.79,
+            "numericGroupPenalty": 0.12,
+            "numericGroupReasonCodes": [
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 kilometers per hour"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "100 m"
+                },
+                "candidate": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "100"
+                },
+                "score": 0.65,
+                "penalty": 0.12,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "gt",
+                  "text": "more than 100 m"
+                },
+                "candidate": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "gt",
+                  "text": "greater than 100 meters"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: expressway, dashboard indicator, car icon, indicator, must",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "dashboard-indicator",
+              "turn-signal",
+              "car-icon",
+              "indicator",
+              "must",
+              "warning-light",
+              "dashboard",
+              "distance",
+              "highway",
+              "maintain",
+              "speed",
+              "traveling"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "min-speed",
+              "minimum",
+              "speed",
+              "above",
+              "between",
+              "distance",
+              "front",
+              "greater",
+              "highway",
+              "kilometers",
+              "meters",
+              "right",
+              "speeds"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "When driving vehicles on a highway at speeds above 100 km/h, a safe distance between cars is a distance greater than 100 meters.",
+          "syntheticJaPrompt": "when 車両 runs 高速道路 speed 100 kilometer per hour its safe distance 車両 front not less than 100 meter。",
+          "translatedPrompt": "고속도로에서 시속 100km로 주행할 때 앞차와의 안전거리는 100미터 이상이어야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0913",
+          "number": 913,
+          "type": "ROW",
+          "score": 22.965,
+          "scoreBreakdown": {
+            "optionScore": 0.274,
+            "glossScore": 0.14,
+            "promptSimilarity": 0.14,
+            "rawPromptSimilarity": 0.14,
+            "englishPromptSimilarity": 0.14,
+            "bridgePromptSimilarity": 0.002,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.077,
+            "rowKeywordSignal": 0,
+            "rowDistinctiveKeywordScore": 0,
+            "rowConceptKeywordSupport": 0.034,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.433,
+            "numericGroupPenalty": 0.42,
+            "numericGroupBoost": 10.4,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.274,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.82,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.211,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 23.115,
+            "baseScore": 23.115,
+            "rerankAdjustment": -0.15
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "pass",
+                "overtake"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "pass",
+                  "signal": "overtake"
+                },
+                {
+                  "slot": "action",
+                  "value": "overtake",
+                  "signal": "overtake"
+                }
+              ]
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "100 m"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "gt",
+                "text": "more than 100 m"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "100"
+              },
+              {
+                "values": [
+                  80
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "80"
+              },
+              {
+                "values": [
+                  90
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "90"
+              }
+            ],
+            "numericGroupScore": 0.433,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-group-match",
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "100"
+                },
+                "score": 0.65,
+                "penalty": 0.12,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "100 m"
+                },
+                "candidate": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "100"
+                },
+                "score": 0.65,
+                "penalty": 0.12,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "gt",
+                  "text": "more than 100 m"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: expressway, dashboard indicator, car icon, indicator, must",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "dashboard-indicator",
+              "turn-signal",
+              "car-icon",
+              "indicator",
+              "must",
+              "warning-light",
+              "dashboard",
+              "distance",
+              "highway",
+              "maintain",
+              "speed",
+              "traveling"
+            ],
+            "candidateFeatureKeywords": [
+              "overtake",
+              "common",
+              "courteous",
+              "false",
+              "knowledge",
+              "passing",
+              "skills",
+              "subject",
+              "wrong"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "The full mark of Driving Skills, Common Knowledge on Safe and Courteous Driving of the subject 3 test is 100, each of the passing mark is 80 and 90.",
+          "syntheticJaPrompt": "full mark driving skill common knowledge safe and courteou driving subject 3 test 100 each passing mark 80 and 90",
+          "translatedPrompt": "과목3 시험의 운전기술과 안전운전 공통지식의 만점은 각각 100점이며, 합격 기준은 각각 80점과 90점이다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0040",
+          "number": 40,
+          "type": "ROW",
+          "score": 17.788,
+          "scoreBreakdown": {
+            "optionScore": 0.382,
+            "glossScore": 0.271,
+            "promptSimilarity": 0.271,
+            "rawPromptSimilarity": 0.271,
+            "englishPromptSimilarity": 0.271,
+            "bridgePromptSimilarity": 0.065,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.259,
+            "rowKeywordSignal": 0.098,
+            "rowDistinctiveKeywordScore": 0.039,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0.12,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.382,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.82,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.5,
+            "conditionAlignment": 0,
+            "contextAlignment": 0.5,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0.12,
+            "assetTieBreak": 0,
+            "totalScore": 22.268,
+            "baseScore": 22.268,
+            "rerankAdjustment": -4.48
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway",
+                "ramp"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "ramp",
+                  "signal": "ramp"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [
+              "obligation:must-vs-may"
+            ],
+            "rowContrastSignals": [
+              "obligation:must-vs-may"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "100 m"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "gt",
+                "text": "more than 100 m"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "gt",
+                "text": "more than 60 km/h"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "60km/h"
+              }
+            ],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "gt",
+                  "text": "more than 60 km/h"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "100 m"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "gt",
+                  "text": "more than 60 km/h"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "gt",
+                  "text": "more than 100 m"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "gt",
+                  "text": "more than 60 km/h"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: expressway, dashboard indicator, car icon, indicator, must",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "dashboard-indicator",
+              "turn-signal",
+              "car-icon",
+              "indicator",
+              "must",
+              "warning-light",
+              "dashboard",
+              "distance",
+              "highway",
+              "maintain",
+              "speed",
+              "traveling"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "may",
+              "ramp",
+              "carriageway",
+              "directly",
+              "enter",
+              "false",
+              "highway",
+              "increased",
+              "kilometers",
+              "speed",
+              "wrong"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "When a vehicle has increased its speed to more than 60 km/hr on the ramp of a highway, it may directly enter the highway.",
+          "syntheticJaPrompt": "when 車両 has increased its speed more than 60 kilometer per hour ramp 高速道路 it よい directly enter carriageway。",
+          "translatedPrompt": "고속도로 진입램프(가속차로)에서 차량이 시속 60km/h를 초과하도록 가속한 경우 곧바로 본선 차로로 진입할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway",
+              "ramp"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "obligation": "may",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "ramp",
+                "signal": "ramp"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0060",
+          "number": 60,
+          "type": "ROW",
+          "score": 17.266,
+          "scoreBreakdown": {
+            "optionScore": 0.436,
+            "glossScore": 0.211,
+            "promptSimilarity": 0.211,
+            "rawPromptSimilarity": 0.211,
+            "englishPromptSimilarity": 0.211,
+            "bridgePromptSimilarity": 0.098,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.27,
+            "rowKeywordSignal": 0.095,
+            "rowDistinctiveKeywordScore": 0.039,
+            "rowConceptKeywordSupport": 0.243,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.436,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.35,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.82,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.516,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 21.746,
+            "baseScore": 21.746,
+            "rerankAdjustment": -4.48
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "max-speed"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "max-speed",
+                  "signal": "max-speed"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "100 m"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "gt",
+                "text": "more than 100 m"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "lt",
+                "text": "less than 120km/h"
+              },
+              {
+                "values": [
+                  120
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "120km/h"
+              }
+            ],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "lt",
+                  "text": "less than 120km/h"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "100 m"
+                },
+                "candidate": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "lt",
+                  "text": "less than 120km/h"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "gt",
+                  "text": "more than 100 m"
+                },
+                "candidate": {
+                  "values": [
+                    120
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "lt",
+                  "text": "less than 120km/h"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: expressway, dashboard indicator, car icon, indicator, must",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "dashboard-indicator",
+              "turn-signal",
+              "car-icon",
+              "indicator",
+              "must",
+              "warning-light",
+              "dashboard",
+              "distance",
+              "highway",
+              "maintain",
+              "speed",
+              "traveling"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "max-speed",
+              "maximum",
+              "speed",
+              "120km",
+              "according",
+              "exceed",
+              "false",
+              "highway",
+              "regulations",
+              "safety",
+              "violation",
+              "wrong"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "According to rules on the road traffic safety, the maximum speed on the highway is less than 120km/hr, thus, it will not be in violation of the traffic regulations as long as the speed does not exceed 120km/hr on the highway.",
+          "syntheticJaPrompt": "according rule road traffic safety max speed 高速道路 less than 120km hr thus it will not be violation traffic regulation as long as speed not exceed 120km hr 高速道路。",
+          "translatedPrompt": "도로교통안전 규정에 따르면 고속도로의 최고속도는 120km/h 미만이므로 고속도로에서 속도가 120km/h를 초과하지 않으면 교통법규 위반이 아니다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0333",
+          "number": 333,
+          "type": "ROW",
+          "score": 15.903,
+          "scoreBreakdown": {
+            "optionScore": 0.621,
+            "glossScore": 0.197,
+            "promptSimilarity": 0.197,
+            "rawPromptSimilarity": 0.197,
+            "englishPromptSimilarity": 0.197,
+            "bridgePromptSimilarity": 0.065,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.294,
+            "rowKeywordSignal": 0.071,
+            "rowDistinctiveKeywordScore": 0.041,
+            "rowConceptKeywordSupport": 0.288,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.52,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0.06,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.621,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.82,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.82,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.35,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.8,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 21.383,
+            "baseScore": 21.383,
+            "rerankAdjustment": -5.48
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "indicator",
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "turn-signal"
+              ],
+              "polarity": "positive",
+              "obligation": "must",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "turn-signal",
+                  "signal": "turn-signal"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "should",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "km/h",
+                "comparator": "exact",
+                "text": "100 km/h"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "100 m"
+              },
+              {
+                "values": [
+                  100
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "gt",
+                "text": "more than 100 m"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  50,
+                  100
+                ],
+                "range": true,
+                "unit": "meters",
+                "comparator": "range",
+                "text": "50~100 meters"
+              },
+              {
+                "values": [
+                  50,
+                  100
+                ],
+                "range": true,
+                "unit": null,
+                "comparator": "range",
+                "text": "50~100"
+              }
+            ],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.52,
+            "numericGroupReasonCodes": [
+              "numeric-unit-mismatch",
+              "numeric-comparator-conflict"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "km/h",
+                  "comparator": "exact",
+                  "text": "100 km/h"
+                },
+                "candidate": {
+                  "values": [
+                    50,
+                    100
+                  ],
+                  "range": true,
+                  "unit": "meters",
+                  "comparator": "range",
+                  "text": "50~100 meters"
+                },
+                "score": 0,
+                "penalty": 0.52,
+                "reasonCodes": [
+                  "numeric-unit-mismatch",
+                  "numeric-comparator-conflict"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "exact",
+                  "text": "100 m"
+                },
+                "candidate": {
+                  "values": [
+                    50,
+                    100
+                  ],
+                  "range": true,
+                  "unit": "meters",
+                  "comparator": "range",
+                  "text": "50~100 meters"
+                },
+                "score": 0,
+                "penalty": 0.52,
+                "reasonCodes": [
+                  "numeric-comparator-conflict"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    100
+                  ],
+                  "range": false,
+                  "unit": "meters",
+                  "comparator": "gt",
+                  "text": "more than 100 m"
+                },
+                "candidate": {
+                  "values": [
+                    50,
+                    100
+                  ],
+                  "range": true,
+                  "unit": "meters",
+                  "comparator": "range",
+                  "text": "50~100 meters"
+                },
+                "score": 0,
+                "penalty": 0.52,
+                "reasonCodes": [
+                  "numeric-comparator-conflict"
+                ]
+              }
+            ],
+            "sourceFeatureGloss": "traffic rule statement: expressway, dashboard indicator, car icon, indicator, must",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "dashboard-indicator",
+              "turn-signal",
+              "car-icon",
+              "indicator",
+              "must",
+              "warning-light",
+              "dashboard",
+              "distance",
+              "highway",
+              "maintain",
+              "speed",
+              "traveling"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "sign",
+              "should",
+              "breaks",
+              "coming",
+              "direction",
+              "false",
+              "highway",
+              "meters",
+              "motorized",
+              "place",
+              "warning",
+              "wrong"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Question family alignment reinforced this candidate.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "When a vehicle breaks down on the highway, the driver should place a warning sign 50~100 meters in the coming direction.",
+          "syntheticJaPrompt": "when 車両 break down 高速道路 運転者 べき place warning 標識 50 meter ~ 100 meter coming direction。",
+          "translatedPrompt": "고속도로에서 자동차가 고장 난 경우 운전자는 주행 방향으로 50~100미터 지점에 고장 차량 경고표지판을 설치해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "obligation": "should",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.40.21.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.40.21.png",
+      "promptRawJa": "Suite à une infraction au code de la route, le conducteur s'enfuit sans porter secours aux victimes qui décèdent des suites de leurs blessures, à quelle peine de prison peut-il être condamné ?",
+      "promptGlossEn": "After a traffic violation, the driver flees without assisting victims who die from their injuries. What prison sentence can they receive?",
+      "optionsRawJa": [
+        "A moins de 2 ans",
+        "B moins de 3 ans",
+        "C moins de 7 ans",
+        "D plus de 7 ans"
+      ],
+      "optionsGlossEn": [
+        "less than 2 years",
+        "less than 3 years",
+        "less than 7 years",
+        "more than 7 years"
+      ],
+      "correctKeyRaw": "D",
+      "correctAnswerRaw": "plus de 7 ans",
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "visualObjectTags": [],
+      "visualColorTags": [],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [],
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "visualEvidenceAvailable": false,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": null,
+      "sourceOptionCount": 4,
+      "optionCountReliable": true,
+      "expectedObjectTags": [],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": null,
+      "mcqFingerprint": {
+        "normalizedPrompt": "after traffic violation driver flee without assisting victim who die from their injury what prison sentence can they receive",
+        "normalizedCorrectAnswer": "more than 7 year",
+        "normalizedOptions": [
+          "less than 2 year",
+          "less than 3 year",
+          "less than 7 year",
+          "more than 7 year"
+        ],
+        "promptAllTokens": [
+          "after",
+          "traffic",
+          "violation",
+          "driver",
+          "flee",
+          "without",
+          "assisting",
+          "victim",
+          "who",
+          "die",
+          "from",
+          "their",
+          "injury",
+          "what",
+          "prison",
+          "sentence",
+          "can",
+          "they",
+          "receive"
+        ],
+        "answerAllTokens": [
+          "more",
+          "than",
+          "7",
+          "year"
+        ],
+        "optionAllTokenSets": [
+          [
+            "less",
+            "than",
+            "2",
+            "year"
+          ],
+          [
+            "less",
+            "than",
+            "3",
+            "year"
+          ],
+          [
+            "less",
+            "than",
+            "7",
+            "year"
+          ],
+          [
+            "more",
+            "than",
+            "7",
+            "year"
+          ]
+        ],
+        "promptTokens": [
+          "after",
+          "violation",
+          "flee",
+          "without",
+          "assisting",
+          "victim",
+          "who",
+          "die",
+          "injury",
+          "prison",
+          "sentence",
+          "they",
+          "receive"
+        ],
+        "answerTokens": [
+          "more",
+          "than",
+          "year"
+        ],
+        "promptPhraseTokens": [
+          "after violation",
+          "violation flee",
+          "flee without",
+          "without assisting",
+          "assisting victim",
+          "victim who",
+          "who die",
+          "die injury",
+          "injury prison",
+          "prison sentence",
+          "sentence they",
+          "they receive",
+          "after violation flee",
+          "violation flee without",
+          "flee without assisting",
+          "without assisting victim",
+          "assisting victim who",
+          "victim who die",
+          "who die injury",
+          "die injury prison",
+          "injury prison sentence",
+          "prison sentence they",
+          "sentence they receive"
+        ],
+        "answerPhraseTokens": [
+          "more than",
+          "than year",
+          "more than year"
+        ],
+        "optionTokens": [
+          "less",
+          "than",
+          "year",
+          "more"
+        ],
+        "optionTokenSets": [
+          [
+            "less",
+            "than",
+            "year"
+          ],
+          [
+            "less",
+            "than",
+            "year"
+          ],
+          [
+            "less",
+            "than",
+            "year"
+          ],
+          [
+            "more",
+            "than",
+            "year"
+          ]
+        ],
+        "optionPhraseTokens": [
+          "less than",
+          "than year",
+          "less than year",
+          "more than",
+          "more than year"
+        ],
+        "optionPhraseTokenSets": [
+          [
+            "less than",
+            "than year",
+            "less than year"
+          ],
+          [
+            "less than",
+            "than year",
+            "less than year"
+          ],
+          [
+            "less than",
+            "than year",
+            "less than year"
+          ],
+          [
+            "more than",
+            "than year",
+            "more than year"
+          ]
+        ],
+        "optionConceptTokens": [
+          "less",
+          "than",
+          "year",
+          "more"
+        ],
+        "optionConceptTokenSets": [
+          [
+            "less",
+            "than",
+            "year"
+          ],
+          [
+            "less",
+            "than",
+            "year"
+          ],
+          [
+            "less",
+            "than",
+            "year"
+          ],
+          [
+            "more",
+            "than",
+            "year"
+          ]
+        ],
+        "optionConceptSignatures": [
+          "less than year",
+          "less than year",
+          "less than year",
+          "more than year"
+        ],
+        "promptDistinctiveTokens": [
+          "violation",
+          "without",
+          "assisting",
+          "victim",
+          "injury",
+          "prison",
+          "sentence",
+          "receive"
+        ],
+        "answerDistinctiveTokens": [],
+        "optionDistinctiveTokens": [],
+        "distinctiveOptionConcepts": [],
+        "keywordTokens": [
+          "after",
+          "violation",
+          "flee",
+          "without",
+          "assisting",
+          "victim",
+          "who",
+          "die",
+          "injury",
+          "prison",
+          "sentence",
+          "they",
+          "receive",
+          "more",
+          "than",
+          "year",
+          "less"
+        ],
+        "rareKeywords": [
+          "violation",
+          "without",
+          "assisting",
+          "victim",
+          "injury",
+          "prison",
+          "sentence",
+          "receive"
+        ],
+        "optionSetSignature": "less than 2 year || less than 3 year || less than 7 year || more than 7 year",
+        "alignedOptionSetSignature": "less than 2 year || less than 3 year || less than 7 year || more than 7 year",
+        "optionConceptSetSignature": "less than year || less than year || less than year || more than year",
+        "numericSignals": {
+          "tokens": [
+            "7",
+            "2",
+            "3"
+          ],
+          "values": [
+            "7",
+            "2",
+            "3"
+          ]
+        },
+        "promptNumericSignals": {
+          "tokens": [],
+          "values": []
+        },
+        "answerNumericSignals": {
+          "tokens": [
+            "7"
+          ],
+          "values": [
+            "7"
+          ]
+        },
+        "optionNumericSignals": [
+          {
+            "tokens": [
+              "2"
+            ],
+            "values": [
+              "2"
+            ]
+          },
+          {
+            "tokens": [
+              "3"
+            ],
+            "values": [
+              "3"
+            ]
+          },
+          {
+            "tokens": [
+              "7"
+            ],
+            "values": [
+              "7"
+            ]
+          },
+          {
+            "tokens": [
+              "7"
+            ],
+            "values": [
+              "7"
+            ]
+          }
+        ],
+        "topic": null,
+        "subtopics": [],
+        "hasImage": false
+      },
+      "localizedText": {
+        "prompt": "Suite à une infraction au code de la route, le conducteur s'enfuit sans porter secours aux victimes qui décèdent des suites de leurs blessures, à quelle peine de prison peut-il être condamné ?",
+        "options": [
+          "A moins de 2 ans",
+          "B moins de 3 ans",
+          "C moins de 7 ans",
+          "D plus de 7 ans"
+        ],
+        "correctAnswer": "plus de 7 ans",
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "After a traffic violation, the driver flees without assisting victims who die from their injuries. What prison sentence can they receive?",
+        "options": [
+          "less than 2 years",
+          "less than 3 years",
+          "less than 7 years",
+          "more than 7 years"
+        ],
+        "correctAnswer": "more than 7 years"
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0471",
+        "number": 471,
+        "score": 96.435,
+        "scoreGap": 30.006,
+        "scoreBreakdown": {
+          "optionScore": 1,
+          "glossScore": 0.132,
+          "promptScore": 0.132,
+          "promptSimilarity": 0.132,
+          "rawPromptSimilarity": 0.132,
+          "englishPromptSimilarity": 0.132,
+          "bridgePromptSimilarity": 0.038,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "optionSimilarity": 1,
+          "englishOptionSimilarity": 1,
+          "syntheticOptionSimilarity": 0,
+          "localizedOptionSimilarity": 0,
+          "localizedOptionGlossSimilarity": 0,
+          "optionSetScore": 1,
+          "optionSignatureScore": 0.88,
+          "optionSignatureDominance": 0.94,
+          "optionConceptPairing": 1,
+          "optionConceptCoverage": 1,
+          "optionConceptExactSet": 1,
+          "alignedOptionSimilarity": 1,
+          "optionFingerprint": 1,
+          "englishOptionFingerprint": 1,
+          "syntheticOptionFingerprint": 0,
+          "localizedOptionFingerprint": 0,
+          "optionExactSet": 1,
+          "optionRareCoverage": 1,
+          "optionRowKeywordScore": 1,
+          "mirrorAgreement": 1,
+          "localizedAgreement": 0.467,
+          "answerScore": 0.94,
+          "answerGlossScore": 0.952,
+          "correctAnswerMeaning": 1,
+          "englishCorrectAnswerMeaning": 1,
+          "syntheticCorrectAnswerMeaning": 0,
+          "localizedCorrectAnswerMeaning": 0.5,
+          "localizedCorrectGlossMeaning": 1,
+          "keywordScore": 0.683,
+          "bridgeKeywordScore": 0.683,
+          "localizedKeywordSupport": 0.2,
+          "promptKeywordScore": 0.067,
+          "promptPhraseScore": 0.15,
+          "answerKeywordScore": 1,
+          "answerPhraseScore": 1,
+          "optionKeywordScore": 1,
+          "optionPhraseScore": 1,
+          "optionConceptKeywordScore": 1,
+          "optionConceptDistinctiveScore": 0.5,
+          "rareKeywordScore": 0.09,
+          "numberScore": 1,
+          "numberExactOverlap": 1,
+          "numberValueOverlap": 1,
+          "numericGroupScore": 0.86,
+          "numericGroupPenalty": 0,
+          "numericIntentMismatchPenalty": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "numberConflictPenalty": 0,
+          "imageScore": 0.5,
+          "rawImageScore": 0.5,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "visualScore": 0,
+          "visualObjectScore": 0.5,
+          "visualColorScore": 0.5,
+          "dominantColorScore": 0.5,
+          "visualNumberScore": 0.5,
+          "visualLayoutScore": 0.5,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 0.5,
+          "structuralAgreement": 1,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.5,
+          "imageColorAgreement": 0.5,
+          "priorBonus": 0,
+          "topicWeighting": 0.5,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "localizedGlossSimilarity": 0,
+          "bridgeLocalizedAgreement": 0.573,
+          "multilingualSupportScore": 0.467,
+          "totalScore": 82.059,
+          "baseScore": 82.059,
+          "rerankAdjustment": 14.376
+        },
+        "candidateTopicTruth": {
+          "topic": "no-image",
+          "subtopics": [],
+          "tags": [
+            "no-image"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 486,
+        "candidateCountAfterStructuralFilter": 209,
+        "candidateCountAfterMcqShortlist": 40,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 209,
+        "structuralSoftCandidateCount": 209,
+        "mcqShortlistApplied": true,
+        "mcqShortlistMode": "mcq-answer-option-number-shortlist",
+        "mcqShortlistTopScore": 0.884,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "mcq-text",
+        "decisionReasonCodes": [
+          "safe-pass",
+          "option-signature-strong",
+          "option-signature-dominant",
+          "mcq-top2-option-separated"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "mcq-text",
+          "topScore": 96.435,
+          "rank2Score": 66.429,
+          "scoreGap": 30.006,
+          "thresholds": {
+            "reviewFloor": 43,
+            "autoMatchThreshold": 70,
+            "autoGapThreshold": 8
+          },
+          "signalAgreement": {
+            "agreementScore": 0.664,
+            "strongSignalCount": 2,
+            "weakSignalCount": 1,
+            "signalSpread": 0.868,
+            "signalConflict": true,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.132,
+              "keyword": 0.86,
+              "image": 0.5,
+              "multilingual": 0.467,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.163,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "safe-pass",
+            "option-signature-strong",
+            "option-signature-dominant",
+            "mcq-top2-option-separated"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Suite à une infraction au code de la route, le conducteur s'enfuit sans porter secours aux victimes qui décèdent des suites de leurs blessures, à quelle peine de prison peut-il être condamné ?",
+        "explanation": "",
+        "options": {
+          "q0471_o1": "A moins de 2 ans",
+          "q0471_o2": "B moins de 3 ans",
+          "q0471_o3": "C moins de 7 ans",
+          "q0471_o4": "D plus de 7 ans"
+        },
+        "warnings": [
+          "Option IDs were mapped by position only. Review before merge."
+        ]
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0471",
+          "number": 471,
+          "type": "MCQ",
+          "score": 96.435,
+          "scoreBreakdown": {
+            "optionScore": 1,
+            "glossScore": 0.132,
+            "promptScore": 0.132,
+            "promptSimilarity": 0.132,
+            "rawPromptSimilarity": 0.132,
+            "englishPromptSimilarity": 0.132,
+            "bridgePromptSimilarity": 0.038,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 1,
+            "englishOptionSimilarity": 1,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 1,
+            "optionSignatureScore": 0.88,
+            "optionSignatureDominance": 0.94,
+            "optionConceptPairing": 1,
+            "optionConceptCoverage": 1,
+            "optionConceptExactSet": 1,
+            "alignedOptionSimilarity": 1,
+            "optionFingerprint": 1,
+            "englishOptionFingerprint": 1,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 1,
+            "optionRareCoverage": 1,
+            "optionRowKeywordScore": 1,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.94,
+            "answerGlossScore": 0.952,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.683,
+            "bridgeKeywordScore": 0.683,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.067,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 1,
+            "answerPhraseScore": 1,
+            "optionKeywordScore": 1,
+            "optionPhraseScore": 1,
+            "optionConceptKeywordScore": 1,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.09,
+            "numberScore": 1,
+            "numberExactOverlap": 1,
+            "numberValueOverlap": 1,
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 82.059,
+            "baseScore": 82.059,
+            "rerankAdjustment": 14.376
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 1,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "7"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 7 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 2 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 7 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 7 years"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "7"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 2 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 7 years"
+              }
+            ],
+            "numericGroupScore": 0.86,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "7"
+                },
+                "candidate": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "7"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "gt",
+                  "text": "more than 7 years"
+                },
+                "candidate": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "gt",
+                  "text": "more than 7 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "2"
+                },
+                "candidate": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "2"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 2 years"
+                },
+                "candidate": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 2 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 7 years"
+                },
+                "candidate": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 7 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response",
+            "sourceFeatureKeywords": [
+              "after",
+              "assisting",
+              "flees",
+              "injuries",
+              "prison",
+              "receive",
+              "sentence",
+              "their",
+              "victims",
+              "violation",
+              "without",
+              "years"
+            ],
+            "candidateFeatureKeywords": [
+              "accident",
+              "caused",
+              "escaping",
+              "prison",
+              "regulation",
+              "subject",
+              "violation",
+              "death",
+              "human",
+              "major",
+              "motorized",
+              "regulations",
+              "which",
+              "years"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Option comparison used unordered semantic set matching.",
+              "Correct-answer gloss alignment strongly supported the candidate.",
+              "Order-agnostic MCQ option-set alignment separated the candidate from near-misses.",
+              "Canonical option-signature matching strongly supported the MCQ candidate.",
+              "Option-signature evidence dominated final MCQ disambiguation.",
+              "Distinctive option-row keywords strongly supported the candidate.",
+              "Whole-option-set concept coverage matched the candidate unusually well.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Numeric or unit evidence matched between source and candidate.",
+              "English semantic option matching still supported the top candidate.",
+              "Rare option-combination fingerprint increased candidate separation.",
+              "Candidate shares a near-exact normalized option set.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "If a driver has caused a major traffic accident in violation of the traffic regulations which has caused human death due to his escaping, the driver is subject to a prison term of _________.",
+          "syntheticJaPrompt": "if 車両 運転者 has caused major traffic accident violation traffic regulation which has caused human death due his escaping 運転者 subject prison term _________。",
+          "translatedPrompt": "교통법규 위반으로 중대한 교통사고를 일으키고 도주하여 사망에 이르게 한 경우, 운전자는 몇 년의 징역형을 받는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "less than 2 years",
+              "translatedText": "2년 미만"
+            },
+            {
+              "id": "B",
+              "text": "less than 3 years",
+              "translatedText": "3년 미만"
+            },
+            {
+              "id": "C",
+              "text": "less than 7 years",
+              "translatedText": "7년 미만"
+            },
+            {
+              "id": "D",
+              "text": "more than 7 years",
+              "translatedText": "7년 초과"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0471_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "more than 7 years",
+            "correctOptionTranslatedText": "7년 초과",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0515",
+          "number": 515,
+          "type": "MCQ",
+          "score": 66.429,
+          "scoreBreakdown": {
+            "optionScore": 0.706,
+            "glossScore": 0.135,
+            "promptScore": 0.135,
+            "promptSimilarity": 0.135,
+            "rawPromptSimilarity": 0.135,
+            "englishPromptSimilarity": 0.135,
+            "bridgePromptSimilarity": 0.043,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.881,
+            "englishOptionSimilarity": 0.783,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.881,
+            "optionSignatureScore": 0.633,
+            "optionSignatureDominance": 0.669,
+            "optionConceptPairing": 0.706,
+            "optionConceptCoverage": 1,
+            "optionConceptExactSet": 0.667,
+            "alignedOptionSimilarity": 0.591,
+            "optionFingerprint": 0.682,
+            "englishOptionFingerprint": 0.682,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0.5,
+            "optionRareCoverage": 1,
+            "optionRowKeywordScore": 1,
+            "mirrorAgreement": 0.358,
+            "localizedAgreement": 0.253,
+            "answerScore": 0.331,
+            "answerGlossScore": 0.365,
+            "correctAnswerMeaning": 0.5,
+            "englishCorrectAnswerMeaning": 0.358,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0.358,
+            "keywordScore": 0.493,
+            "bridgeKeywordScore": 0.493,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.068,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 0.344,
+            "answerPhraseScore": 0.15,
+            "optionKeywordScore": 1,
+            "optionPhraseScore": 1,
+            "optionConceptKeywordScore": 1,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.179,
+            "numberScore": 0.65,
+            "numberExactOverlap": 0.5,
+            "numberValueOverlap": 0.5,
+            "numericGroupScore": 0.491,
+            "numericGroupPenalty": 0.42,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0.063,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.274,
+            "multilingualSupportScore": 0.253,
+            "totalScore": 58.133,
+            "baseScore": 58.133,
+            "rerankAdjustment": 8.296
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "7"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 7 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 2 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 7 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  3,
+                  7
+                ],
+                "range": true,
+                "unit": "years",
+                "comparator": "range",
+                "text": "3 ~ 7 years"
+              },
+              {
+                "values": [
+                  3,
+                  7
+                ],
+                "range": true,
+                "unit": null,
+                "comparator": "range",
+                "text": "3~7"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 7 years"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "7"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  10
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 10 years"
+              },
+              {
+                "values": [
+                  10
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "10"
+              }
+            ],
+            "numericGroupScore": 0.491,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-group-match",
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "7"
+                },
+                "candidate": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "7"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "gt",
+                  "text": "more than 7 years"
+                },
+                "candidate": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "gt",
+                  "text": "more than 7 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "2"
+                },
+                "candidate": {
+                  "values": [
+                    3,
+                    7
+                  ],
+                  "range": true,
+                  "unit": "years",
+                  "comparator": "range",
+                  "text": "3 ~ 7 years"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 2 years"
+                },
+                "candidate": {
+                  "values": [
+                    3,
+                    7
+                  ],
+                  "range": true,
+                  "unit": "years",
+                  "comparator": "range",
+                  "text": "3 ~ 7 years"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 7 years"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response",
+            "sourceFeatureKeywords": [
+              "after",
+              "assisting",
+              "flees",
+              "injuries",
+              "prison",
+              "receive",
+              "sentence",
+              "their",
+              "victims",
+              "violation",
+              "without",
+              "years"
+            ],
+            "candidateFeatureKeywords": [
+              "accident",
+              "caused",
+              "causing",
+              "escape",
+              "prison",
+              "subject",
+              "after",
+              "death",
+              "escapes",
+              "human",
+              "major",
+              "motorized",
+              "which",
+              "years"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Option comparison used unordered semantic set matching.",
+              "Order-agnostic MCQ option-set alignment separated the candidate from near-misses.",
+              "Distinctive option-row keywords strongly supported the candidate.",
+              "Whole-option-set concept coverage matched the candidate unusually well.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "English semantic option matching still supported the top candidate.",
+              "Rare option-combination fingerprint increased candidate separation.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "If a driver escapes after causing a major traffic accident which has caused human death, the driver is subject to a prison term of ________.",
+          "syntheticJaPrompt": "if 車両 運転者 escape after causing major traffic accident which has caused human death 運転者 subject prison term ________。",
+          "translatedPrompt": "사망자가 발생한 중대 교통사고를 낸 뒤 도주한 경우, 운전자는 얼마의 징역형에 처해지는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "more than 7 years",
+              "translatedText": "7년 초과"
+            },
+            {
+              "id": "B",
+              "text": "less than 3 years",
+              "translatedText": "3년 미만"
+            },
+            {
+              "id": "C",
+              "text": "3 ~ 7 years",
+              "translatedText": "3~7년"
+            },
+            {
+              "id": "D",
+              "text": "more than 10 years",
+              "translatedText": "10년 초과"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0515_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "3 ~ 7 years",
+            "correctOptionTranslatedText": "3~7년",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0403",
+          "number": 403,
+          "type": "MCQ",
+          "score": 43.48,
+          "scoreBreakdown": {
+            "optionScore": 0.377,
+            "glossScore": 0.164,
+            "promptScore": 0.164,
+            "promptSimilarity": 0.164,
+            "rawPromptSimilarity": 0.164,
+            "englishPromptSimilarity": 0.164,
+            "bridgePromptSimilarity": 0.135,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.412,
+            "englishOptionSimilarity": 0.412,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.274,
+            "optionSignatureScore": 0.179,
+            "optionSignatureDominance": 0.261,
+            "optionConceptPairing": 0.37,
+            "optionConceptCoverage": 0.195,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.251,
+            "optionFingerprint": 0.195,
+            "englishOptionFingerprint": 0.195,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.195,
+            "optionRowKeywordScore": 0.195,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.134,
+            "answerGlossScore": 0.307,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.2,
+            "bridgeKeywordScore": 0.124,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.083,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 0.167,
+            "answerPhraseScore": 0,
+            "optionKeywordScore": 0.195,
+            "optionPhraseScore": 0.057,
+            "optionConceptKeywordScore": 0.195,
+            "optionConceptDistinctiveScore": 0.15,
+            "rareKeywordScore": 0.132,
+            "numberScore": 0.2,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 41.516,
+            "baseScore": 41.516,
+            "rerankAdjustment": 1.964
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": false,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": null
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "7"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 7 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 2 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 7 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  4
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "lt",
+                "text": "less than 4"
+              },
+              {
+                "values": [
+                  4
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "4"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "lt",
+                "text": "less than 6"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "6"
+              },
+              {
+                "values": [
+                  8
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "lt",
+                "text": "less than 8"
+              },
+              {
+                "values": [
+                  8
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "8"
+              },
+              {
+                "values": [
+                  10
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "lt",
+                "text": "less than 10"
+              },
+              {
+                "values": [
+                  10
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "10"
+              }
+            ],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "7"
+                },
+                "candidate": {
+                  "values": [
+                    4
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "lt",
+                  "text": "less than 4"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "gt",
+                  "text": "more than 7 years"
+                },
+                "candidate": {
+                  "values": [
+                    4
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "lt",
+                  "text": "less than 4"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "2"
+                },
+                "candidate": {
+                  "values": [
+                    4
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "lt",
+                  "text": "less than 4"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "candidate": {
+                  "values": [
+                    4
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "lt",
+                  "text": "less than 4"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 2 years"
+                },
+                "candidate": {
+                  "values": [
+                    4
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "lt",
+                  "text": "less than 4"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    4
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "lt",
+                  "text": "less than 4"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 7 years"
+                },
+                "candidate": {
+                  "values": [
+                    4
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "lt",
+                  "text": "less than 4"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response",
+            "sourceFeatureKeywords": [
+              "after",
+              "assisting",
+              "flees",
+              "injuries",
+              "prison",
+              "receive",
+              "sentence",
+              "their",
+              "victims",
+              "violation",
+              "without",
+              "years"
+            ],
+            "candidateFeatureKeywords": [
+              "10hr",
+              "4hrs",
+              "6hrs",
+              "8hrs",
+              "without",
+              "10hrs",
+              "drives"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Option comparison used unordered semantic set matching.",
+              "English semantic option matching still supported the top candidate.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "How long can a driver drives without rest?",
+          "syntheticJaPrompt": "how long can 運転者 drive without rest。",
+          "translatedPrompt": "운전자가 휴식 없이 운전할 수 있는 시간은 얼마인가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "less than 6hrs",
+              "translatedText": "6시간 미만"
+            },
+            {
+              "id": "B",
+              "text": "less than 8hrs",
+              "translatedText": "8시간 미만"
+            },
+            {
+              "id": "C",
+              "text": "less than 10hrs",
+              "translatedText": "10시간 미만"
+            },
+            {
+              "id": "D",
+              "text": "less than 4hrs",
+              "translatedText": "4시간 미만"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0403_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "less than 4hrs",
+            "correctOptionTranslatedText": "4시간 미만",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0625",
+          "number": 625,
+          "type": "MCQ",
+          "score": 35.695,
+          "scoreBreakdown": {
+            "optionScore": 0.31,
+            "glossScore": 0.083,
+            "promptScore": 0.083,
+            "promptSimilarity": 0.083,
+            "rawPromptSimilarity": 0.083,
+            "englishPromptSimilarity": 0.083,
+            "bridgePromptSimilarity": 0.063,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.035,
+            "englishOptionSimilarity": 0,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.035,
+            "optionSignatureScore": 0.004,
+            "optionSignatureDominance": 0.145,
+            "optionConceptPairing": 0,
+            "optionConceptCoverage": 0,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.032,
+            "optionFingerprint": 0.004,
+            "englishOptionFingerprint": 0,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "optionRowKeywordScore": 0.5,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.116,
+            "answerGlossScore": 0.293,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.2,
+            "bridgeKeywordScore": 0.142,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 0,
+            "answerPhraseScore": 0.15,
+            "optionKeywordScore": 0,
+            "optionPhraseScore": 0.15,
+            "optionConceptKeywordScore": 0,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0,
+            "numberScore": 0.2,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.58,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 36.053,
+            "baseScore": 36.053,
+            "rerankAdjustment": -0.358
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": false,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": null
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "7"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 7 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 2 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 7 years"
+              }
+            ],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0,
+            "numericGroupPenalty": 0.58,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value"
+            ],
+            "numericGroupMatches": [],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response",
+            "sourceFeatureKeywords": [
+              "after",
+              "assisting",
+              "flees",
+              "injuries",
+              "prison",
+              "receive",
+              "sentence",
+              "their",
+              "victims",
+              "violation",
+              "without",
+              "years"
+            ],
+            "candidateFeatureKeywords": [
+              "accident",
+              "collision",
+              "pillow",
+              "protected",
+              "rear-end",
+              "safety",
+              "chest",
+              "headrest",
+              "there",
+              "waist",
+              "which",
+              "driving-operations",
+              "gears"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "Which part of the driver can be protected by the safety headrest when there is a rear-end collision?",
+          "syntheticJaPrompt": "which part 運転者 can be protected by safety pillow when there rear-end collision。",
+          "translatedPrompt": "뒤에서 차가 박았을 경우, 해드레스트는 운전자의 어느 부위를 효과적으로 보호할 수 있는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "waist",
+              "translatedText": "허리"
+            },
+            {
+              "id": "B",
+              "text": "chest",
+              "translatedText": "가슴"
+            },
+            {
+              "id": "C",
+              "text": "front",
+              "translatedText": "머리"
+            },
+            {
+              "id": "D",
+              "text": "neck",
+              "translatedText": "목"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0625_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "neck",
+            "correctOptionTranslatedText": "목",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:gears"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0383",
+          "number": 383,
+          "type": "MCQ",
+          "score": 35.496,
+          "scoreBreakdown": {
+            "optionScore": 0.327,
+            "glossScore": 0.091,
+            "promptScore": 0.091,
+            "promptSimilarity": 0.091,
+            "rawPromptSimilarity": 0.091,
+            "englishPromptSimilarity": 0.091,
+            "bridgePromptSimilarity": 0.06,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.27,
+            "englishOptionSimilarity": 0.27,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.166,
+            "optionSignatureScore": 0.049,
+            "optionSignatureDominance": 0.21,
+            "optionConceptPairing": 0.173,
+            "optionConceptCoverage": 0.153,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.166,
+            "optionFingerprint": 0.153,
+            "englishOptionFingerprint": 0.153,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.257,
+            "optionRowKeywordScore": 0.5,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0,
+            "answerGlossScore": 0.2,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.2,
+            "bridgeKeywordScore": 0.188,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0.15,
+            "answerKeywordScore": 0.232,
+            "answerPhraseScore": 0,
+            "optionKeywordScore": 0.153,
+            "optionPhraseScore": 0,
+            "optionConceptKeywordScore": 0.153,
+            "optionConceptDistinctiveScore": 0.5,
+            "rareKeywordScore": 0.159,
+            "numberScore": 0.483,
+            "numberExactOverlap": 0.333,
+            "numberValueOverlap": 0.333,
+            "numericGroupScore": 0.246,
+            "numericGroupPenalty": 0.42,
+            "numericIntentMismatchPenalty": 0.1,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0.425,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 1,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 35.152,
+            "baseScore": 35.152,
+            "rerankAdjustment": 0.344
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years",
+                "months"
+              ],
+              "modifier": null,
+              "promptFamily": "age"
+            },
+            "numericIntentReasonCodes": [
+              "prompt-family-mismatch"
+            ],
+            "sourceNumericGroups": [
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "7"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 7 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 2 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 3 years"
+              },
+              {
+                "values": [
+                  7
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "lt",
+                "text": "less than 7 years"
+              }
+            ],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "gt",
+                "text": "over 60"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "gt",
+                "text": "more than 60 years"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              },
+              {
+                "values": [
+                  1
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "1 year"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "3 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "2 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": "meters",
+                "comparator": "exact",
+                "text": "6 m"
+              },
+              {
+                "values": [
+                  6
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "6"
+              }
+            ],
+            "numericGroupScore": 0.246,
+            "numericGroupPenalty": 0.42,
+            "numericGroupReasonCodes": [
+              "numeric-range-missing-value",
+              "numeric-group-match"
+            ],
+            "numericGroupMatches": [
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "7"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "gt",
+                  "text": "over 60"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "gt",
+                  "text": "more than 7 years"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "gt",
+                  "text": "over 60"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "2"
+                },
+                "candidate": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "exact",
+                  "text": "2 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "exact",
+                  "text": "3"
+                },
+                "candidate": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "exact",
+                  "text": "3 years"
+                },
+                "score": 0.86,
+                "penalty": 0,
+                "reasonCodes": [
+                  "numeric-group-match"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    2
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 2 years"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "gt",
+                  "text": "over 60"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    3
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 3 years"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "gt",
+                  "text": "over 60"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              },
+              {
+                "source": {
+                  "values": [
+                    7
+                  ],
+                  "range": false,
+                  "unit": "years",
+                  "comparator": "lt",
+                  "text": "less than 7 years"
+                },
+                "candidate": {
+                  "values": [
+                    60
+                  ],
+                  "range": false,
+                  "unit": null,
+                  "comparator": "gt",
+                  "text": "over 60"
+                },
+                "score": 0,
+                "penalty": 0.42,
+                "reasonCodes": [
+                  "numeric-range-missing-value"
+                ]
+              }
+            ],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response",
+            "sourceFeatureKeywords": [
+              "after",
+              "assisting",
+              "flees",
+              "injuries",
+              "prison",
+              "receive",
+              "sentence",
+              "their",
+              "victims",
+              "violation",
+              "without",
+              "years"
+            ],
+            "candidateFeatureKeywords": [
+              "certificate",
+              "condition",
+              "must",
+              "physical",
+              "present",
+              "should",
+              "conditions",
+              "every",
+              "examination",
+              "medical",
+              "months",
+              "often",
+              "provide",
+              "years"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Numeric intent or prompt-family mismatch reduced confidence.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "How often must drivers over 60 provide a medical examination certificate?",
+          "syntheticJaPrompt": "how often べき 運転者 who more than 60 year old present certificate physical condition。",
+          "translatedPrompt": "60세 초과 운전자는 신체검사서를 얼마나 자주 제출해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "every 3 years",
+              "translatedText": "3년마다"
+            },
+            {
+              "id": "B",
+              "text": "every 2 years",
+              "translatedText": "2년마다"
+            },
+            {
+              "id": "C",
+              "text": "every 6 months",
+              "translatedText": "6개월마다"
+            },
+            {
+              "id": "D",
+              "text": "every 1 year",
+              "translatedText": "매년"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0383_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "every 1 year",
+            "correctOptionTranslatedText": "매년",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    }
+  ]
+}

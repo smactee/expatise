@@ -1,0 +1,1287 @@
+{
+  "meta": {
+    "generatedAt": "2026-05-14T13:09:58.961Z",
+    "source": "english_master_backfill",
+    "lang": "ko",
+    "dataset": "2023-test1",
+    "applyRequested": false,
+    "aiGenerationUsed": true,
+    "generationModel": "gpt-4o-mini",
+    "productionModified": false,
+    "inputPath": "qbank-tools/generated/staging/backfill.ko.missing-qids.json",
+    "outputPath": "qbank-tools/generated/staging/backfill.ko.generated-draft.json",
+    "limit": null,
+    "batchSize": 5,
+    "requestTimeoutMs": 60000,
+    "resume": true,
+    "note": "Generated from English master. All items still require human review before merge."
+  },
+  "counts": {
+    "inputItems": 23,
+    "emittedItems": 23,
+    "generatedItems": 23,
+    "notGeneratedItems": 0
+  },
+  "items": [
+    {
+      "qid": "q0986",
+      "number": 986,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": "right-of-way",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#right-of-way",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When your vehicle encounters an oncoming vehicle on a dangerous road, you should______.",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0986_o1",
+          "text": "Do not reduce your speed."
+        },
+        {
+          "key": "B",
+          "id": "q0986_o2",
+          "text": "Position yourself in the center."
+        },
+        {
+          "key": "C",
+          "id": "q0986_o3",
+          "text": "Accelerate."
+        },
+        {
+          "key": "D",
+          "id": "q0986_o4",
+          "text": "Reduce speed or stop and give way to the other vehicle."
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "위험한 도로에서 마주 오는 차량을 만났을 때, 당신은 ______ 해야 합니다.",
+        "options": {
+          "q0986_o1": "속도를 줄이지 않습니다.",
+          "q0986_o2": "중앙에 위치합니다.",
+          "q0986_o3": "가속합니다.",
+          "q0986_o4": "속도를 줄이거나 정지하여 다른 차량에게 양보합니다."
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0987",
+      "number": 987,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If an end-of-life vehicle undergoes a complete repair, can it be used?",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "사용 종료 차량이 완전히 수리되면 사용할 수 있습니까?",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0988",
+      "number": 988,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A vehicle considered unusable under national regulations cannot be registered.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "국가 규정상 사용 불능으로 간주되는 차량은 등록할 수 없습니다.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0989",
+      "number": 989,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What should you do if a non-motorized vehicle is trying to pass through traffic?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0989_o1",
+          "text": "Honk to warn"
+        },
+        {
+          "key": "B",
+          "id": "q0989_o2",
+          "text": "Accelerate"
+        },
+        {
+          "key": "C",
+          "id": "q0989_o3",
+          "text": "Slow down and let pass"
+        },
+        {
+          "key": "D",
+          "id": "q0989_o4",
+          "text": "Get closer and accelerate"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "비교동차가 교통을 통과하려고 할 때 당신은 무엇을 해야 합니까?",
+        "options": {
+          "q0989_o1": "경적을 울려 경고합니다.",
+          "q0989_o2": "가속합니다.",
+          "q0989_o3": "속도를 줄이고 통과하게 합니다.",
+          "q0989_o4": "가까이 가서 가속합니다."
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0991",
+      "number": 991,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "row",
+      "topic": "vehicle-registration",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "In the event of an accident causing property damage, the police officer does not have the right to question drivers who remained at the scene of the accident but should have been evacuated.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "재산 피해를 유발한 사고가 발생할 경우, 경찰관은 사고 현장에 남아있던 운전자를 질문할 권리가 없으며, 대피해야 했습니다.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0992",
+      "number": 992,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": "license",
+      "subtopic": "violations-penalties",
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#license",
+            "score": 3
+          },
+          {
+            "tag": "#violations-penalties",
+            "score": 1
+          },
+          {
+            "tag": "#points-system",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When must the driver apply for renewal of their driving license?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0992_o1",
+          "text": "once its validity date has expired"
+        },
+        {
+          "key": "B",
+          "id": "q0992_o2",
+          "text": "once the period for accumulating penalty points has ended"
+        },
+        {
+          "key": "C",
+          "id": "q0992_o3",
+          "text": "once the period for accumulating penalty points has ended with less than 11 points accumulated"
+        },
+        {
+          "key": "D",
+          "id": "q0992_o4",
+          "text": "once the period for accumulating penalty points has ended with more than 11 points accumulated"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "운전자가 면허 갱신을 신청해야 하는 시점은 언제인가요?",
+        "options": {
+          "q0992_o1": "유효기간이 만료되었을 때",
+          "q0992_o2": "벌점 누적 기간이 끝났을 때",
+          "q0992_o3": "벌점 누적 기간이 끝나고 11점 미만이었을 때",
+          "q0992_o4": "벌점 누적 기간이 끝나고 11점 이상이었을 때"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0993",
+      "number": 993,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What should you do if there is accumulated water on the road?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0993_o1",
+          "text": "slow down and pass slowly"
+        },
+        {
+          "key": "B",
+          "id": "q0993_o2",
+          "text": "accelerate and pass"
+        },
+        {
+          "key": "C",
+          "id": "q0993_o3",
+          "text": "keep the speed"
+        },
+        {
+          "key": "D",
+          "id": "q0993_o4",
+          "text": "downshift and accelerate"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "A",
+      "generatedTranslation": {
+        "prompt": "도로에 물이 고여 있을 때 어떻게 해야 하나요?",
+        "options": {
+          "q0993_o1": "속도를 줄이고 천천히 지나간다",
+          "q0993_o2": "가속하고 지나간다",
+          "q0993_o3": "속도를 유지한다",
+          "q0993_o4": "다운쉽하고 가속한다"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0994",
+      "number": 994,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": "traffic-lights",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#traffic-lights",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What should you do when the vehicle in front is waiting for the green light to turn right?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0994_o1",
+          "text": "turn to its left"
+        },
+        {
+          "key": "B",
+          "id": "q0994_o2",
+          "text": "take the turn by the right"
+        },
+        {
+          "key": "C",
+          "id": "q0994_o3",
+          "text": "honk so that the vehicle in front lets us pass"
+        },
+        {
+          "key": "D",
+          "id": "q0994_o4",
+          "text": "wait in the line"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "앞차가 우회전하기 위해 신호등의 초록불을 기다리고 있을 때 어떻게 해야 하나요?",
+        "options": {
+          "q0994_o1": "왼쪽으로 회전한다",
+          "q0994_o2": "오른쪽으로 회전한다",
+          "q0994_o3": "앞차가 지나가게 하기 위해 경적을 울린다",
+          "q0994_o4": "줄을 서서 기다린다"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0995",
+      "number": 995,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": "expressway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#expressway",
+            "score": 2
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Can the activation of the hazard warning lights be used in the following situations?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0995_o1",
+          "text": "follow the vehicles ahead"
+        },
+        {
+          "key": "B",
+          "id": "q0995_o2",
+          "text": "during a traffic jam"
+        },
+        {
+          "key": "C",
+          "id": "q0995_o3",
+          "text": "stop due to a breakdown"
+        },
+        {
+          "key": "D",
+          "id": "q0995_o4",
+          "text": "guide the direction for following vehicles"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "다음 상황에서 비상등을 켜는 것이 가능한가요?",
+        "options": {
+          "q0995_o1": "앞차를 따라갈 때",
+          "q0995_o2": "교통 체증 중일 때",
+          "q0995_o3": "고장으로 인해 정차할 때",
+          "q0995_o4": "뒤따르는 차량을 안내할 때"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0996",
+      "number": 996,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If the oncoming vehicle is in our lane, what should you do?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0996_o1",
+          "text": "move toward the middle of the road to drive"
+        },
+        {
+          "key": "B",
+          "id": "q0996_o2",
+          "text": "let them pass"
+        },
+        {
+          "key": "C",
+          "id": "q0996_o3",
+          "text": "flash your headlights at them"
+        },
+        {
+          "key": "D",
+          "id": "q0996_o4",
+          "text": "force them to reverse to the right"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "B",
+      "generatedTranslation": {
+        "prompt": "맞은편 차가 우리의 차선에 있다면 어떻게 해야 하나요?",
+        "options": {
+          "q0996_o1": "도로 중간으로 이동해서 운전한다",
+          "q0996_o2": "그들이 지나가도록 한다",
+          "q0996_o3": "그들에게 헤드라이트를 깜빡인다",
+          "q0996_o4": "그들이 오른쪽으로 후진하도록 강요한다"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0998",
+      "number": 998,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": "violations-penalties",
+      "subtopic": "license",
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#violations-penalties",
+            "score": 2
+          },
+          {
+            "tag": "#license",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Which candidates can have their license application refused for three years after being caught in the act?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0998_o1",
+          "text": "smokers"
+        },
+        {
+          "key": "B",
+          "id": "q0998_o2",
+          "text": "drug users"
+        },
+        {
+          "key": "C",
+          "id": "q0998_o3",
+          "text": "people on insulin injections"
+        },
+        {
+          "key": "D",
+          "id": "q0998_o4",
+          "text": "alcoholics"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "B",
+      "generatedTranslation": {
+        "prompt": "어떤 후보자는 현행범으로 적발된 후 3년 동안 면허 신청이 거부될 수 있습니까?",
+        "options": {
+          "q0998_o1": "흡연자",
+          "q0998_o2": "약물 사용자",
+          "q0998_o3": "인슐린 주사를 받는 사람",
+          "q0998_o4": "알코올 중독자"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q0999",
+      "number": 999,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What should you do when traffic is slow and other vehicles are merging into the congested section?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q0999_o1",
+          "text": "Honk and prevent them from passing"
+        },
+        {
+          "key": "B",
+          "id": "q0999_o2",
+          "text": "Accelerate and follow the vehicles ahead to prevent them from merging"
+        },
+        {
+          "key": "C",
+          "id": "q0999_o3",
+          "text": "Politely let them merge and maintain a safe distance"
+        },
+        {
+          "key": "D",
+          "id": "q0999_o4",
+          "text": "Force the vehicle trying to merge to leave"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "교통이 느리고 다른 차량이 혼잡한 구역으로 합류할 때 무엇을 해야 합니까?",
+        "options": {
+          "q0999_o1": "클락슨을 울려서 통과하지 못하게 한다",
+          "q0999_o2": "가속하여 앞차를 따라가며 합류하지 못하게 한다",
+          "q0999_o3": "정중하게 합류하도록 하고 안전거리를 유지한다",
+          "q0999_o4": "합류하려는 차량을 강제로 내쫓는다"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1001",
+      "number": 1001,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "row",
+      "topic": "expressway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#expressway",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "You must not turn the vehicle around in the opposite direction on the highway.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "고속도로에서 반대 방향으로 차량을 돌려서는 안 됩니다.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1002",
+      "number": 1002,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When driving on a hail-covered road, vehicle stability is reduced, making it easy to skid if you brake sharply.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "우박으로 덮인 도로에서 운전할 때, 차량의 안정성이 감소하여 급제동할 경우 미끄러지기 쉽습니다.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1003",
+      "number": 1003,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What is the maximum number of consecutive hours one can drive?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1003_o1",
+          "text": "4 hours"
+        },
+        {
+          "key": "B",
+          "id": "q1003_o2",
+          "text": "6 hours"
+        },
+        {
+          "key": "C",
+          "id": "q1003_o3",
+          "text": "8 hours"
+        },
+        {
+          "key": "D",
+          "id": "q1003_o4",
+          "text": "10 hours"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "A",
+      "generatedTranslation": {
+        "prompt": "연속해서 운전할 수 있는 최대 시간은 얼마입니까?",
+        "options": {
+          "q1003_o1": "4시간",
+          "q1003_o2": "6시간",
+          "q1003_o3": "8시간",
+          "q1003_o4": "10시간"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1004",
+      "number": 1004,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What can happen in case of fog?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1004_o1",
+          "text": "cause the engine to shut off"
+        },
+        {
+          "key": "B",
+          "id": "q1004_o2",
+          "text": "slide on the wing and cause an accident"
+        },
+        {
+          "key": "C",
+          "id": "q1004_o3",
+          "text": "increase traffic density"
+        },
+        {
+          "key": "D",
+          "id": "q1004_o4",
+          "text": "reduce visibility"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "D",
+      "generatedTranslation": {
+        "prompt": "안개가 끼었을 때 어떤 일이 발생할 수 있나요?",
+        "options": {
+          "q1004_o1": "엔진이 멈출 수 있다",
+          "q1004_o2": "날개에서 미끄러져 사고를 일으킬 수 있다",
+          "q1004_o3": "교통 밀도가 증가할 수 있다",
+          "q1004_o4": "시야가 줄어들 수 있다"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1005",
+      "number": 1005,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "Smoking while driving cannot have an impact on safety.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "운전 중에 흡연하는 것은 안전에 영향을 줄 수 없다.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1006",
+      "number": 1006,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What is the maximum speed allowed when passing through a dangerous curve?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1006_o1",
+          "text": "15 km/h"
+        },
+        {
+          "key": "B",
+          "id": "q1006_o2",
+          "text": "20 km/h"
+        },
+        {
+          "key": "C",
+          "id": "q1006_o3",
+          "text": "30 km/h"
+        },
+        {
+          "key": "D",
+          "id": "q1006_o4",
+          "text": "40 km/h"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "위험한 곡선을 통과할 때 허용되는 최대 속도는 얼마인가요?",
+        "options": {
+          "q1006_o1": "15 km/h",
+          "q1006_o2": "20 km/h",
+          "q1006_o3": "30 km/h",
+          "q1006_o4": "40 km/h"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1007",
+      "number": 1007,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": "expressway",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#expressway",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "If a minibus is driving on the highway at less than 100 km/h, what safety distance must it keep?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1007_o1",
+          "text": "at least 50 m"
+        },
+        {
+          "key": "B",
+          "id": "q1007_o2",
+          "text": "at least 30 m"
+        },
+        {
+          "key": "C",
+          "id": "q1007_o3",
+          "text": "at least 20 m"
+        },
+        {
+          "key": "D",
+          "id": "q1007_o4",
+          "text": "at least 10 m"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "A",
+      "generatedTranslation": {
+        "prompt": "미니버스가 고속 도로에서 100 km/h 이하로 주행할 때, 어떤 안전 거리를 유지해야 하나요?",
+        "options": {
+          "q1007_o1": "최소 50 m",
+          "q1007_o2": "최소 30 m",
+          "q1007_o3": "최소 20 m",
+          "q1007_o4": "최소 10 m"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1008",
+      "number": 1008,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row",
+          "#pic"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": "/qbank/2023-test1/images/img_b564bb5061f7b52e40500214725f59e2.jpeg",
+      "imageAssets": [
+        "/qbank/2023-test1/images/img_b564bb5061f7b52e40500214725f59e2.jpeg"
+      ],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "When this light comes on, you need to pour gasoline into the engine.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Right",
+      "generatedTranslation": {
+        "prompt": "이 경고등이 켜지면 엔진에 연료를 주입해야 합니다.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1009",
+      "number": 1009,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": "vehicle-registration",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#vehicle-registration",
+            "score": 1
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "To avoid a tire puncture, which action should be taken?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1009_o1",
+          "text": "Lower the tire pressure"
+        },
+        {
+          "key": "B",
+          "id": "q1009_o2",
+          "text": "Check your tires periodically"
+        },
+        {
+          "key": "C",
+          "id": "q1009_o3",
+          "text": "Clean the tire scratches"
+        },
+        {
+          "key": "D",
+          "id": "q1009_o4",
+          "text": "Replace the cracked or badly damaged tire"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "B",
+      "generatedTranslation": {
+        "prompt": "타이어 펑크를 피하려면 어떤 조치를 취해야 합니까?",
+        "options": {
+          "q1009_o1": "타이어 압력을 낮춘다",
+          "q1009_o2": "주기적으로 타이어를 점검한다",
+          "q1009_o3": "타이어 스크래치를 청소한다",
+          "q1009_o4": "금이 가거나 심하게 손상된 타이어를 교체한다"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1011",
+      "number": 1011,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "mcq",
+      "topic": "right-of-way",
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#mcq"
+        ],
+        "user": [],
+        "suggested": [
+          {
+            "tag": "#right-of-way",
+            "score": 2
+          }
+        ]
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "What should you do when you encounter a group of students while driving?",
+      "englishOptions": [
+        {
+          "key": "A",
+          "id": "q1011_o1",
+          "text": "pass by accelerating in advance"
+        },
+        {
+          "key": "B",
+          "id": "q1011_o2",
+          "text": "stop and yield the right of way"
+        },
+        {
+          "key": "C",
+          "id": "q1011_o3",
+          "text": "slow down and pass at reduced speed"
+        },
+        {
+          "key": "D",
+          "id": "q1011_o4",
+          "text": "keep honking to hurry them"
+        }
+      ],
+      "englishExplanation": "",
+      "correctOptionKey": "C",
+      "generatedTranslation": {
+        "prompt": "운전 중 학생들이 있는 그룹을 만났을 때 무엇을 해야 합니까?",
+        "options": {
+          "q1011_o1": "미리 가속하여 지나친다",
+          "q1011_o2": "멈추고 양보한다",
+          "q1011_o3": "속도를 줄이고 천천히 지나친다",
+          "q1011_o4": "서둘러 지나가라고 경적을 울린다"
+        },
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    },
+    {
+      "qid": "q1012",
+      "number": 1012,
+      "source": "english_master_backfill",
+      "lang": "ko",
+      "type": "row",
+      "topic": null,
+      "subtopic": null,
+      "tags": {
+        "auto": [
+          "#row"
+        ],
+        "user": [],
+        "suggested": []
+      },
+      "image": null,
+      "imageAssets": [],
+      "imageTags": null,
+      "objectTags": [],
+      "englishPrompt": "A driver who hits monuments or public installations can continue driving without worrying.",
+      "englishOptions": [],
+      "englishExplanation": "",
+      "correctOptionKey": "Wrong",
+      "generatedTranslation": {
+        "prompt": "기념비나 공공 시설을 치는 운전자는 걱정 없이 계속 운전할 수 있다.",
+        "options": {},
+        "explanation": ""
+      },
+      "generationStatus": "generated",
+      "generationProvider": "openai",
+      "generationModel": "gpt-4o-mini",
+      "needsHumanReview": true,
+      "reviewStatus": "pending",
+      "warnings": []
+    }
+  ]
+}

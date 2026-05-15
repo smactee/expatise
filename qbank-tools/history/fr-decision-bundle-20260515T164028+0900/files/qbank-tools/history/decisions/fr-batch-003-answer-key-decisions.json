@@ -1,0 +1,159 @@
+{
+  "generatedAt": "2026-05-10T07:00:23.401Z",
+  "lang": "fr",
+  "batchId": "batch-003",
+  "dataset": "2023-test1",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/fr-batch-003-workbench-decisions.json",
+  "items": [
+    {
+      "qid": "q0383",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Machine top match q0383 asks same question (drivers >60 medical exam). Master correct = 'every 1 year'; in the French options 'tous les ans' is source letter C — mapped accordingly."
+    },
+    {
+      "qid": "q0150",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Machine candidate q0150's correct text = 'the fog light'. Source options include 'feu antibrouillard' (D) which matches. Some candidate-language hints conflict about low beams vs fog — moderate uncertainty."
+    },
+    {
+      "qid": "q0586",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Dashboard image is yellow ABS indicator; q0586 correct = 'ABS system malfunction' which matches source option A."
+    },
+    {
+      "qid": "q0823",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Blue sign with three arrows (two straight + one merging) — machine q0823 correct = 'the number of lanes increases' which matches source option C 'ajout de voies de circulation'. Match score moderate."
+    },
+    {
+      "qid": "q0370",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Question about which conduct yields 12 penalty points; machine q0370 correct = 'use falsified license plate' which matches source option B."
+    },
+    {
+      "qid": "q0835",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image is windsock warning sign; q0835 correct = 'mind crosswinds' which corresponds to source option A 'attention vent latéral'."
+    },
+    {
+      "qid": "q0709",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image and prompt ask meaning of continuous yellow curb line; q0709 maps to 'no parking'. Source option D = 'interdit de stationner' matches."
+    },
+    {
+      "qid": "q0715",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Sign is a right-arrow inside prohibition circle = 'no right turn'. q0715 correctOption = no right turn; source option B matches."
+    },
+    {
+      "qid": "q0866",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows a yellow triangle with arrow indicating bypass/avoid on the left. q0866 in bank corresponds to 'bypass from left side'. Source option A = 'dévier par la gauche'. Some candidate matches favored right-side variants (conflict), so moderate confidence. Rejected top matcher: Top automatic candidate (q0785) suggested bypass/right; visual arrow indicates left bypass so selected q0866 instead."
+    },
+    {
+      "qid": "q0730",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image is a yellow warning sign with a rightward arrow = sharp right curve. q0730 maps to 'sharp right curve'. Source option B = 'virage dangereux à droite' matches."
+    },
+    {
+      "qid": "q0725",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Road has yellow broken+solid center line. q0725 meaning: side with solid line may not cross. Source options contain duplicated/ambiguous OCR text; option A (first occurrence) reads 'interdiction de franchir la ligne à coté de la ligne continue' which matches 'cannot cross from side of solid line'."
+    },
+    {
+      "qid": "q0872",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Rectangular red/white sign with arrows likely indicates keep/right or drive on right side. q0753 corresponds to 'driving by the right side of the road'. Extracted correct key was B. Candidate matches are weak/discordant so lower confidence. Rejected top matcher: Top automatic candidate (q0715) differed; chosen q0753 because the sign semantics (drive by right) best match the source option B."
+    },
+    {
+      "qid": "q0124",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Question asks which auxiliary method to control speed on a descent; correct is engine braking. q0124 corresponds to 'use the engine to brake'. Source option B matches."
+    },
+    {
+      "qid": "q0740",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Green rectangular highway sign showing an emergency stopping area; machine top match q0740 ('highway emergency strip') and source option A ('zone autoroutière d'arrêt d'urgence') are semantically equivalent."
+    },
+    {
+      "qid": "q0415",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Image shows a rural POV with no clear lane markings; prompt asks how motor vehicles circulate. Candidate matches are unrelated and image semantics are ambiguous (stay in lane vs. keep to side). Cannot confidently map to existing qid or source option."
+    },
+    {
+      "qid": "q0613",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Dashboard icon depicts airflow to face and feet; master q0613 correct text = 'floor and the front fans work'. Source option B ('être soufflé en face et du plancher') matches that meaning — map master to source option B."
+    },
+    {
+      "qid": "q0891",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue circular sign with white '50' = mandatory minimum speed. Machine top candidate q0891 denotes minimum speed 50 km/h; source option B explicitly 'vitesse minimale à 50km/h' matches master meaning."
+    },
+    {
+      "qid": "q0578",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows a central control lever in center console; top candidate q0578 identifies 'gear lever'. Source option C = 'le levier de vitesse' matches. Some visual ambiguity with parking brake in candidates, so moderate confidence."
+    },
+    {
+      "qid": "q0107",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Text-only safe-driving scenario: presence of non-motorized vehicles and water -> slow down. Machine top match q0107 ('reduce speed and go slowly') and source option A ('ralentir') align."
+    },
+    {
+      "qid": "q0811",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Triangular warning sign with falling rocks depicted; q0811 correct = 'watch out for falling rocks'. Source option C ('risque de chute de pierres') is direct match."
+    },
+    {
+      "qid": "q0695",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Prohibitory sign showing a left-turn arrow with red slash = 'no left turn'. Machine q0695 correct = 'no turning left'. Source option A ('défense de tourner à gauche') matches master meaning."
+    },
+    {
+      "qid": "q0847",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Green rectangular sign showing '1620 kHz' and Chinese text — indicates highway traffic radio frequency. Master q0847 correct = 'traffic radio frequency'; source option B ('information sur les chaînes radio du trafic autoroutier') matches that meaning. Some candidate ordering differences present, hence medium risk."
+    },
+    {
+      "qid": "q0396",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Source asks max speed on muddy road; candidate q0396 prompt and options match (correct = 30 km/h). French option C = 30 km/h."
+    },
+    {
+      "qid": "q0448",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Prompt about postponing license renewal for military/abroad matches q0448 (3 years). French option C = 3 ans."
+    },
+    {
+      "qid": "q0460",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image shows a car stopped at/near a crosswalk; q0460's correct answer is 'stopping in the crosswalk' which maps to French option B. Some candidate confusion with 'no-stopping marking' so confidence moderate."
+    }
+  ]
+}

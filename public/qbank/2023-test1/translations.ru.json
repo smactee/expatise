@@ -1,8 +1,8 @@
 {
   "meta": {
     "locale": "ru",
-    "translatedQuestions": 984,
-    "generatedAt": "2026-05-02T11:26:19.685Z",
+    "translatedQuestions": 1007,
+    "generatedAt": "2026-05-14T13:13:15.526Z",
     "mergedBatches": [
       "batch-001",
       "batch-002",
@@ -30,7 +30,8 @@
       "missing-qid-backfill-2026-05-02T08:45:27.488Z",
       "missing-qid-backfill-2026-05-02T10:35:10.898Z",
       "missing-qid-backfill-2026-05-02T11:09:30.723Z",
-      "missing-qid-backfill-2026-05-02T11:26:19.685Z"
+      "missing-qid-backfill-2026-05-02T11:26:19.685Z",
+      "missing-qid-backfill-2026-05-14T13:13:15.526Z"
     ]
   },
   "questions": {
@@ -62918,142 +62919,1770 @@
       "reviewStatus": "ready"
     },
     "q0986": {
-      "qid": "q0986",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Когда ваше транспортное средство встречает встречное транспортное средство на опасной дороге, вы должны______.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0986_o1": "Не снижать скорость.",
+        "q0986_o2": "Занять центральное положение.",
+        "q0986_o3": "Ускориться.",
+        "q0986_o4": "Снизить скорость или остановиться и пропустить другое транспортное средство."
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Не снижать скорость.",
+          "sourceTextBody": "Не снижать скорость.",
+          "canonicalOptionId": "q0986_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Do not reduce your speed.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Занять центральное положение.",
+          "sourceTextBody": "Занять центральное положение.",
+          "canonicalOptionId": "q0986_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Position yourself in the center.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Ускориться.",
+          "sourceTextBody": "Ускориться.",
+          "canonicalOptionId": "q0986_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Accelerate.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Снизить скорость или остановиться и пропустить другое транспортное средство.",
+          "sourceTextBody": "Снизить скорость или остановиться и пропустить другое транспортное средство.",
+          "canonicalOptionId": "q0986_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Reduce speed or stop and give way to the other vehicle.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Не снижать скорость.",
+          "sourceTextBody": "Не снижать скорость.",
+          "canonicalOptionId": "q0986_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Do not reduce your speed.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Занять центральное положение.",
+          "sourceTextBody": "Занять центральное положение.",
+          "canonicalOptionId": "q0986_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Position yourself in the center.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Ускориться.",
+          "sourceTextBody": "Ускориться.",
+          "canonicalOptionId": "q0986_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Accelerate.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Снизить скорость или остановиться и пропустить другое транспортное средство.",
+          "sourceTextBody": "Снизить скорость или остановиться и пропустить другое транспортное средство.",
+          "canonicalOptionId": "q0986_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Reduce speed or stop and give way to the other vehicle.",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0987": {
-      "qid": "q0987",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Если транспортное средство, подлежащее списанию, пройдет полный ремонт, может ли оно быть использовано?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0988": {
-      "qid": "q0988",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Транспортное средство, признанное непригодным по национальным нормам, не может быть зарегистрировано.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0989": {
-      "qid": "q0989",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Что вы должны сделать, если немоторизованное транспортное средство пытается проехать через движение?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0989_o1": "Подать сигнал, чтобы предупредить",
+        "q0989_o2": "Ускориться",
+        "q0989_o3": "Сбавить скорость и пропустить",
+        "q0989_o4": "Приблизиться и ускориться"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Подать сигнал, чтобы предупредить",
+          "sourceTextBody": "Подать сигнал, чтобы предупредить",
+          "canonicalOptionId": "q0989_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Ускориться",
+          "sourceTextBody": "Ускориться",
+          "canonicalOptionId": "q0989_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Сбавить скорость и пропустить",
+          "sourceTextBody": "Сбавить скорость и пропустить",
+          "canonicalOptionId": "q0989_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Slow down and let pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Приблизиться и ускориться",
+          "sourceTextBody": "Приблизиться и ускориться",
+          "canonicalOptionId": "q0989_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Get closer and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Подать сигнал, чтобы предупредить",
+          "sourceTextBody": "Подать сигнал, чтобы предупредить",
+          "canonicalOptionId": "q0989_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk to warn",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Ускориться",
+          "sourceTextBody": "Ускориться",
+          "canonicalOptionId": "q0989_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Сбавить скорость и пропустить",
+          "sourceTextBody": "Сбавить скорость и пропустить",
+          "canonicalOptionId": "q0989_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Slow down and let pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Приблизиться и ускориться",
+          "sourceTextBody": "Приблизиться и ускориться",
+          "canonicalOptionId": "q0989_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Get closer and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q0991": {
-      "qid": "q0991",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "В случае аварии, повлекшей за собой материальный ущерб, сотрудник полиции не имеет права опрашивать водителей, которые остались на месте происшествия, но должны были быть эвакуированы.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q0992": {
-      "qid": "q0992",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Когда водителю необходимо подать заявку на продление водительских прав?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0992_o1": "как только срок их действия истечет",
+        "q0992_o2": "как только истечет срок накопления штрафных баллов",
+        "q0992_o3": "как только истечет срок накопления штрафных баллов, если набрано менее 11 баллов",
+        "q0992_o4": "как только истечет срок накопления штрафных баллов, если набрано более 11 баллов"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "как только срок их действия истечет",
+          "sourceTextBody": "как только срок их действия истечет",
+          "canonicalOptionId": "q0992_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "once its validity date has expired",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "как только истечет срок накопления штрафных баллов",
+          "sourceTextBody": "как только истечет срок накопления штрафных баллов",
+          "canonicalOptionId": "q0992_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "как только истечет срок накопления штрафных баллов, если набрано менее 11 баллов",
+          "sourceTextBody": "как только истечет срок накопления штрафных баллов, если набрано менее 11 баллов",
+          "canonicalOptionId": "q0992_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with less than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "как только истечет срок накопления штрафных баллов, если набрано более 11 баллов",
+          "sourceTextBody": "как только истечет срок накопления штрафных баллов, если набрано более 11 баллов",
+          "canonicalOptionId": "q0992_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with more than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "как только срок их действия истечет",
+          "sourceTextBody": "как только срок их действия истечет",
+          "canonicalOptionId": "q0992_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "once its validity date has expired",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "как только истечет срок накопления штрафных баллов",
+          "sourceTextBody": "как только истечет срок накопления штрафных баллов",
+          "canonicalOptionId": "q0992_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "как только истечет срок накопления штрафных баллов, если набрано менее 11 баллов",
+          "sourceTextBody": "как только истечет срок накопления штрафных баллов, если набрано менее 11 баллов",
+          "canonicalOptionId": "q0992_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with less than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "как только истечет срок накопления штрафных баллов, если набрано более 11 баллов",
+          "sourceTextBody": "как только истечет срок накопления штрафных баллов, если набрано более 11 баллов",
+          "canonicalOptionId": "q0992_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "once the period for accumulating penalty points has ended with more than 11 points accumulated",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0993": {
-      "qid": "q0993",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Что следует делать, если на дороге накопилась вода?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0993_o1": "снизить скорость и проехать медленно",
+        "q0993_o2": "ускориться и проехать",
+        "q0993_o3": "сохранять скорость",
+        "q0993_o4": "переключиться на пониженную и ускориться"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "снизить скорость и проехать медленно",
+          "sourceTextBody": "снизить скорость и проехать медленно",
+          "canonicalOptionId": "q0993_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slow down and pass slowly",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "ускориться и проехать",
+          "sourceTextBody": "ускориться и проехать",
+          "canonicalOptionId": "q0993_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerate and pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "сохранять скорость",
+          "sourceTextBody": "сохранять скорость",
+          "canonicalOptionId": "q0993_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "keep the speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "переключиться на пониженную и ускориться",
+          "sourceTextBody": "переключиться на пониженную и ускориться",
+          "canonicalOptionId": "q0993_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "downshift and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "снизить скорость и проехать медленно",
+          "sourceTextBody": "снизить скорость и проехать медленно",
+          "canonicalOptionId": "q0993_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slow down and pass slowly",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "ускориться и проехать",
+          "sourceTextBody": "ускориться и проехать",
+          "canonicalOptionId": "q0993_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerate and pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "сохранять скорость",
+          "sourceTextBody": "сохранять скорость",
+          "canonicalOptionId": "q0993_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "keep the speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "переключиться на пониженную и ускориться",
+          "sourceTextBody": "переключиться на пониженную и ускориться",
+          "canonicalOptionId": "q0993_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "downshift and accelerate",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q0994": {
-      "qid": "q0994",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Что следует делать, если транспортное средство впереди ждет зеленый свет, чтобы повернуть направо?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0994_o1": "повернуть налево от него",
+        "q0994_o2": "повернуть направо",
+        "q0994_o3": "прозвонить, чтобы транспортное средство впереди пропустило нас",
+        "q0994_o4": "подождать в очереди"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "повернуть налево от него",
+          "sourceTextBody": "повернуть налево от него",
+          "canonicalOptionId": "q0994_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn to its left",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "повернуть направо",
+          "sourceTextBody": "повернуть направо",
+          "canonicalOptionId": "q0994_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "take the turn by the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "прозвонить, чтобы транспортное средство впереди пропустило нас",
+          "sourceTextBody": "прозвонить, чтобы транспортное средство впереди пропустило нас",
+          "canonicalOptionId": "q0994_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "honk so that the vehicle in front lets us pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "подождать в очереди",
+          "sourceTextBody": "подождать в очереди",
+          "canonicalOptionId": "q0994_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "wait in the line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "повернуть налево от него",
+          "sourceTextBody": "повернуть налево от него",
+          "canonicalOptionId": "q0994_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "turn to its left",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "повернуть направо",
+          "sourceTextBody": "повернуть направо",
+          "canonicalOptionId": "q0994_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "take the turn by the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "прозвонить, чтобы транспортное средство впереди пропустило нас",
+          "sourceTextBody": "прозвонить, чтобы транспортное средство впереди пропустило нас",
+          "canonicalOptionId": "q0994_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "honk so that the vehicle in front lets us pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "подождать в очереди",
+          "sourceTextBody": "подождать в очереди",
+          "canonicalOptionId": "q0994_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "wait in the line",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q0995": {
-      "qid": "q0995",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Можно ли использовать включение аварийных огней в следующих ситуациях?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0995_o1": "следовать за транспортными средствами впереди",
+        "q0995_o2": "во время дорожной пробки",
+        "q0995_o3": "остановиться из-за поломки",
+        "q0995_o4": "указывать направление следующим позади транспортным средствам"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "следовать за транспортными средствами впереди",
+          "sourceTextBody": "следовать за транспортными средствами впереди",
+          "canonicalOptionId": "q0995_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "follow the vehicles ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "во время дорожной пробки",
+          "sourceTextBody": "во время дорожной пробки",
+          "canonicalOptionId": "q0995_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "during a traffic jam",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "остановиться из-за поломки",
+          "sourceTextBody": "остановиться из-за поломки",
+          "canonicalOptionId": "q0995_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop due to a breakdown",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "указывать направление следующим позади транспортным средствам",
+          "sourceTextBody": "указывать направление следующим позади транспортным средствам",
+          "canonicalOptionId": "q0995_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "guide the direction for following vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "следовать за транспортными средствами впереди",
+          "sourceTextBody": "следовать за транспортными средствами впереди",
+          "canonicalOptionId": "q0995_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "follow the vehicles ahead",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "во время дорожной пробки",
+          "sourceTextBody": "во время дорожной пробки",
+          "canonicalOptionId": "q0995_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "during a traffic jam",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "остановиться из-за поломки",
+          "sourceTextBody": "остановиться из-за поломки",
+          "canonicalOptionId": "q0995_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "stop due to a breakdown",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "указывать направление следующим позади транспортным средствам",
+          "sourceTextBody": "указывать направление следующим позади транспортным средствам",
+          "canonicalOptionId": "q0995_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "guide the direction for following vehicles",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q0996": {
-      "qid": "q0996",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Если встречное транспортное средство находится в нашем ряду, что следует делать?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0996_o1": "направиться к середине дороги, чтобы проехать",
+        "q0996_o2": "дать им проехать",
+        "q0996_o3": "фарами подмигнуть им",
+        "q0996_o4": "заставить их сдать назад вправо"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "направиться к середине дороги, чтобы проехать",
+          "sourceTextBody": "направиться к середине дороги, чтобы проехать",
+          "canonicalOptionId": "q0996_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "move toward the middle of the road to drive",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "дать им проехать",
+          "sourceTextBody": "дать им проехать",
+          "canonicalOptionId": "q0996_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "let them pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "фарами подмигнуть им",
+          "sourceTextBody": "фарами подмигнуть им",
+          "canonicalOptionId": "q0996_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "flash your headlights at them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "заставить их сдать назад вправо",
+          "sourceTextBody": "заставить их сдать назад вправо",
+          "canonicalOptionId": "q0996_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "force them to reverse to the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "направиться к середине дороги, чтобы проехать",
+          "sourceTextBody": "направиться к середине дороги, чтобы проехать",
+          "canonicalOptionId": "q0996_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "move toward the middle of the road to drive",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "дать им проехать",
+          "sourceTextBody": "дать им проехать",
+          "canonicalOptionId": "q0996_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "let them pass",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "фарами подмигнуть им",
+          "sourceTextBody": "фарами подмигнуть им",
+          "canonicalOptionId": "q0996_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "flash your headlights at them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "заставить их сдать назад вправо",
+          "sourceTextBody": "заставить их сдать назад вправо",
+          "canonicalOptionId": "q0996_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "force them to reverse to the right",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0998": {
-      "qid": "q0998",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Какие кандидаты могут получить отказ в выдаче лицензии на три года после того, как их поймают на нарушении?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0998_o1": "курильщики",
+        "q0998_o2": "наркозависимые",
+        "q0998_o3": "люди на инъекциях инсулина",
+        "q0998_o4": "алкоголики"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "курильщики",
+          "sourceTextBody": "курильщики",
+          "canonicalOptionId": "q0998_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "smokers",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "наркозависимые",
+          "sourceTextBody": "наркозависимые",
+          "canonicalOptionId": "q0998_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drug users",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "люди на инъекциях инсулина",
+          "sourceTextBody": "люди на инъекциях инсулина",
+          "canonicalOptionId": "q0998_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "people on insulin injections",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "алкоголики",
+          "sourceTextBody": "алкоголики",
+          "canonicalOptionId": "q0998_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "alcoholics",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "курильщики",
+          "sourceTextBody": "курильщики",
+          "canonicalOptionId": "q0998_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "smokers",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "наркозависимые",
+          "sourceTextBody": "наркозависимые",
+          "canonicalOptionId": "q0998_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "drug users",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "люди на инъекциях инсулина",
+          "sourceTextBody": "люди на инъекциях инсулина",
+          "canonicalOptionId": "q0998_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "people on insulin injections",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "алкоголики",
+          "sourceTextBody": "алкоголики",
+          "canonicalOptionId": "q0998_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "alcoholics",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q0999": {
-      "qid": "q0999",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Что вы должны сделать, когда движение медленное и другие транспортные средства влетают в загруженный участок?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q0999_o1": "Сигналить и мешать им проехать",
+        "q0999_o2": "Увеличить скорость и следовать за транспортом впереди, чтобы не дать им влиться",
+        "q0999_o3": "Вежливо пропустить их и сохранить безопасное расстояние",
+        "q0999_o4": "Заставить транспортное средство, пытающееся влиться, уехать"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Сигналить и мешать им проехать",
+          "sourceTextBody": "Сигналить и мешать им проехать",
+          "canonicalOptionId": "q0999_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk and prevent them from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Увеличить скорость и следовать за транспортом впереди, чтобы не дать им влиться",
+          "sourceTextBody": "Увеличить скорость и следовать за транспортом впереди, чтобы не дать им влиться",
+          "canonicalOptionId": "q0999_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate and follow the vehicles ahead to prevent them from merging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Вежливо пропустить их и сохранить безопасное расстояние",
+          "sourceTextBody": "Вежливо пропустить их и сохранить безопасное расстояние",
+          "canonicalOptionId": "q0999_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Politely let them merge and maintain a safe distance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Заставить транспортное средство, пытающееся влиться, уехать",
+          "sourceTextBody": "Заставить транспортное средство, пытающееся влиться, уехать",
+          "canonicalOptionId": "q0999_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Force the vehicle trying to merge to leave",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Сигналить и мешать им проехать",
+          "sourceTextBody": "Сигналить и мешать им проехать",
+          "canonicalOptionId": "q0999_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Honk and prevent them from passing",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Увеличить скорость и следовать за транспортом впереди, чтобы не дать им влиться",
+          "sourceTextBody": "Увеличить скорость и следовать за транспортом впереди, чтобы не дать им влиться",
+          "canonicalOptionId": "q0999_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Accelerate and follow the vehicles ahead to prevent them from merging",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Вежливо пропустить их и сохранить безопасное расстояние",
+          "sourceTextBody": "Вежливо пропустить их и сохранить безопасное расстояние",
+          "canonicalOptionId": "q0999_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Politely let them merge and maintain a safe distance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Заставить транспортное средство, пытающееся влиться, уехать",
+          "sourceTextBody": "Заставить транспортное средство, пытающееся влиться, уехать",
+          "canonicalOptionId": "q0999_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Force the vehicle trying to merge to leave",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1001": {
-      "qid": "q1001",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Вы не должны разворачивать транспортное средство в противоположном направлении на автомагистрали.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1002": {
-      "qid": "q1002",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "При движении по дороге, покрытой градом, устойчивость транспортного средства снижается, что делает его легко подверженным заносу, если вы резко тормозите.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1003": {
-      "qid": "q1003",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Сколько можно проехать подряд часов?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1003_o1": "4 часа",
+        "q1003_o2": "6 часов",
+        "q1003_o3": "8 часов",
+        "q1003_o4": "10 часов"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "4 часа",
+          "sourceTextBody": "4 часа",
+          "canonicalOptionId": "q1003_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "4 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "6 часов",
+          "sourceTextBody": "6 часов",
+          "canonicalOptionId": "q1003_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "6 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "8 часов",
+          "sourceTextBody": "8 часов",
+          "canonicalOptionId": "q1003_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "8 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "10 часов",
+          "sourceTextBody": "10 часов",
+          "canonicalOptionId": "q1003_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "10 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "4 часа",
+          "sourceTextBody": "4 часа",
+          "canonicalOptionId": "q1003_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "4 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "6 часов",
+          "sourceTextBody": "6 часов",
+          "canonicalOptionId": "q1003_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "6 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "8 часов",
+          "sourceTextBody": "8 часов",
+          "canonicalOptionId": "q1003_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "8 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "10 часов",
+          "sourceTextBody": "10 часов",
+          "canonicalOptionId": "q1003_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "10 hours",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q1004": {
-      "qid": "q1004",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Что может произойти в случае тумана?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1004_o1": "может привести к отключению двигателя",
+        "q1004_o2": "скользнуть на крыле и вызвать аварию",
+        "q1004_o3": "увеличить плотность движения",
+        "q1004_o4": "уменьшить видимость"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "может привести к отключению двигателя",
+          "sourceTextBody": "может привести к отключению двигателя",
+          "canonicalOptionId": "q1004_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "cause the engine to shut off",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "скользнуть на крыле и вызвать аварию",
+          "sourceTextBody": "скользнуть на крыле и вызвать аварию",
+          "canonicalOptionId": "q1004_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "slide on the wing and cause an accident",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "увеличить плотность движения",
+          "sourceTextBody": "увеличить плотность движения",
+          "canonicalOptionId": "q1004_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "increase traffic density",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "уменьшить видимость",
+          "sourceTextBody": "уменьшить видимость",
+          "canonicalOptionId": "q1004_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce visibility",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "может привести к отключению двигателя",
+          "sourceTextBody": "может привести к отключению двигателя",
+          "canonicalOptionId": "q1004_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "cause the engine to shut off",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "скользнуть на крыле и вызвать аварию",
+          "sourceTextBody": "скользнуть на крыле и вызвать аварию",
+          "canonicalOptionId": "q1004_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "slide on the wing and cause an accident",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "увеличить плотность движения",
+          "sourceTextBody": "увеличить плотность движения",
+          "canonicalOptionId": "q1004_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "increase traffic density",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "уменьшить видимость",
+          "sourceTextBody": "уменьшить видимость",
+          "canonicalOptionId": "q1004_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce visibility",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     },
     "q1005": {
-      "qid": "q1005",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Курение во время вождения не может влиять на безопасность.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1006": {
-      "qid": "q1006",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Какова максимальная скорость, разрешенная при проезде опасного поворота?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1006_o1": "15 км/ч",
+        "q1006_o2": "20 км/ч",
+        "q1006_o3": "30 км/ч",
+        "q1006_o4": "40 км/ч"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "15 км/ч",
+          "sourceTextBody": "15 км/ч",
+          "canonicalOptionId": "q1006_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "15 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "20 км/ч",
+          "sourceTextBody": "20 км/ч",
+          "canonicalOptionId": "q1006_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "20 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "30 км/ч",
+          "sourceTextBody": "30 км/ч",
+          "canonicalOptionId": "q1006_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "40 км/ч",
+          "sourceTextBody": "40 км/ч",
+          "canonicalOptionId": "q1006_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "15 км/ч",
+          "sourceTextBody": "15 км/ч",
+          "canonicalOptionId": "q1006_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "15 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "20 км/ч",
+          "sourceTextBody": "20 км/ч",
+          "canonicalOptionId": "q1006_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "20 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "30 км/ч",
+          "sourceTextBody": "30 км/ч",
+          "canonicalOptionId": "q1006_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "30 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "40 км/ч",
+          "sourceTextBody": "40 км/ч",
+          "canonicalOptionId": "q1006_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "40 km/h",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1007": {
-      "qid": "q1007",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Если микроавтобус движется по автомагистрали со скоростью менее 100 км/ч, какое безопасное расстояние он должен соблюдать?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1007_o1": "не менее 50 м",
+        "q1007_o2": "не менее 30 м",
+        "q1007_o3": "не менее 20 м",
+        "q1007_o4": "не менее 10 м"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "не менее 50 м",
+          "sourceTextBody": "не менее 50 м",
+          "canonicalOptionId": "q1007_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "at least 50 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "не менее 30 м",
+          "sourceTextBody": "не менее 30 м",
+          "canonicalOptionId": "q1007_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "at least 30 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "не менее 20 м",
+          "sourceTextBody": "не менее 20 м",
+          "canonicalOptionId": "q1007_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "at least 20 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "не менее 10 м",
+          "sourceTextBody": "не менее 10 м",
+          "canonicalOptionId": "q1007_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "at least 10 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "не менее 50 м",
+          "sourceTextBody": "не менее 50 м",
+          "canonicalOptionId": "q1007_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "at least 50 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "не менее 30 м",
+          "sourceTextBody": "не менее 30 м",
+          "canonicalOptionId": "q1007_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "at least 30 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "не менее 20 м",
+          "sourceTextBody": "не менее 20 м",
+          "canonicalOptionId": "q1007_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "at least 20 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "не менее 10 м",
+          "sourceTextBody": "не менее 10 м",
+          "canonicalOptionId": "q1007_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "at least 10 m",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     },
     "q1008": {
-      "qid": "q1008",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Когда загорается этот свет, вам нужно залить бензин в двигатель.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     },
     "q1009": {
-      "qid": "q1009",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Чтобы избежать прокола шины, какое действие следует предпринять?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1009_o1": "Снизить давление в шинах",
+        "q1009_o2": "Регулярно проверять шины",
+        "q1009_o3": "Очистить царапины на шинах",
+        "q1009_o4": "Заменить треснувшую или сильно повреждённую шину"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Снизить давление в шинах",
+          "sourceTextBody": "Снизить давление в шинах",
+          "canonicalOptionId": "q1009_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Lower the tire pressure",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Регулярно проверять шины",
+          "sourceTextBody": "Регулярно проверять шины",
+          "canonicalOptionId": "q1009_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Check your tires periodically",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Очистить царапины на шинах",
+          "sourceTextBody": "Очистить царапины на шинах",
+          "canonicalOptionId": "q1009_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Clean the tire scratches",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Заменить треснувшую или сильно повреждённую шину",
+          "sourceTextBody": "Заменить треснувшую или сильно повреждённую шину",
+          "canonicalOptionId": "q1009_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Replace the cracked or badly damaged tire",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Снизить давление в шинах",
+          "sourceTextBody": "Снизить давление в шинах",
+          "canonicalOptionId": "q1009_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Lower the tire pressure",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Регулярно проверять шины",
+          "sourceTextBody": "Регулярно проверять шины",
+          "canonicalOptionId": "q1009_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Check your tires periodically",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Очистить царапины на шинах",
+          "sourceTextBody": "Очистить царапины на шинах",
+          "canonicalOptionId": "q1009_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Clean the tire scratches",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Заменить треснувшую или сильно повреждённую шину",
+          "sourceTextBody": "Заменить треснувшую или сильно повреждённую шину",
+          "canonicalOptionId": "q1009_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Replace the cracked or badly damaged tire",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "B"
     },
     "q1011": {
-      "qid": "q1011",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Что вы должны сделать, когда увидите группу студентов во время вождения?",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready",
+      "options": {
+        "q1011_o1": "Объехать, разгоняясь заранее",
+        "q1011_o2": "Остановиться и уступить дорогу",
+        "q1011_o3": "Уменьшить скорость и проехать с пониженной скоростью",
+        "q1011_o4": "Продолжать сигналить, чтобы подгонять их"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Объехать, разгоняясь заранее",
+          "sourceTextBody": "Объехать, разгоняясь заранее",
+          "canonicalOptionId": "q1011_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "pass by accelerating in advance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Остановиться и уступить дорогу",
+          "sourceTextBody": "Остановиться и уступить дорогу",
+          "canonicalOptionId": "q1011_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop and yield the right of way",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Уменьшить скорость и проехать с пониженной скоростью",
+          "sourceTextBody": "Уменьшить скорость и проехать с пониженной скоростью",
+          "canonicalOptionId": "q1011_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slow down and pass at reduced speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Продолжать сигналить, чтобы подгонять их",
+          "sourceTextBody": "Продолжать сигналить, чтобы подгонять их",
+          "canonicalOptionId": "q1011_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "keep honking to hurry them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "Объехать, разгоняясь заранее",
+          "sourceTextBody": "Объехать, разгоняясь заранее",
+          "canonicalOptionId": "q1011_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "pass by accelerating in advance",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "Остановиться и уступить дорогу",
+          "sourceTextBody": "Остановиться и уступить дорогу",
+          "canonicalOptionId": "q1011_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "stop and yield the right of way",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "Уменьшить скорость и проехать с пониженной скоростью",
+          "sourceTextBody": "Уменьшить скорость и проехать с пониженной скоростью",
+          "canonicalOptionId": "q1011_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "slow down and pass at reduced speed",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "Продолжать сигналить, чтобы подгонять их",
+          "sourceTextBody": "Продолжать сигналить, чтобы подгонять их",
+          "canonicalOptionId": "q1011_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "keep honking to hurry them",
+          "alignmentScore": 1,
+          "alignmentMethod": "english-master-order-preserved",
+          "manualAnswerKeyConfirmed": true
+        }
+      ],
+      "localeCorrectOptionKey": "C"
     },
     "q1012": {
-      "qid": "q1012",
-      "translationStatus": "missing",
-      "source": "auto-propagation",
-      "createdAt": "2026-05-14T04:37:10.284Z"
+      "prompt": "Водитель, который врезается в памятники или общественные установки, может продолжать движение, не беспокоясь.",
+      "explanation": "",
+      "sourceMode": "english_master_backfill",
+      "confidence": "medium",
+      "reviewStatus": "ready"
     }
   }
 }

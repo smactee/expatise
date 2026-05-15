@@ -1,0 +1,123 @@
+{
+  "generatedAt": "2026-05-12T03:50:21.215Z",
+  "lang": "fr",
+  "batchId": "batch-012",
+  "dataset": "2023-test1",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/fr-batch-012-workbench-decisions.json",
+  "items": [
+    {
+      "qid": "q0576",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk keepUnresolved: Dashboard symbol color/shape ambiguous among front/rear fog and dipped-beam candidates; machine top matches rear-fog while another top candidate maps to front-fog. Visual semantics unclear — defer to human review."
+    },
+    {
+      "qid": "q0875",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Image of police hand signals present but candidate matches show conflicting options (stop / turn left / wait). Visual signal in provided photo is ambiguous; needs human verification of the pictured gesture sequence."
+    },
+    {
+      "qid": "q0583",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Green headlamp-with-rays indicator visually matches dipped-beam (low beam). q0583's correct option is 'low beam'. Source option D corresponds to 'le feu de croisement' (low beam). Rejected top matcher: Top machine match q0580 labelled front-fog; selected q0583 better matches green headlamp-with-horizontal-rays semantics for low-beam indicator."
+    },
+    {
+      "qid": "q0692",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Photo shows police officers making stop-type control signals. q0899's canonical correct answer is 'stop' and maps to source option C 's'arrêter'. Approve with moderate confidence; candidate images show variability."
+    },
+    {
+      "qid": "q0477",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: q0477 matches: when accumulated penalty points reach limit the driver is educated and must retake the exam. That corresponds to source option D."
+    },
+    {
+      "qid": "q0742",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Image shows parking-space markings with directional arrows per-spot; source correct answer 'only park in one direction' (C). No high-confidence existing candidate observed; create new question for this exact parking-marking semantics."
+    },
+    {
+      "qid": "q0454",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: No visible speed-limit sign in photo; candidate matches show several different speed-limit questions (different option sets). Cannot confirm which master qid, if any, corresponds to the localized options (30/40/50/70). Rejected top matcher: Top matcher q0367 uses a different numeric option set (90/100/110/120), so it is not a clear match to the French options."
+    },
+    {
+      "qid": "q0587",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image arrow highlights the rightmost pedal, which is the accelerator. q0587 is the existing accelerator-pedal item; French option A maps to accelerator. Rejected top q0585 because it is the brake-pedal item."
+    },
+    {
+      "qid": "q0651",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Blue sign with pedestrian pictogram denotes pedestrian area/passage reserved for pedestrians. Candidate q0890 'pedestrian zone' matches; local option D ('passage réservé aux piétons') corresponds to that meaning."
+    },
+    {
+      "qid": "q0808",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Triangular warning sign with black zigzag likely warns of a series of bends; candidate matches vary (some propose rockfall). Local options distinguish number of bends — insufficient agreement to map to a master qid or pick a localized correct letter. Rejected top matcher: Top matcher q0811 indicates falling rocks, which conflicts with the zigzag turns visual; candidate semantics are inconsistent."
+    },
+    {
+      "qid": "q0731",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Image shows triangular warning sign with symbol indicating narrowing from the right; q0731 correct = 'road narrows on the right side' matches French option B."
+    },
+    {
+      "qid": "q0839",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Prohibition sign with arrows and red diagonal indicates 'no lane changing' which corresponds to French option B; no clear existing qid match in candidate set."
+    },
+    {
+      "qid": "q0500",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Text question asks where overtaking is prohibited; candidate q0500 maps 'crosswalk' as correct and French extracted key is C (les passages pour piétons)."
+    },
+    {
+      "qid": "q0719",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk approveExistingQid: Image is a blue right-pointing one-way sign. q0719 is the closest right-one-way-road qid; top q0817 is left-one-way and conflicts with image tags. French option B = one-way street to the right."
+    },
+    {
+      "qid": "q0372",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk keepUnresolved: Image shows an intersection viewpoint; options concern meaning of the traffic light but visual and candidate matches are ambiguous about which light/state is shown. Cannot confidently map to an existing qid or option."
+    },
+    {
+      "qid": "q0765",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Triangular warning sign with traffic-light symbol indicates 'pay attention to traffic lights' / 'attention aux feux de signalisation' which maps to q0765; French option B corresponds to that meaning."
+    },
+    {
+      "qid": "q0814",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Codex low-risk approveExistingQid: Visual: triangular warning sign showing car entering a tunnel. Source option C ('allumer ses feux dans le tunnel') matches master q0814 ('turn on headlights in the tunnel'). Strong image + option semantic match."
+    },
+    {
+      "qid": "q0705",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Codex high-risk approveExistingQid: Image shows a straight arrow and a right-turn arrow: meaning 'go straight or turn right'. q0705 corresponds to that meaning. However top machine match (q0848) indicates U-turn — candidate conflict raises risk. Rejected top matcher: Top machine matcher q0848's correct answer (U-turn) conflicts with the visual semantics (straight + right arrows); q0705 better matches the source image."
+    },
+    {
+      "qid": "q0674",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Codex medium-risk createNewQuestion: Source asks meaning of continuous white lines on each side of the road; the most consistent interpretation is prohibition to cross (D). No clear matching candidate found in shortlist. Rejected top matcher: Top machine candidates are about driver behaviors/indicators and do not address side continuous white lines; no clear existing qid match."
+    }
+  ]
+}

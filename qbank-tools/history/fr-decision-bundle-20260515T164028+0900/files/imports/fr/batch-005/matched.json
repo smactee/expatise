@@ -1,0 +1,3317 @@
+{
+  "generatedAt": "2026-05-09T01:48:29.687Z",
+  "lang": "fr",
+  "batchId": "batch-005",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.27.08 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.27.08 1.png",
+      "promptRawJa": "Dans quelle situation le conducteur est interdit de conduite ?",
+      "promptGlossEn": "In which situation is the driver prohibited from driving?",
+      "optionsRawJa": [
+        "A Après avoir bu",
+        "B Après avoir bu du thé",
+        "C Après avoir bu du café",
+        "D Après avoir bu du lait"
+      ],
+      "optionsGlossEn": [
+        "After drinking (alcohol)",
+        "After drinking tea",
+        "After drinking coffee",
+        "After drinking milk"
+      ],
+      "correctKeyRaw": "A",
+      "correctAnswerRaw": "Après avoir bu",
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "visualObjectTags": [],
+      "visualColorTags": [],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [],
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:traffic-laws"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:traffic-laws",
+          "signal": "traffic-law",
+          "weight": 1.15
+        }
+      ],
+      "visualEvidenceAvailable": false,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": null,
+      "sourceOptionCount": 4,
+      "optionCountReliable": true,
+      "expectedObjectTags": [],
+      "expectedColorTags": [
+        "green"
+      ],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": null,
+      "mcqFingerprint": {
+        "normalizedPrompt": "in which situation is driver must-not from driving",
+        "normalizedCorrectAnswer": "after drinking alcohol",
+        "normalizedOptions": [
+          "after drinking alcohol",
+          "after drinking tea",
+          "after drinking coffee",
+          "after drinking milk"
+        ],
+        "promptAllTokens": [
+          "in",
+          "which",
+          "situation",
+          "is",
+          "driver",
+          "must-not",
+          "from",
+          "driving"
+        ],
+        "answerAllTokens": [
+          "after",
+          "drinking",
+          "alcohol"
+        ],
+        "optionAllTokenSets": [
+          [
+            "after",
+            "drinking",
+            "alcohol"
+          ],
+          [
+            "after",
+            "drinking",
+            "tea"
+          ],
+          [
+            "after",
+            "drinking",
+            "coffee"
+          ],
+          [
+            "after",
+            "drinking",
+            "milk"
+          ]
+        ],
+        "promptTokens": [
+          "must-not",
+          "driving"
+        ],
+        "answerTokens": [
+          "after",
+          "drinking",
+          "alcohol"
+        ],
+        "promptPhraseTokens": [
+          "must-not driving"
+        ],
+        "answerPhraseTokens": [
+          "after drinking",
+          "drinking alcohol",
+          "after drinking alcohol"
+        ],
+        "optionTokens": [
+          "after",
+          "drinking",
+          "alcohol",
+          "tea",
+          "coffee",
+          "milk"
+        ],
+        "optionTokenSets": [
+          [
+            "after",
+            "drinking",
+            "alcohol"
+          ],
+          [
+            "after",
+            "drinking",
+            "tea"
+          ],
+          [
+            "after",
+            "drinking",
+            "coffee"
+          ],
+          [
+            "after",
+            "drinking",
+            "milk"
+          ]
+        ],
+        "optionPhraseTokens": [
+          "after drinking",
+          "drinking alcohol",
+          "after drinking alcohol",
+          "drinking tea",
+          "after drinking tea",
+          "drinking coffee",
+          "after drinking coffee",
+          "drinking milk",
+          "after drinking milk"
+        ],
+        "optionPhraseTokenSets": [
+          [
+            "after drinking",
+            "drinking alcohol",
+            "after drinking alcohol"
+          ],
+          [
+            "after drinking",
+            "drinking tea",
+            "after drinking tea"
+          ],
+          [
+            "after drinking",
+            "drinking coffee",
+            "after drinking coffee"
+          ],
+          [
+            "after drinking",
+            "drinking milk",
+            "after drinking milk"
+          ]
+        ],
+        "optionConceptTokens": [
+          "after",
+          "drinking",
+          "alcohol",
+          "tea",
+          "coffee",
+          "milk"
+        ],
+        "optionConceptTokenSets": [
+          [
+            "after",
+            "drinking",
+            "alcohol"
+          ],
+          [
+            "after",
+            "drinking",
+            "tea"
+          ],
+          [
+            "after",
+            "drinking",
+            "coffee"
+          ],
+          [
+            "after",
+            "drinking",
+            "milk"
+          ]
+        ],
+        "optionConceptSignatures": [
+          "after alcohol drinking",
+          "after drinking tea",
+          "after coffee drinking",
+          "after drinking milk"
+        ],
+        "promptDistinctiveTokens": [
+          "must-not",
+          "driving"
+        ],
+        "answerDistinctiveTokens": [
+          "drinking",
+          "alcohol"
+        ],
+        "optionDistinctiveTokens": [
+          "drinking",
+          "alcohol",
+          "coffee"
+        ],
+        "distinctiveOptionConcepts": [
+          "drinking",
+          "alcohol",
+          "coffee"
+        ],
+        "keywordTokens": [
+          "must-not",
+          "driving",
+          "after",
+          "drinking",
+          "alcohol",
+          "tea",
+          "coffee",
+          "milk"
+        ],
+        "rareKeywords": [
+          "must-not",
+          "driving",
+          "drinking",
+          "alcohol",
+          "coffee"
+        ],
+        "optionSetSignature": "after drinking alcohol || after drinking coffee || after drinking milk || after drinking tea",
+        "alignedOptionSetSignature": "after drinking alcohol || after drinking coffee || after drinking milk || after drinking tea",
+        "optionConceptSetSignature": "after alcohol drinking || after coffee drinking || after drinking milk || after drinking tea",
+        "numericSignals": {
+          "tokens": [],
+          "values": []
+        },
+        "promptNumericSignals": {
+          "tokens": [],
+          "values": []
+        },
+        "answerNumericSignals": {
+          "tokens": [],
+          "values": []
+        },
+        "optionNumericSignals": [
+          {
+            "tokens": [],
+            "values": []
+          },
+          {
+            "tokens": [],
+            "values": []
+          },
+          {
+            "tokens": [],
+            "values": []
+          },
+          {
+            "tokens": [],
+            "values": []
+          }
+        ],
+        "topic": "proper-driving",
+        "subtopics": [
+          "proper-driving:traffic-laws"
+        ],
+        "hasImage": false
+      },
+      "localizedText": {
+        "prompt": "Dans quelle situation le conducteur est interdit de conduite ?",
+        "options": [
+          "A Après avoir bu",
+          "B Après avoir bu du thé",
+          "C Après avoir bu du café",
+          "D Après avoir bu du lait"
+        ],
+        "correctAnswer": "Après avoir bu",
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "In which situation is the driver prohibited from driving?",
+        "options": [
+          "After drinking (alcohol)",
+          "After drinking tea",
+          "After drinking coffee",
+          "After drinking milk"
+        ],
+        "correctAnswer": "After drinking (alcohol)"
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0436",
+        "number": 436,
+        "score": 78.517,
+        "scoreGap": 41.756,
+        "scoreBreakdown": {
+          "optionScore": 0.829,
+          "glossScore": 0.534,
+          "promptScore": 0.534,
+          "promptSimilarity": 0.534,
+          "rawPromptSimilarity": 0.534,
+          "englishPromptSimilarity": 0.534,
+          "bridgePromptSimilarity": 0.251,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "optionSimilarity": 1,
+          "englishOptionSimilarity": 0.924,
+          "syntheticOptionSimilarity": 0,
+          "localizedOptionSimilarity": 0,
+          "localizedOptionGlossSimilarity": 0,
+          "optionSetScore": 1,
+          "optionSignatureScore": 0.903,
+          "optionSignatureDominance": 0.845,
+          "optionConceptPairing": 0.976,
+          "optionConceptCoverage": 1,
+          "optionConceptExactSet": 0.6,
+          "alignedOptionSimilarity": 0.872,
+          "optionFingerprint": 1,
+          "englishOptionFingerprint": 1,
+          "syntheticOptionFingerprint": 0,
+          "localizedOptionFingerprint": 0,
+          "optionExactSet": 0.95,
+          "optionRareCoverage": 1,
+          "optionRowKeywordScore": 1,
+          "mirrorAgreement": 0.359,
+          "localizedAgreement": 0.253,
+          "answerScore": 0.503,
+          "answerGlossScore": 0.503,
+          "correctAnswerMeaning": 0.503,
+          "englishCorrectAnswerMeaning": 0.359,
+          "syntheticCorrectAnswerMeaning": 0,
+          "localizedCorrectAnswerMeaning": 0.5,
+          "localizedCorrectGlossMeaning": 0.359,
+          "keywordScore": 0.828,
+          "bridgeKeywordScore": 0.726,
+          "localizedKeywordSupport": 0.2,
+          "promptKeywordScore": 0.333,
+          "promptPhraseScore": 0,
+          "answerKeywordScore": 0.562,
+          "answerPhraseScore": 0.15,
+          "optionKeywordScore": 1,
+          "optionPhraseScore": 1,
+          "optionConceptKeywordScore": 1,
+          "optionConceptDistinctiveScore": 1,
+          "rareKeywordScore": 0.828,
+          "numberScore": 0.5,
+          "numberExactOverlap": 0,
+          "numberValueOverlap": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericIntentMismatchPenalty": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "numberConflictPenalty": 0,
+          "imageScore": 0.5,
+          "rawImageScore": 0.5,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "visualScore": 0,
+          "visualObjectScore": 0.5,
+          "visualColorScore": 0.5,
+          "dominantColorScore": 0.5,
+          "visualNumberScore": 0.5,
+          "visualLayoutScore": 0.5,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 0,
+          "structuralAgreement": 0.779,
+          "structuralPenalty": 0.16,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.5,
+          "imageColorAgreement": 0.35,
+          "priorBonus": 0,
+          "topicWeighting": 0.5,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "localizedGlossSimilarity": 0,
+          "bridgeLocalizedAgreement": 0.274,
+          "multilingualSupportScore": 0.253,
+          "totalScore": 75.049,
+          "baseScore": 75.049,
+          "rerankAdjustment": 3.468
+        },
+        "candidateTopicTruth": {
+          "topic": "no-image",
+          "subtopics": [],
+          "tags": [
+            "no-image"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": []
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "MCQ",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": false,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 486,
+        "candidateCountAfterStructuralFilter": 209,
+        "candidateCountAfterMcqShortlist": 40,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 209,
+        "structuralSoftCandidateCount": 209,
+        "mcqShortlistApplied": true,
+        "mcqShortlistMode": "mcq-answer-option-number-shortlist",
+        "mcqShortlistTopScore": 0.629,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "mcq-text",
+        "decisionReasonCodes": [
+          "profile-pass",
+          "option-signature-strong",
+          "option-signature-dominant",
+          "mcq-top2-option-separated"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "mcq-text",
+          "topScore": 78.517,
+          "rank2Score": 36.761,
+          "scoreGap": 41.756,
+          "thresholds": {
+            "reviewFloor": 43,
+            "autoMatchThreshold": 70,
+            "autoGapThreshold": 8
+          },
+          "signalAgreement": {
+            "agreementScore": 0.787,
+            "strongSignalCount": 3,
+            "weakSignalCount": 0,
+            "signalSpread": 0.466,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.534,
+              "keyword": 0.828,
+              "image": 0.5,
+              "multilingual": 0.253,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.476,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "profile-pass",
+            "option-signature-strong",
+            "option-signature-dominant",
+            "mcq-top2-option-separated"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Dans quelle situation le conducteur est interdit de conduite ?",
+        "explanation": "",
+        "options": {
+          "q0436_o1": "A Après avoir bu",
+          "q0436_o2": "B Après avoir bu du thé",
+          "q0436_o3": "C Après avoir bu du café",
+          "q0436_o4": "D Après avoir bu du lait"
+        },
+        "warnings": [
+          "Option IDs were mapped by position only. Review before merge."
+        ]
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0436",
+          "number": 436,
+          "type": "MCQ",
+          "score": 78.517,
+          "scoreBreakdown": {
+            "optionScore": 0.829,
+            "glossScore": 0.534,
+            "promptScore": 0.534,
+            "promptSimilarity": 0.534,
+            "rawPromptSimilarity": 0.534,
+            "englishPromptSimilarity": 0.534,
+            "bridgePromptSimilarity": 0.251,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 1,
+            "englishOptionSimilarity": 0.924,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 1,
+            "optionSignatureScore": 0.903,
+            "optionSignatureDominance": 0.845,
+            "optionConceptPairing": 0.976,
+            "optionConceptCoverage": 1,
+            "optionConceptExactSet": 0.6,
+            "alignedOptionSimilarity": 0.872,
+            "optionFingerprint": 1,
+            "englishOptionFingerprint": 1,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0.95,
+            "optionRareCoverage": 1,
+            "optionRowKeywordScore": 1,
+            "mirrorAgreement": 0.359,
+            "localizedAgreement": 0.253,
+            "answerScore": 0.503,
+            "answerGlossScore": 0.503,
+            "correctAnswerMeaning": 0.503,
+            "englishCorrectAnswerMeaning": 0.359,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0.359,
+            "keywordScore": 0.828,
+            "bridgeKeywordScore": 0.726,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0.333,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0.562,
+            "answerPhraseScore": 0.15,
+            "optionKeywordScore": 1,
+            "optionPhraseScore": 1,
+            "optionConceptKeywordScore": 1,
+            "optionConceptDistinctiveScore": 1,
+            "rareKeywordScore": 0.828,
+            "numberScore": 0.5,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.779,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.35,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.274,
+            "multilingualSupportScore": 0.253,
+            "totalScore": 75.049,
+            "baseScore": 75.049,
+            "rerankAdjustment": 3.468
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 1,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": false,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": false,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "numberComparable": false,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must not",
+            "sourceFeatureKeywords": [
+              "must",
+              "must-not",
+              "after",
+              "alcohol",
+              "coffee",
+              "drinking",
+              "prohibited",
+              "situation",
+              "which",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "coffee",
+              "drinking",
+              "must-not",
+              "after",
+              "cannot",
+              "situation",
+              "which"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Option comparison used unordered semantic set matching.",
+              "Order-agnostic MCQ option-set alignment separated the candidate from near-misses.",
+              "Canonical option-signature matching strongly supported the MCQ candidate.",
+              "Option-signature evidence dominated final MCQ disambiguation.",
+              "Distinctive option-row keywords strongly supported the candidate.",
+              "Whole-option-set concept coverage matched the candidate unusually well.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "English semantic option matching still supported the top candidate.",
+              "Rare option-combination fingerprint increased candidate separation.",
+              "Candidate shares a near-exact normalized option set.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "In after which situation can a driver not drive?",
+          "syntheticJaPrompt": "which situation 運転者 してはならない drive。",
+          "translatedPrompt": "어떤 경우에 운전자가 운전해서는 안 되는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "drinking coffee",
+              "translatedText": "커피를 마신 후"
+            },
+            {
+              "id": "B",
+              "text": "drinking milk",
+              "translatedText": "우유를 마신 후"
+            },
+            {
+              "id": "C",
+              "text": "drinking",
+              "translatedText": "음주 후"
+            },
+            {
+              "id": "D",
+              "text": "drinking tea",
+              "translatedText": "차(茶)를 마신 후"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0436_o3",
+            "correctOptionKey": "C",
+            "correctOptionText": "drinking",
+            "correctOptionTranslatedText": "음주 후",
+            "answerRaw": "C"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0131",
+          "number": 131,
+          "type": "MCQ",
+          "score": 36.761,
+          "scoreBreakdown": {
+            "optionScore": 0.269,
+            "glossScore": 0.14,
+            "promptScore": 0.14,
+            "promptSimilarity": 0.14,
+            "rawPromptSimilarity": 0.14,
+            "englishPromptSimilarity": 0.14,
+            "bridgePromptSimilarity": 0.081,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.088,
+            "englishOptionSimilarity": 0,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.088,
+            "optionSignatureScore": 0.01,
+            "optionSignatureDominance": 0.088,
+            "optionConceptPairing": 0,
+            "optionConceptCoverage": 0,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.08,
+            "optionFingerprint": 0.01,
+            "englishOptionFingerprint": 0,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "optionRowKeywordScore": 0,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.074,
+            "answerGlossScore": 0.259,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.2,
+            "bridgeKeywordScore": 0.013,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0,
+            "answerPhraseScore": 0,
+            "optionKeywordScore": 0,
+            "optionPhraseScore": 0,
+            "optionConceptKeywordScore": 0,
+            "optionConceptDistinctiveScore": 0,
+            "rareKeywordScore": 0,
+            "numberScore": 0.5,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0.1,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.961,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.35,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 38.199,
+            "baseScore": 38.199,
+            "rerankAdjustment": -1.438
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": false,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": null,
+              "promptFamily": "speed"
+            },
+            "numericIntentReasonCodes": [
+              "prompt-family-mismatch"
+            ],
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "numberComparable": false,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must not",
+            "sourceFeatureKeywords": [
+              "must",
+              "must-not",
+              "after",
+              "alcohol",
+              "coffee",
+              "drinking",
+              "prohibited",
+              "situation",
+              "which",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "intersection",
+              "overtake",
+              "stop",
+              "accelerate",
+              "honk",
+              "maintain",
+              "normal",
+              "reaching",
+              "should",
+              "turning",
+              "ahead",
+              "evade",
+              "speed",
+              "safe-driving"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Numeric intent or prompt-family mismatch reduced confidence.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "When reaching an intersection, the driver should _____ if a turning vehicle cuts in.",
+          "syntheticJaPrompt": "when reaching 交差点 運転者 べき _____ if turning 車両 cuts。",
+          "translatedPrompt": "교차로에 접근할 때 회전 차량이 끼어들면 운전자는 어떻게 해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "stop to evade",
+              "translatedText": "피하기 위해 정차하다"
+            },
+            {
+              "id": "B",
+              "text": "maintain the normal speed",
+              "translatedText": "정상 속도를 유지하다"
+            },
+            {
+              "id": "C",
+              "text": "speed up and pass ahead of it",
+              "translatedText": "속도를 높여 먼저 통과하다"
+            },
+            {
+              "id": "D",
+              "text": "honk and pass ahead of it",
+              "translatedText": "경적을 울리고 먼저 통과하다"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0131_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "stop to evade",
+            "correctOptionTranslatedText": "피하기 위해 정차하다",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0472",
+          "number": 472,
+          "type": "MCQ",
+          "score": 30.237,
+          "scoreBreakdown": {
+            "optionScore": 0.28,
+            "glossScore": 0.197,
+            "promptScore": 0.197,
+            "promptSimilarity": 0.197,
+            "rawPromptSimilarity": 0.197,
+            "englishPromptSimilarity": 0.197,
+            "bridgePromptSimilarity": 0,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.347,
+            "englishOptionSimilarity": 0.347,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.208,
+            "optionSignatureScore": 0.111,
+            "optionSignatureDominance": 0.148,
+            "optionConceptPairing": 0.176,
+            "optionConceptCoverage": 0.123,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.166,
+            "optionFingerprint": 0.111,
+            "englishOptionFingerprint": 0.103,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0.133,
+            "optionRowKeywordScore": 0.135,
+            "mirrorAgreement": 0.54,
+            "localizedAgreement": 0.313,
+            "answerScore": 0.469,
+            "answerGlossScore": 0.483,
+            "correctAnswerMeaning": 0.54,
+            "englishCorrectAnswerMeaning": 0.54,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 0.54,
+            "keywordScore": 0.25,
+            "bridgeKeywordScore": 0.25,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0.761,
+            "answerPhraseScore": 0.289,
+            "optionKeywordScore": 0.123,
+            "optionPhraseScore": 0,
+            "optionConceptKeywordScore": 0.133,
+            "optionConceptDistinctiveScore": 0.135,
+            "rareKeywordScore": 0.057,
+            "numberScore": 0.2,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0.1,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.779,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.35,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0.055,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.359,
+            "multilingualSupportScore": 0.313,
+            "totalScore": 35.083,
+            "baseScore": 35.083,
+            "rerankAdjustment": -4.846
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": false,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": false,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "kmh"
+              ],
+              "modifier": null,
+              "promptFamily": "speed"
+            },
+            "numericIntentReasonCodes": [
+              "prompt-family-mismatch"
+            ],
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  10
+                ],
+                "range": false,
+                "unit": "percent",
+                "comparator": "gt",
+                "text": "exceeding 10%"
+              },
+              {
+                "values": [
+                  10
+                ],
+                "range": false,
+                "unit": "percent",
+                "comparator": "exact",
+                "text": "10%"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "numberComparable": true,
+            "contradictionSignals": [
+              "allowed-vs-prohibited"
+            ],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must not",
+            "sourceFeatureKeywords": [
+              "must",
+              "must-not",
+              "after",
+              "alcohol",
+              "coffee",
+              "drinking",
+              "prohibited",
+              "situation",
+              "which",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "according",
+              "buckled",
+              "detain",
+              "drinking",
+              "exceeding",
+              "exhausted",
+              "police",
+              "prescribed",
+              "after",
+              "limits",
+              "situation",
+              "speed",
+              "which",
+              "while"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Numeric intent or prompt-family mismatch reduced confidence.",
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "In which situation the traffic police can detain the vehicle according to law?",
+          "syntheticJaPrompt": "which situation traffic police can detain 車両 according law。",
+          "translatedPrompt": "다음 중 교통결찰에 의해 운전면허증이 압류될 수 있는 운전자는?",
+          "options": [
+            {
+              "id": "A",
+              "text": "exceeding 10% of the prescribed speed limits",
+              "translatedText": "규정 속도 한도 초과 10%를 넘긴 경우"
+            },
+            {
+              "id": "B",
+              "text": "driving when he is exhausted",
+              "translatedText": "피로 상태에서 운전하는 경우"
+            },
+            {
+              "id": "C",
+              "text": "not buckled up while driving",
+              "translatedText": "운전 중 안전벨트를 착용하지 않은 경우"
+            },
+            {
+              "id": "D",
+              "text": "driving after drinking",
+              "translatedText": "음주운전을 한 경우"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0472_o4",
+            "correctOptionKey": "D",
+            "correctOptionText": "driving after drinking",
+            "correctOptionTranslatedText": "음주운전을 한 경우",
+            "answerRaw": "D"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0447",
+          "number": 447,
+          "type": "MCQ",
+          "score": 29.665,
+          "scoreBreakdown": {
+            "optionScore": 0.276,
+            "glossScore": 0.081,
+            "promptScore": 0.081,
+            "promptSimilarity": 0.081,
+            "rawPromptSimilarity": 0.085,
+            "englishPromptSimilarity": 0.081,
+            "bridgePromptSimilarity": 0.074,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.035,
+            "englishOptionSimilarity": 0,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.035,
+            "optionSignatureScore": 0.004,
+            "optionSignatureDominance": 0.103,
+            "optionConceptPairing": 0,
+            "optionConceptCoverage": 0,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.032,
+            "optionFingerprint": 0.004,
+            "englishOptionFingerprint": 0,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "optionRowKeywordScore": 0.15,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.08,
+            "answerGlossScore": 0.264,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.2,
+            "bridgeKeywordScore": 0.066,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0,
+            "answerPhraseScore": 0.15,
+            "optionKeywordScore": 0,
+            "optionPhraseScore": 0.15,
+            "optionConceptKeywordScore": 0,
+            "optionConceptDistinctiveScore": 0.15,
+            "rareKeywordScore": 0,
+            "numberScore": 0.2,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.779,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.35,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 36.813,
+            "baseScore": 36.813,
+            "rerankAdjustment": -7.148
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": false,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "30 days"
+              },
+              {
+                "values": [
+                  30
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "30"
+              },
+              {
+                "values": [
+                  40
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "40 days"
+              },
+              {
+                "values": [
+                  40
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "40"
+              },
+              {
+                "values": [
+                  50
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "50 days"
+              },
+              {
+                "values": [
+                  50
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "50"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": "days",
+                "comparator": "exact",
+                "text": "60 days"
+              },
+              {
+                "values": [
+                  60
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "60"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must not",
+            "sourceFeatureKeywords": [
+              "must",
+              "must-not",
+              "after",
+              "alcohol",
+              "coffee",
+              "drinking",
+              "prohibited",
+              "situation",
+              "which",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "changed",
+              "information",
+              "license",
+              "should",
+              "within",
+              "apply",
+              "whose"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "Within how long should a driver whose information has changed apply for new license?",
+          "syntheticJaPrompt": "within how long べき 運転者 whose information has changed apply new license。",
+          "translatedPrompt": "신상 정보가 변경된 운전자는 몇 일 이내에 면허증을 신청(또는 갱신)해야 하는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "30 days",
+              "translatedText": "30일"
+            },
+            {
+              "id": "B",
+              "text": "40 days",
+              "translatedText": "40일"
+            },
+            {
+              "id": "C",
+              "text": "50 days",
+              "translatedText": "50일"
+            },
+            {
+              "id": "D",
+              "text": "60 days",
+              "translatedText": "60일"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0447_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "30 days",
+            "correctOptionTranslatedText": "30일",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        },
+        {
+          "qid": "q0448",
+          "number": 448,
+          "type": "MCQ",
+          "score": 29.065,
+          "scoreBreakdown": {
+            "optionScore": 0.276,
+            "glossScore": 0.048,
+            "promptScore": 0.048,
+            "promptSimilarity": 0.048,
+            "rawPromptSimilarity": 0.048,
+            "englishPromptSimilarity": 0.048,
+            "bridgePromptSimilarity": 0.015,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "optionSimilarity": 0.035,
+            "englishOptionSimilarity": 0,
+            "syntheticOptionSimilarity": 0,
+            "localizedOptionSimilarity": 0,
+            "localizedOptionGlossSimilarity": 0,
+            "optionSetScore": 0.035,
+            "optionSignatureScore": 0.004,
+            "optionSignatureDominance": 0.103,
+            "optionConceptPairing": 0,
+            "optionConceptCoverage": 0,
+            "optionConceptExactSet": 0,
+            "alignedOptionSimilarity": 0.032,
+            "optionFingerprint": 0.004,
+            "englishOptionFingerprint": 0,
+            "syntheticOptionFingerprint": 0,
+            "localizedOptionFingerprint": 0,
+            "optionExactSet": 0,
+            "optionRareCoverage": 0,
+            "optionRowKeywordScore": 0.15,
+            "mirrorAgreement": 1,
+            "localizedAgreement": 0.467,
+            "answerScore": 0.08,
+            "answerGlossScore": 0.264,
+            "correctAnswerMeaning": 1,
+            "englishCorrectAnswerMeaning": 1,
+            "syntheticCorrectAnswerMeaning": 0,
+            "localizedCorrectAnswerMeaning": 0.5,
+            "localizedCorrectGlossMeaning": 1,
+            "keywordScore": 0.2,
+            "bridgeKeywordScore": 0.066,
+            "localizedKeywordSupport": 0.2,
+            "promptKeywordScore": 0,
+            "promptPhraseScore": 0,
+            "answerKeywordScore": 0,
+            "answerPhraseScore": 0.15,
+            "optionKeywordScore": 0,
+            "optionPhraseScore": 0.15,
+            "optionConceptKeywordScore": 0,
+            "optionConceptDistinctiveScore": 0.15,
+            "rareKeywordScore": 0,
+            "numberScore": 0.2,
+            "numberExactOverlap": 0,
+            "numberValueOverlap": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericIntentMismatchPenalty": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "numberConflictPenalty": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "visualScore": 0,
+            "visualObjectScore": 0.5,
+            "visualColorScore": 0.5,
+            "dominantColorScore": 0.5,
+            "visualNumberScore": 0.5,
+            "visualLayoutScore": 0.5,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.779,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.35,
+            "priorBonus": 0,
+            "topicWeighting": 0.5,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "localizedGlossSimilarity": 0,
+            "bridgeLocalizedAgreement": 0.573,
+            "multilingualSupportScore": 0.467,
+            "totalScore": 36.213,
+            "baseScore": 36.213,
+            "rerankAdjustment": -7.148
+          },
+          "diagnostics": {
+            "effectiveItemType": "MCQ",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": false,
+            "matchingProfile": "mcq-text",
+            "signalWeights": {
+              "option": 0.5,
+              "gloss": 0.18,
+              "keyword": 0.1,
+              "image": 0.04,
+              "multilingual": 0.18
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": false,
+            "exactCorrectKey": true,
+            "optionSetMode": "unordered-semantic + canonical-option-signature",
+            "rareSetBonus": 0,
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": "action",
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceNumericIntent": {
+              "hasNumber": false,
+              "unitTypes": [],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "candidateNumericIntent": {
+              "hasNumber": true,
+              "unitTypes": [
+                "years"
+              ],
+              "modifier": null,
+              "promptFamily": "duration"
+            },
+            "numericIntentReasonCodes": [],
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "3 years"
+              },
+              {
+                "values": [
+                  3
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "3"
+              },
+              {
+                "values": [
+                  5
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "5 years"
+              },
+              {
+                "values": [
+                  5
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "5"
+              },
+              {
+                "values": [
+                  1
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "1 years"
+              },
+              {
+                "values": [
+                  1
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "1"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": "years",
+                "comparator": "exact",
+                "text": "2 years"
+              },
+              {
+                "values": [
+                  2
+                ],
+                "range": false,
+                "unit": null,
+                "comparator": "exact",
+                "text": "2"
+              }
+            ],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "numberComparable": true,
+            "contradictionSignals": [],
+            "visualComparable": false,
+            "visualMatchedTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "sourceFeatureGloss": "driver response: must not",
+            "sourceFeatureKeywords": [
+              "must",
+              "must-not",
+              "after",
+              "alcohol",
+              "coffee",
+              "drinking",
+              "prohibited",
+              "situation",
+              "which",
+              "traffic-laws"
+            ],
+            "candidateFeatureKeywords": [
+              "abroad",
+              "checking",
+              "deferred",
+              "license",
+              "military",
+              "reason",
+              "service",
+              "going",
+              "limit",
+              "other",
+              "period",
+              "postpone",
+              "reasons",
+              "special",
+              "verification",
+              "years"
+            ],
+            "candidateImageTags": [],
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": true,
+            "explanation": [
+              "Structural filtering and scoring strongly agree with this candidate."
+            ]
+          },
+          "prompt": "For what period, due to special reasons such as military service or going abroad, can a driver postpone the verification of a driver's license?",
+          "syntheticJaPrompt": "time limit deferred license checking due military service abroad and other reason",
+          "translatedPrompt": "병역·출국 등 원인으로 심사에 참가 하지 못했을 때 심사 연기 기간은 얼마를 초과해서는 안되는가?",
+          "options": [
+            {
+              "id": "A",
+              "text": "3 years",
+              "translatedText": "3년"
+            },
+            {
+              "id": "B",
+              "text": "5 years",
+              "translatedText": "5년"
+            },
+            {
+              "id": "C",
+              "text": "1 years",
+              "translatedText": "1년"
+            },
+            {
+              "id": "D",
+              "text": "2 years",
+              "translatedText": "2년"
+            }
+          ],
+          "correctAnswer": {
+            "kind": "MCQ",
+            "correctRow": null,
+            "correctOptionId": "q0448_o1",
+            "correctOptionKey": "A",
+            "correctOptionText": "3 years",
+            "correctOptionTranslatedText": "3년",
+            "answerRaw": "A"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": null
+        }
+      ]
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.27.13 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.27.13 1.png",
+      "promptRawJa": "Lors que clignote, cela indique que les feux clignotants d'alerte de danger sont allumés.",
+      "promptGlossEn": "When this blinks, it indicates that the hazard warning lights are on.",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": true,
+      "visualObjectTags": [
+        "triangle"
+      ],
+      "visualColorTags": [
+        "red",
+        "gray"
+      ],
+      "visualNumberTags": [],
+      "visualLayoutTags": [
+        "triangular-sign"
+      ],
+      "visualEvidenceNotes": [
+        "The embedded image shows a red triangle sign on a gray background."
+      ],
+      "provisionalTopic": null,
+      "provisionalSubtopics": [],
+      "topicConfidence": 0,
+      "topicSignals": [],
+      "visualEvidenceAvailable": true,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": null,
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [
+        "triangle",
+        "gray-background"
+      ],
+      "expectedColorTags": [
+        "red",
+        "gray"
+      ],
+      "sourceIsSignHeavy": true,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [],
+        "action": [
+          "head-light"
+        ],
+        "polarity": null,
+        "obligation": null,
+        "signals": [
+          {
+            "slot": "action",
+            "value": "head-light",
+            "signal": "head-light"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Lors que clignote, cela indique que les feux clignotants d'alerte de danger sont allumés.",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "When this blinks, it indicates that the hazard warning lights are on.",
+        "options": [
+          "Yes",
+          "No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0572",
+        "number": 572,
+        "score": 77.259,
+        "scoreGap": 16.855,
+        "scoreBreakdown": {
+          "optionScore": 0.91,
+          "glossScore": 0.331,
+          "promptSimilarity": 0.331,
+          "rawPromptSimilarity": 0.331,
+          "englishPromptSimilarity": 0.331,
+          "bridgePromptSimilarity": 0.175,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.2,
+          "localizedGlossSimilarity": 0,
+          "localizedKeywordSupport": 0.2,
+          "multilingualSupportScore": 0.2,
+          "keywordScore": 0.566,
+          "rowKeywordSignal": 0.326,
+          "rowDistinctiveKeywordScore": 0.332,
+          "rowConceptKeywordSupport": 0.24,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "imageScore": 1,
+          "rawImageScore": 1,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.91,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 0.5,
+          "structuralAgreement": 0.904,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 1,
+          "imageColorAgreement": 1,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 1,
+          "conditionAlignment": 0,
+          "contextAlignment": 0,
+          "actionAlignment": 1,
+          "obligationAlignment": 0,
+          "polarityAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 63.155,
+          "baseScore": 63.155,
+          "rerankAdjustment": 14.104
+        },
+        "candidateTopicTruth": {
+          "topic": null,
+          "subtopics": [],
+          "tags": []
+        },
+        "candidateImageRef": {
+          "hasImage": true,
+          "currentAssetSrc": "/qbank/2023-test1/images/img_b1b5d8961d2a7296f5bffca81bf293bc.jpeg",
+          "assetHashes": [
+            "b1b5d8961d2a7296f5bffca81bf293bc"
+          ],
+          "colorTags": [
+            "red",
+            "gray"
+          ],
+          "objectTags": [
+            "triangle"
+          ]
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "image-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 498,
+        "candidateCountAfterStructuralFilter": 142,
+        "candidateCountAfterMcqShortlist": 142,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 142,
+        "structuralSoftCandidateCount": 142,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-image",
+        "decisionReasonCodes": [
+          "profile-pass"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-image",
+          "topScore": 77.259,
+          "rank2Score": 60.404,
+          "scoreGap": 16.855,
+          "thresholds": {
+            "reviewFloor": 40,
+            "autoMatchThreshold": 64,
+            "autoGapThreshold": 7
+          },
+          "signalAgreement": {
+            "agreementScore": 0.724,
+            "strongSignalCount": 3,
+            "weakSignalCount": 0,
+            "signalSpread": 0.669,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.331,
+              "keyword": 0.566,
+              "image": 1,
+              "multilingual": 0.2,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.149,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "profile-pass"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Lors que clignote, cela indique que les feux clignotants d'alerte de danger sont allumés.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0572",
+          "number": 572,
+          "type": "ROW",
+          "score": 77.259,
+          "scoreBreakdown": {
+            "optionScore": 0.91,
+            "glossScore": 0.331,
+            "promptSimilarity": 0.331,
+            "rawPromptSimilarity": 0.331,
+            "englishPromptSimilarity": 0.331,
+            "bridgePromptSimilarity": 0.175,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.566,
+            "rowKeywordSignal": 0.326,
+            "rowDistinctiveKeywordScore": 0.332,
+            "rowConceptKeywordSupport": 0.24,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.91,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.904,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 1,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 63.155,
+            "baseScore": 63.155,
+            "rerankAdjustment": 14.104
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "hazard-lights"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "hazard-lights",
+                  "signal": "hazard-lights"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "hazard-lights"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "hazard-lights",
+                  "signal": "hazard-lights"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light|hazard-lights"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: hazard lights, gray background, triangle",
+            "sourceFeatureKeywords": [
+              "hazard-lights",
+              "gray-background",
+              "triangle",
+              "background",
+              "blinks",
+              "hazard",
+              "indicates",
+              "lights",
+              "warning"
+            ],
+            "candidateFeatureKeywords": [
+              "hazard-lights",
+              "head-light",
+              "triangle",
+              "flashes",
+              "hazard",
+              "lights",
+              "right",
+              "turning"
+            ],
+            "candidateImageTags": [
+              "triangle",
+              "red",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 1,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "It flashes when turning on the hazard lights.",
+          "syntheticJaPrompt": "it flash when turning hazard ライト。",
+          "translatedPrompt": "계기판에 등이 켜졌다. 비상점멸등을 켰을 때 깜박인다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_b1b5d8961d2a7296f5bffca81bf293bc.jpeg",
+            "assetHashes": [
+              "b1b5d8961d2a7296f5bffca81bf293bc"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "red",
+              "gray"
+            ],
+            "objectTags": [
+              "triangle"
+            ]
+          },
+          "topic": "traffic-lights",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0559",
+          "number": 559,
+          "type": "ROW",
+          "score": 60.404,
+          "scoreBreakdown": {
+            "optionScore": 0.543,
+            "glossScore": 0.195,
+            "promptSimilarity": 0.195,
+            "rawPromptSimilarity": 0.195,
+            "englishPromptSimilarity": 0.195,
+            "bridgePromptSimilarity": 0.089,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.283,
+            "rowKeywordSignal": 0.044,
+            "rowDistinctiveKeywordScore": 0.045,
+            "rowConceptKeywordSupport": 0.177,
+            "rowContrastPenalty": 0.26,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.543,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.881,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.8,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.605,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0.5,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0.26,
+            "assetTieBreak": 0,
+            "totalScore": 48.498,
+            "baseScore": 48.498,
+            "rerankAdjustment": 11.906
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "hazard-lights"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "hazard-lights",
+                  "signal": "hazard-lights"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light"
+            ],
+            "contradictionSignals": [
+              "action:hazard-lights-vs-headlights"
+            ],
+            "rowContrastSignals": [
+              "action:hazard-lights-vs-headlights"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: hazard lights, gray background, triangle",
+            "sourceFeatureKeywords": [
+              "hazard-lights",
+              "gray-background",
+              "triangle",
+              "background",
+              "blinks",
+              "hazard",
+              "indicates",
+              "lights",
+              "warning"
+            ],
+            "candidateFeatureKeywords": [
+              "engine",
+              "head-light",
+              "lamp",
+              "may",
+              "indicate",
+              "insufficient",
+              "lights",
+              "right"
+            ],
+            "candidateImageTags": [
+              "lamp",
+              "red",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.8,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate.",
+              "Context or action contradictions reduced this candidate's rank."
+            ]
+          },
+          "prompt": "It lights to indicate that the engine oil may be insufficient.",
+          "syntheticJaPrompt": "it ライト indicate engine oil よい be insufficient。",
+          "translatedPrompt": "엔진오일이 부족할 가능성이 있을 때 이 표시등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_3811ecc5a9ee2d696ca650a6ae5a17bb.jpeg",
+            "assetHashes": [
+              "3811ecc5a9ee2d696ca650a6ae5a17bb"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "red"
+            ],
+            "objectTags": [
+              "lamp"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": "positive",
+            "obligation": "may",
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0536",
+          "number": 536,
+          "type": "ROW",
+          "score": 59.848,
+          "scoreBreakdown": {
+            "optionScore": 0.21,
+            "glossScore": 0.149,
+            "promptSimilarity": 0.149,
+            "rawPromptSimilarity": 0.152,
+            "englishPromptSimilarity": 0.149,
+            "bridgePromptSimilarity": 0,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.165,
+            "rowKeywordSignal": 0.098,
+            "rowDistinctiveKeywordScore": 0.1,
+            "rowConceptKeywordSupport": 0,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.21,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.904,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 1,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 0,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 45.744,
+            "baseScore": 45.744,
+            "rerankAdjustment": 14.104
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 0.975,
+            "genericPromptPenalty": 0.975,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "hazard-lights"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "hazard-lights",
+                  "signal": "hazard-lights"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [],
+              "polarity": null,
+              "obligation": null,
+              "signals": []
+            },
+            "conceptMatches": [],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: hazard lights, gray background, triangle",
+            "sourceFeatureKeywords": [
+              "hazard-lights",
+              "gray-background",
+              "triangle",
+              "background",
+              "blinks",
+              "hazard",
+              "indicates",
+              "lights",
+              "warning"
+            ],
+            "candidateFeatureKeywords": [
+              "triangle",
+              "breaking",
+              "false",
+              "flashes",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "triangle",
+              "red",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 1,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags."
+            ]
+          },
+          "prompt": "It flashes when breaking down.",
+          "syntheticJaPrompt": "it flash when breaking down",
+          "translatedPrompt": "차량이 고장 났을 때 이 등이 점멸한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_b1b5d8961d2a7296f5bffca81bf293bc.jpeg",
+            "assetHashes": [
+              "b1b5d8961d2a7296f5bffca81bf293bc"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "red",
+              "gray"
+            ],
+            "objectTags": [
+              "triangle"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [],
+            "polarity": null,
+            "obligation": null,
+            "signals": []
+          }
+        },
+        {
+          "qid": "q0564",
+          "number": 564,
+          "type": "ROW",
+          "score": 59.477,
+          "scoreBreakdown": {
+            "optionScore": 0.543,
+            "glossScore": 0.202,
+            "promptSimilarity": 0.202,
+            "rawPromptSimilarity": 0.202,
+            "englishPromptSimilarity": 0.202,
+            "bridgePromptSimilarity": 0.081,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.279,
+            "rowKeywordSignal": 0.038,
+            "rowDistinctiveKeywordScore": 0.039,
+            "rowConceptKeywordSupport": 0.177,
+            "rowContrastPenalty": 0.26,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.543,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.869,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.7,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.605,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0.5,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0.26,
+            "assetTieBreak": 0,
+            "totalScore": 48.683,
+            "baseScore": 48.683,
+            "rerankAdjustment": 10.794
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "hazard-lights"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "hazard-lights",
+                  "signal": "hazard-lights"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light"
+            ],
+            "contradictionSignals": [
+              "action:hazard-lights-vs-headlights"
+            ],
+            "rowContrastSignals": [
+              "action:hazard-lights-vs-headlights"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: hazard lights, gray background, triangle",
+            "sourceFeatureKeywords": [
+              "hazard-lights",
+              "gray-background",
+              "triangle",
+              "background",
+              "blinks",
+              "hazard",
+              "indicates",
+              "lights",
+              "warning"
+            ],
+            "candidateFeatureKeywords": [
+              "battery",
+              "head-light",
+              "batteries",
+              "charging",
+              "false",
+              "generator",
+              "indicate",
+              "lights",
+              "wrong"
+            ],
+            "candidateImageTags": [
+              "battery",
+              "-",
+              "+",
+              "red",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.7,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate.",
+              "Context or action contradictions reduced this candidate's rank."
+            ]
+          },
+          "prompt": "It lights to indicate that the generator is charging to the batteries.",
+          "syntheticJaPrompt": "it ライト indicate generator charging battery。",
+          "translatedPrompt": "발전기가 배터리를 충전하고 있음을 알리는 표시등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_3c99eb0512e6e318f6619528440c4050.jpeg",
+            "assetHashes": [
+              "3c99eb0512e6e318f6619528440c4050"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "gray",
+              "red"
+            ],
+            "objectTags": [
+              "battery",
+              "-",
+              "+"
+            ]
+          },
+          "topic": "row",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0534",
+          "number": 534,
+          "type": "ROW",
+          "score": 59.139,
+          "scoreBreakdown": {
+            "optionScore": 0.543,
+            "glossScore": 0.158,
+            "promptSimilarity": 0.158,
+            "rawPromptSimilarity": 0.158,
+            "englishPromptSimilarity": 0.158,
+            "bridgePromptSimilarity": 0.085,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.282,
+            "rowKeywordSignal": 0.042,
+            "rowDistinctiveKeywordScore": 0.043,
+            "rowConceptKeywordSupport": 0.177,
+            "rowContrastPenalty": 0.26,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 1,
+            "rawImageScore": 1,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.543,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.5,
+            "structuralAgreement": 0.881,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.8,
+            "imageColorAgreement": 1,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.605,
+            "conditionAlignment": 0,
+            "contextAlignment": 0,
+            "actionAlignment": 0.5,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0.26,
+            "assetTieBreak": 0,
+            "totalScore": 47.233,
+            "baseScore": 47.233,
+            "rerankAdjustment": 11.906
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-image",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.34,
+              "keyword": 0.14,
+              "image": 0.28,
+              "multilingual": 0.16
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": "indicator",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light",
+                "hazard-lights"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                },
+                {
+                  "slot": "action",
+                  "value": "hazard-lights",
+                  "signal": "hazard-lights"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [],
+              "action": [
+                "head-light"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "action",
+                  "value": "head-light",
+                  "signal": "head-light"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "action:head-light"
+            ],
+            "contradictionSignals": [
+              "action:hazard-lights-vs-headlights"
+            ],
+            "rowContrastSignals": [
+              "action:hazard-lights-vs-headlights"
+            ],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: hazard lights, gray background, triangle",
+            "sourceFeatureKeywords": [
+              "hazard-lights",
+              "gray-background",
+              "triangle",
+              "background",
+              "blinks",
+              "hazard",
+              "indicates",
+              "lights",
+              "warning"
+            ],
+            "candidateFeatureKeywords": [
+              "head-light",
+              "p",
+              "handbrake",
+              "lights",
+              "pulled",
+              "right",
+              "driving-operations",
+              "indicators"
+            ],
+            "candidateImageTags": [
+              "p",
+              "red",
+              "gray",
+              "gray-background"
+            ],
+            "imageObjectMatch": 0.8,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": true,
+            "imageColorComparable": true,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "Source-side visual cues overlap with the candidate image tags.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate.",
+              "Context or action contradictions reduced this candidate's rank."
+            ]
+          },
+          "prompt": "It lights when the handbrake is pulled up.",
+          "syntheticJaPrompt": "it ライト when handbrake pulled up。",
+          "translatedPrompt": "주차 브레이크를 당기면 이 등이 켜진다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "R",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "right / true",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Right"
+          },
+          "image": {
+            "hasImage": true,
+            "currentAssetSrc": "/qbank/2023-test1/images/img_e428f1567e3758e428cc83120c049c6a.jpeg",
+            "assetHashes": [
+              "e428f1567e3758e428cc83120c049c6a"
+            ],
+            "colorTags": [
+              "red",
+              "gray"
+            ],
+            "dominantColorTags": [
+              "red",
+              "gray"
+            ],
+            "objectTags": [
+              "p"
+            ]
+          },
+          "topic": "driving-operations",
+          "subtopics": [
+            "driving-operations:indicators"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [],
+            "action": [
+              "head-light"
+            ],
+            "polarity": null,
+            "obligation": null,
+            "signals": [
+              {
+                "slot": "action",
+                "value": "head-light",
+                "signal": "head-light"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

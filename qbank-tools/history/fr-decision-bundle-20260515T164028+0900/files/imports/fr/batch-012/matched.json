@@ -1,0 +1,1493 @@
+{
+  "generatedAt": "2026-05-09T02:24:11.846Z",
+  "lang": "fr",
+  "batchId": "batch-012",
+  "dataset": "2023-test1",
+  "kind": "matched",
+  "items": [
+    {
+      "itemId": "screenshots/Screenshot 2026-05-08 at 21.41.42.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-08 at 21.41.42.png",
+      "promptRawJa": "Il est possible de changer fréquemment de voie sur l'autoroute.",
+      "promptGlossEn": "Is it possible to change lanes frequently on the highway?",
+      "optionsRawJa": [
+        "A Yes",
+        "B No"
+      ],
+      "optionsGlossEn": [
+        "Yes",
+        "No"
+      ],
+      "correctKeyRaw": null,
+      "correctAnswerRaw": null,
+      "ocrConfidence": "high",
+      "hasImage": false,
+      "visualObjectTags": [],
+      "visualColorTags": [],
+      "visualNumberTags": [],
+      "visualLayoutTags": [],
+      "visualEvidenceNotes": [],
+      "provisionalTopic": "proper-driving",
+      "provisionalSubtopics": [
+        "proper-driving:safe-driving"
+      ],
+      "topicConfidence": 1,
+      "topicSignals": [
+        {
+          "topic": "proper-driving",
+          "subtopic": "proper-driving:safe-driving",
+          "signal": "driving-action",
+          "weight": 1.2
+        }
+      ],
+      "visualEvidenceAvailable": false,
+      "sourcePromptFamily": null,
+      "sourcePromptFamilyBucket": null,
+      "sourceOptionCount": 2,
+      "optionCountReliable": true,
+      "expectedObjectTags": [],
+      "expectedColorTags": [],
+      "sourceIsSignHeavy": false,
+      "sourceConceptSlots": {
+        "condition": [],
+        "context": [
+          "expressway"
+        ],
+        "action": [
+          "lane-change"
+        ],
+        "polarity": null,
+        "obligation": null,
+        "signals": [
+          {
+            "slot": "context",
+            "value": "expressway",
+            "signal": "expressway"
+          },
+          {
+            "slot": "context",
+            "value": "expressway",
+            "signal": "expressway"
+          },
+          {
+            "slot": "action",
+            "value": "lane-change",
+            "signal": "lane-change"
+          }
+        ]
+      },
+      "mcqFingerprint": null,
+      "localizedText": {
+        "prompt": "Il est possible de changer fréquemment de voie sur l'autoroute.",
+        "options": [
+          "A Yes",
+          "B No"
+        ],
+        "correctAnswer": null,
+        "explanation": null
+      },
+      "translatedText": {
+        "prompt": "Is it possible to change lanes frequently on the highway?",
+        "options": [
+          "Yes",
+          "No"
+        ],
+        "correctAnswer": null
+      },
+      "topicHints": [],
+      "answerPolarity": null,
+      "match": {
+        "qid": "q0003",
+        "number": 3,
+        "score": 65.121,
+        "scoreGap": 22.836,
+        "scoreBreakdown": {
+          "optionScore": 0.91,
+          "glossScore": 0.415,
+          "promptSimilarity": 0.415,
+          "rawPromptSimilarity": 0.415,
+          "englishPromptSimilarity": 0.415,
+          "bridgePromptSimilarity": 0.123,
+          "syntheticPromptSimilarity": 0,
+          "localizedPromptSimilarity": 0,
+          "localizedAgreement": 0.2,
+          "localizedGlossSimilarity": 0,
+          "localizedKeywordSupport": 0.2,
+          "multilingualSupportScore": 0.2,
+          "keywordScore": 0.858,
+          "rowKeywordSignal": 0.498,
+          "rowDistinctiveKeywordScore": 0.553,
+          "rowConceptKeywordSupport": 0.4,
+          "rowContrastPenalty": 0,
+          "numericGroupScore": 0.5,
+          "numericGroupPenalty": 0,
+          "numericGroupBoost": 0,
+          "promptFamilyMismatchPenalty": 0,
+          "promptFamilySupport": 0,
+          "imageScore": 0.5,
+          "rawImageScore": 0.5,
+          "indicatorVisualScore": 0.5,
+          "indicatorVisualBoost": 0,
+          "missingImagePenalty": 0,
+          "imageFamilyMismatchPenalty": 0,
+          "optionSimilarity": 0.91,
+          "questionType": 1,
+          "optionCountAgreement": 1,
+          "answerStructureAgreement": 0.5,
+          "promptFamilyAgreement": 0.5,
+          "provisionalTopicAgreement": 1,
+          "structuralAgreement": 0.903,
+          "structuralPenalty": 0,
+          "imageSignal": 1,
+          "imageObjectAgreement": 0.5,
+          "imageColorAgreement": 0.5,
+          "topicWeighting": 0.5,
+          "answerPolarity": 0.5,
+          "conceptAlignment": 1,
+          "conditionAlignment": 0,
+          "contextAlignment": 1,
+          "actionAlignment": 1,
+          "obligationAlignment": 0,
+          "polarityAlignment": 1,
+          "contradictionPenalty": 0,
+          "assetTieBreak": 0,
+          "totalScore": 57.043,
+          "baseScore": 57.043,
+          "rerankAdjustment": 8.078
+        },
+        "candidateTopicTruth": {
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "tags": [
+            "proper-driving",
+            "proper-driving:safe-driving",
+            "no-image"
+          ]
+        },
+        "candidateImageRef": {
+          "hasImage": false,
+          "currentAssetSrc": null,
+          "assetHashes": [],
+          "colorTags": [],
+          "objectTags": [
+            "highway",
+            "needs-tag-review"
+          ]
+        }
+      },
+      "analysis": {
+        "mode": "standard",
+        "effectiveQuestionType": "ROW",
+        "declaredQuestionType": "MCQ",
+        "booleanChoiceDetected": true,
+        "plausibleShortlist": true,
+        "imageParityApplied": true,
+        "candidateImageParityMode": "text-only candidate set",
+        "candidateCountBeforeParity": 984,
+        "candidateCountAfterParity": 486,
+        "candidateCountAfterStructuralFilter": 277,
+        "candidateCountAfterMcqShortlist": 277,
+        "structuralFilterMode": "hard-structural",
+        "structuralHardCandidateCount": 277,
+        "structuralSoftCandidateCount": 277,
+        "mcqShortlistApplied": false,
+        "mcqShortlistMode": "row-bypass",
+        "mcqShortlistTopScore": null,
+        "correctionRuleIdsAppliedToRanking": [],
+        "correctionRuleIdsAppliedToGating": [],
+        "matchingProfile": "row-text",
+        "decisionReasonCodes": [
+          "profile-pass"
+        ],
+        "autoMatchThresholdDelta": 0,
+        "autoGapThresholdDelta": 0,
+        "autoMatch": {
+          "profile": "row-text",
+          "topScore": 65.121,
+          "rank2Score": 42.285,
+          "scoreGap": 22.836,
+          "thresholds": {
+            "reviewFloor": 38,
+            "autoMatchThreshold": 60,
+            "autoGapThreshold": 6
+          },
+          "signalAgreement": {
+            "agreementScore": 0.758,
+            "strongSignalCount": 2,
+            "weakSignalCount": 0,
+            "signalSpread": 0.585,
+            "signalConflict": false,
+            "signalVector": {
+              "option": 1,
+              "gloss": 0.415,
+              "keyword": 0.858,
+              "image": 0.5,
+              "multilingual": 0.2,
+              "concept": 1
+            }
+          },
+          "separation": {
+            "signalSeparation": 0.34,
+            "tooClose": false
+          },
+          "autoMatched": true,
+          "reasonCodes": [
+            "profile-pass"
+          ]
+        },
+        "explanation": "Top candidate cleared the review floor but remains review-first."
+      },
+      "proposedLocalization": {
+        "prompt": "Il est possible de changer fréquemment de voie sur l'autoroute.",
+        "explanation": ""
+      },
+      "reviewDecision": null,
+      "approvedLocalization": null,
+      "topCandidates": [
+        {
+          "qid": "q0003",
+          "number": 3,
+          "type": "ROW",
+          "score": 65.121,
+          "scoreBreakdown": {
+            "optionScore": 0.91,
+            "glossScore": 0.415,
+            "promptSimilarity": 0.415,
+            "rawPromptSimilarity": 0.415,
+            "englishPromptSimilarity": 0.415,
+            "bridgePromptSimilarity": 0.123,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.858,
+            "rowKeywordSignal": 0.498,
+            "rowDistinctiveKeywordScore": 0.553,
+            "rowConceptKeywordSupport": 0.4,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.91,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 1,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 57.043,
+            "baseScore": 57.043,
+            "rerankAdjustment": 8.078
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "lane-change"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "lane-change",
+                  "signal": "lane-change"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "lane-change"
+              ],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "lane-change",
+                  "signal": "lane-change"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway",
+              "action:lane-change"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: expressway",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "change",
+              "frequently",
+              "highway",
+              "lanes",
+              "possible",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "highway",
+              "lane-change",
+              "may",
+              "needs-tag-review",
+              "change",
+              "false",
+              "frequently",
+              "lanes",
+              "running",
+              "wrong",
+              "safe-driving"
+            ],
+            "candidateImageTags": [
+              "highway",
+              "needs-tag-review"
+            ],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Source-side action intent aligned strongly with the candidate.",
+              "Scenario context tags aligned strongly with the candidate.",
+              "Distinctive scenario keywords helped separate this candidate from nearby ROW variants."
+            ]
+          },
+          "prompt": "A vehicle running on a highway may frequently change lanes.",
+          "syntheticJaPrompt": "車両 running 高速道路 よい frequently 車線変更。",
+          "translatedPrompt": "고속도로에서 주행하는 차량은 자주 차로를 변경할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": [
+              "highway",
+              "needs-tag-review"
+            ]
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [
+              "lane-change"
+            ],
+            "polarity": "positive",
+            "obligation": "may",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "action",
+                "value": "lane-change",
+                "signal": "lane-change"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0029",
+          "number": 29,
+          "type": "ROW",
+          "score": 42.285,
+          "scoreBreakdown": {
+            "optionScore": 0.571,
+            "glossScore": 0.182,
+            "promptSimilarity": 0.182,
+            "rawPromptSimilarity": 0.182,
+            "englishPromptSimilarity": 0.182,
+            "bridgePromptSimilarity": 0.078,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.49,
+            "rowKeywordSignal": 0.216,
+            "rowDistinctiveKeywordScore": 0.216,
+            "rowConceptKeywordSupport": 0.243,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.571,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0.75,
+            "structuralAgreement": 0.864,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.516,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 35.221,
+            "baseScore": 35.221,
+            "rerankAdjustment": 7.064
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": "action",
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "lane-change"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "lane-change",
+                  "signal": "lane-change"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "stop"
+              ],
+              "polarity": "positive",
+              "obligation": "should",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "stop",
+                  "signal": "stop"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: expressway",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "change",
+              "frequently",
+              "highway",
+              "lanes",
+              "possible",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "stop",
+              "should",
+              "false",
+              "highway",
+              "tired",
+              "wrong",
+              "safe-driving"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "A driver should stop on the highway at once to have a rest when he feel tired.",
+          "syntheticJaPrompt": "運転者 べき stop 高速道路 once have rest when he feel tired。",
+          "translatedPrompt": "운전자가 피곤하면 고속도로에서 휴식을 위해 즉시 정차해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [
+              "stop"
+            ],
+            "polarity": "positive",
+            "obligation": "should",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "action",
+                "value": "stop",
+                "signal": "stop"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0103",
+          "number": 103,
+          "type": "ROW",
+          "score": 41.575,
+          "scoreBreakdown": {
+            "optionScore": 0.648,
+            "glossScore": 0.123,
+            "promptSimilarity": 0.123,
+            "rawPromptSimilarity": 0.141,
+            "englishPromptSimilarity": 0.095,
+            "bridgePromptSimilarity": 0.123,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.5,
+            "rowKeywordSignal": 0.206,
+            "rowDistinctiveKeywordScore": 0.206,
+            "rowConceptKeywordSupport": 0.26,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.648,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.625,
+            "conditionAlignment": 0,
+            "contextAlignment": 0.5,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 33.497,
+            "baseScore": 33.497,
+            "rerankAdjustment": 8.078
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "lane-change"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "lane-change",
+                  "signal": "lane-change"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway",
+                "emergency-lane"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "should",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "emergency-lane",
+                  "signal": "emergency-lane"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: expressway",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "change",
+              "frequently",
+              "highway",
+              "lanes",
+              "possible",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "emergency-lane",
+              "should",
+              "false",
+              "highway",
+              "right",
+              "shoulder",
+              "wrong",
+              "safe-driving"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "Vehicles should drive on the right shoulder of a highway.",
+          "syntheticJaPrompt": "車両 べき run by right shoulder 高速道路。",
+          "translatedPrompt": "차량은 고속도로에서 갓길(우측 가장자리)을 주행해야 한다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "obligation": "should",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0005",
+          "number": 5,
+          "type": "ROW",
+          "score": 39.697,
+          "scoreBreakdown": {
+            "optionScore": 0.648,
+            "glossScore": 0.104,
+            "promptSimilarity": 0.104,
+            "rawPromptSimilarity": 0.104,
+            "englishPromptSimilarity": 0.104,
+            "bridgePromptSimilarity": 0.071,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.457,
+            "rowKeywordSignal": 0.136,
+            "rowDistinctiveKeywordScore": 0.158,
+            "rowConceptKeywordSupport": 0.26,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.648,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 1,
+            "structuralAgreement": 0.903,
+            "structuralPenalty": 0,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 0.625,
+            "conditionAlignment": 0,
+            "contextAlignment": 0.5,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 31.619,
+            "baseScore": 31.619,
+            "rerankAdjustment": 8.078
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "lane-change"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "lane-change",
+                  "signal": "lane-change"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway",
+                "emergency-lane"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "emergency-lane",
+                  "signal": "emergency-lane"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: expressway",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "change",
+              "frequently",
+              "highway",
+              "lanes",
+              "possible",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "accident",
+              "emergency-lane",
+              "may",
+              "caused",
+              "congestion",
+              "emergency",
+              "false",
+              "highway",
+              "right",
+              "shoulder",
+              "strip",
+              "wrong",
+              "safe-driving"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "When an accident has caused congestion on a highway, the vehicles may run in the emergency strip on the right or in the shoulder of the road.",
+          "syntheticJaPrompt": "when accident has caused congestion 高速道路 車両 よい run emergency strip right or shoulder road。",
+          "translatedPrompt": "사고로 인해 고속도로에 교통정체가 발생한 경우 차량은 우측 비상차로나 갓길로 주행할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "proper-driving",
+          "subtopics": [
+            "proper-driving:safe-driving"
+          ],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "obligation": "may",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        },
+        {
+          "qid": "q0036",
+          "number": 36,
+          "type": "ROW",
+          "score": 38.199,
+          "scoreBreakdown": {
+            "optionScore": 0.91,
+            "glossScore": 0.181,
+            "promptSimilarity": 0.181,
+            "rawPromptSimilarity": 0.181,
+            "englishPromptSimilarity": 0.181,
+            "bridgePromptSimilarity": 0.079,
+            "syntheticPromptSimilarity": 0,
+            "localizedPromptSimilarity": 0,
+            "localizedAgreement": 0.2,
+            "localizedGlossSimilarity": 0,
+            "localizedKeywordSupport": 0.2,
+            "multilingualSupportScore": 0.2,
+            "keywordScore": 0.494,
+            "rowKeywordSignal": 0.111,
+            "rowDistinctiveKeywordScore": 0.111,
+            "rowConceptKeywordSupport": 0.32,
+            "rowContrastPenalty": 0,
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupBoost": 0,
+            "promptFamilyMismatchPenalty": 0,
+            "promptFamilySupport": 0,
+            "imageScore": 0.5,
+            "rawImageScore": 0.5,
+            "indicatorVisualScore": 0.5,
+            "indicatorVisualBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatchPenalty": 0,
+            "optionSimilarity": 0.91,
+            "questionType": 1,
+            "optionCountAgreement": 1,
+            "answerStructureAgreement": 0.5,
+            "promptFamilyAgreement": 0.5,
+            "provisionalTopicAgreement": 0,
+            "structuralAgreement": 0.747,
+            "structuralPenalty": 0.16,
+            "imageSignal": 1,
+            "imageObjectAgreement": 0.5,
+            "imageColorAgreement": 0.5,
+            "topicWeighting": 0.5,
+            "answerPolarity": 0.5,
+            "conceptAlignment": 1,
+            "conditionAlignment": 0,
+            "contextAlignment": 1,
+            "actionAlignment": 0,
+            "obligationAlignment": 0,
+            "polarityAlignment": 1,
+            "contradictionPenalty": 0,
+            "assetTieBreak": 0,
+            "totalScore": 37.057,
+            "baseScore": 37.057,
+            "rerankAdjustment": 1.142
+          },
+          "diagnostics": {
+            "effectiveItemType": "ROW",
+            "declaredItemType": "MCQ",
+            "binaryChoiceDetected": true,
+            "matchingProfile": "row-text",
+            "signalWeights": {
+              "option": 0.08,
+              "gloss": 0.44,
+              "keyword": 0.24,
+              "image": 0.02,
+              "multilingual": 0.22
+            },
+            "promptSpecificity": 1,
+            "genericPromptPenalty": 1,
+            "missingCorrectAnswerNeutral": true,
+            "optionSetMode": "row-semantic",
+            "localizedMirrorUsed": true,
+            "localizedMirrorLabel": null,
+            "localizedSignalAvailable": true,
+            "syntheticMirrorUsed": false,
+            "genericPromptFamily": null,
+            "sourcePromptFamily": null,
+            "sourcePromptFamilyBucket": null,
+            "candidatePromptFamilyBucket": null,
+            "promptFamilyReasonCodes": [],
+            "sourceConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [
+                "lane-change"
+              ],
+              "polarity": "positive",
+              "obligation": null,
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "action",
+                  "value": "lane-change",
+                  "signal": "lane-change"
+                }
+              ]
+            },
+            "candidateConceptSlots": {
+              "condition": [],
+              "context": [
+                "expressway"
+              ],
+              "action": [],
+              "polarity": "positive",
+              "obligation": "may",
+              "signals": [
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                },
+                {
+                  "slot": "context",
+                  "value": "expressway",
+                  "signal": "expressway"
+                }
+              ]
+            },
+            "conceptMatches": [
+              "context:expressway"
+            ],
+            "contradictionSignals": [],
+            "rowContrastSignals": [],
+            "rowConceptMode": "slot-alignment + contradiction-penalties",
+            "sourceNumericGroups": [],
+            "candidateNumericGroups": [],
+            "numericGroupScore": 0.5,
+            "numericGroupPenalty": 0,
+            "numericGroupReasonCodes": [],
+            "numericGroupMatches": [],
+            "sourceFeatureGloss": "traffic rule statement: expressway",
+            "sourceFeatureKeywords": [
+              "expressway",
+              "change",
+              "frequently",
+              "highway",
+              "lanes",
+              "possible",
+              "safe-driving"
+            ],
+            "candidateFeatureKeywords": [
+              "expressway",
+              "may",
+              "according",
+              "ascertain",
+              "false",
+              "feeling",
+              "highway",
+              "speed",
+              "wrong"
+            ],
+            "candidateImageTags": [],
+            "imageObjectMatch": 0.5,
+            "dominantColorMatch": 0.5,
+            "indicatorVisualMatch": 0.5,
+            "imageCandidateBoost": 0,
+            "missingImagePenalty": 0,
+            "imageFamilyMismatch": 0,
+            "imageVisualReasonCodes": [],
+            "sourceIndicatorVisual": false,
+            "candidateIndicatorVisual": false,
+            "structuralSevereSignals": [],
+            "structuralSoftSignals": [
+              "topic"
+            ],
+            "imageObjectComparable": false,
+            "imageColorComparable": false,
+            "explanation": [
+              "Binary yes/no options were treated as ROW-like for type scoring.",
+              "Missing correct answer was treated as a neutral signal.",
+              "Option comparison used unordered semantic set matching.",
+              "Distinctive keyword overlap strengthened the MCQ match.",
+              "Structural filtering and scoring strongly agree with this candidate.",
+              "ROW concept slots aligned on condition/context/action.",
+              "Scenario context tags aligned strongly with the candidate."
+            ]
+          },
+          "prompt": "When driving on the highway, the driver may ascertain the speed according to his feeling.",
+          "syntheticJaPrompt": "when 車両 runs 高速道路 運転者 よい ascertain speed according his feeling。",
+          "translatedPrompt": "고속도로에서 운전할 때 운전자는 자신의 기분대로 주행 속도를 정할 수 있다.",
+          "options": [],
+          "correctAnswer": {
+            "kind": "ROW",
+            "correctRow": "W",
+            "correctOptionId": null,
+            "correctOptionKey": null,
+            "correctOptionText": "wrong / false",
+            "correctOptionTranslatedText": null,
+            "answerRaw": "Wrong"
+          },
+          "image": {
+            "hasImage": false,
+            "currentAssetSrc": null,
+            "assetHashes": [],
+            "colorTags": [],
+            "dominantColorTags": [],
+            "objectTags": []
+          },
+          "topic": "no-image",
+          "subtopics": [],
+          "conceptSlots": {
+            "condition": [],
+            "context": [
+              "expressway"
+            ],
+            "action": [],
+            "polarity": "positive",
+            "obligation": "may",
+            "signals": [
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              },
+              {
+                "slot": "context",
+                "value": "expressway",
+                "signal": "expressway"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
