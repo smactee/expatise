@@ -58,6 +58,7 @@ npm run generate-batch-review-artifact -- --lang ja --batch batch-001
 Preferred compressed workflow for new batches:
 
 ```bash
+npm run refresh-correction-rules                 # fold all prior decisions into the matcher first
 npm run extract-screenshot-intake -- --lang ja --batch batch-003
 npm run validate-screenshot-intake -- --lang ja --batch batch-003
 npm run process-screenshot-batch -- --lang ja --batch batch-003
@@ -84,6 +85,22 @@ Notes:
 - For older batches where the original Codex recommendation has already been overwritten, run `snapshot-codex-recommendations` only with `--mark-unavailable true`; do not infer or backfill historical recommendations from human-final decisions.
 - `build-codex-human-decision-memory` writes per-batch audit reports to `qbank-tools/generated/reports/<lang>-<batch>-codex-vs-human-review.json` and `.md`.
 - `build-decision-memory` also writes the concise cross-language Codex-vs-human aggregate to `qbank-tools/generated/reports/qbank-decision-memory.json` and `.md`.
+
+Correction-rules feedback loop (matcher learns from prior decisions):
+
+```bash
+# Aggregate every reviewed <lang>-<batch>-workbench-decisions.json into one history,
+# then derive matcher correction rules from it. Run before each new batch, and again
+# after applying a batch so the next one benefits from the latest rectifications.
+npm run refresh-correction-rules
+```
+
+Notes:
+
+- `build-match-history` scans all `*-workbench-decisions.json` under `qbank-tools/history/decisions/`, `qbank-tools/manual-reviews/`, and `qbank-tools/generated/staging/`, keys each file by its internal `lang`/`batchId`, keeps only the latest export per `(lang, batchId)` (so a batch that also exists as `.merged` or a `manual-reviews/` copy is not double-counted), and writes `qbank-tools/history/match-history.jsonl`.
+- `derive-correction-rules` turns that history into `qbank-tools/history/correction-rules.json` (confusion pairs, answer-key overrides, requires-review and high-precision top candidates).
+- `process-screenshot-batch` now auto-loads `qbank-tools/history/correction-rules.json` by default (override with `--correction-rules <path>`; it is skipped gracefully if the file is absent). The matcher consumes `candidate_confusion_pair`, `top_candidate_requires_review`, and `top_candidate_high_precision`. `approved_qid_answer_key_override` rules are recorded but **not yet consumed** by any step — wiring them into the answer-key review is a known follow-up.
+- This supersedes the single-batch `export-match-history` for routine use; that script still works for exporting one batch.
 
 After reviewing the single workbench HTML and exporting the unified decisions JSON:
 

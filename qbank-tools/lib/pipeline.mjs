@@ -732,6 +732,25 @@ const MCQ_CONTRADICTION_RULES = [
   { label: "emergency-vs-gentle-braking", left: ["emergency-brake"], right: ["gentle-brake", "slow"], weight: 0.22 },
 ];
 
+// Stronger topic/subtopic narrowing during matching. When enabled, the matcher
+// uses deriveTopicSubtags-classified topics (via qid-topics.json) as the
+// authoritative per-qid topic, respects an explicit item.provisionalTopic from
+// the intake (agent-filled), raises the topic-agreement weight, and treats
+// topic disagreement as a severe signal at a lower confidence threshold so the
+// hard-pass candidate pool narrows faster on topic.
+// Default OFF: validated 2026-05-31 on a 60-item French leave-one-language-out
+// sample with classifier-derived source topics — result was net-zero/slight
+// regression (ALL Δ0/−1, MCQ Δ−1/−1, ROW Δ+1/0). The wiring is left intact for
+// future re-validation with agent-derived (screenshot-based) source topics,
+// which should be more reliable than classifier-on-translated-text.
+let topicNarrowingEnabled = false;
+export function setTopicNarrowingEnabled(enabled) {
+  topicNarrowingEnabled = enabled !== false;
+}
+export function isTopicNarrowingEnabled() {
+  return topicNarrowingEnabled;
+}
+
 export function parseArgs(argv = process.argv.slice(2)) {
   const out = {};
 
@@ -5146,6 +5165,26 @@ function addTopicSignal(topicScores, subtopicScores, signals, { topic, subtopic 
 }
 
 function inferProvisionalTopicMetadata(item) {
+  // Agent-filled intake may carry an explicit topic/subtopic classification (per
+  // the skill's "image-dependent items" / topic guidance) — when present and
+  // marked confident, trust it directly instead of re-running keyword inference.
+  if (topicNarrowingEnabled) {
+    const explicitTopic = typeof item?.provisionalTopic === "string" ? item.provisionalTopic.trim() : "";
+    if (explicitTopic) {
+      const explicitSubs = toList(item?.provisionalSubtopics)
+        .map((s) => String(s).trim())
+        .filter(Boolean);
+      const explicitConfidence = Number(item?.topicConfidence);
+      return {
+        provisionalTopic: explicitTopic,
+        provisionalSubtopics: explicitSubs,
+        topicConfidence: Number.isFinite(explicitConfidence) && explicitConfidence > 0
+          ? Math.min(1, Math.max(0, explicitConfidence))
+          : 0.9,
+        topicSignals: [{ topic: explicitTopic, subtopic: explicitSubs[0] ?? null, signal: "intake-explicit", weight: 1 }],
+      };
+    }
+  }
   const normalized = sourceReviewText(item);
   const topicScores = new Map();
   const subtopicScores = new Map();
@@ -6054,6 +6093,46 @@ function scoreAnswerStructureAgreement(itemShape, item, question) {
   return question.correctAnswer.correctRow === expectedRow ? 1 : 0;
 }
 
+// Cached map qid -> {topic, subtopics} loaded from qid-topics.json (built by
+// scripts/derive-qid-topics.ts). This is the authoritative topic source — the
+// same classifier the app's all-questions page uses — and supersedes the
+// tag-derived truthTopic/weightedTopic when present for that qid.
+let qidTopicsCache = null;
+function loadQidTopicsMap() {
+  if (qidTopicsCache !== null) return qidTopicsCache;
+  const filePath = path.join(HISTORY_DIR, "qid-topics.json");
+  if (!fileExists(filePath)) {
+    qidTopicsCache = new Map();
+    return qidTopicsCache;
+  }
+  try {
+    const doc = readJson(filePath);
+    qidTopicsCache = new Map(Object.entries(doc?.byQid ?? {}));
+  } catch {
+    qidTopicsCache = new Map();
+  }
+  return qidTopicsCache;
+}
+
+function candidateTopicFor(question) {
+  if (topicNarrowingEnabled) {
+    const entry = loadQidTopicsMap().get(question?.qid);
+    if (entry?.topic) return entry.topic;
+  }
+  return question?.tags?.truthTopic ?? question?.tags?.weightedTopic ?? null;
+}
+
+function candidateSubtopicsFor(question) {
+  if (topicNarrowingEnabled) {
+    const entry = loadQidTopicsMap().get(question?.qid);
+    if (Array.isArray(entry?.subtopics) && entry.subtopics.length > 0) return entry.subtopics;
+  }
+  return unique([
+    ...toList(question?.tags?.truthSubtopics),
+    ...toList(question?.tags?.weightedSubtopics),
+  ]);
+}
+
 function scoreSourceTopicAgreement(sourceMetadata, question) {
   const sourceTopic = sourceMetadata?.provisionalTopic ?? null;
   const topicConfidence = Number(sourceMetadata?.topicConfidence ?? 0);
@@ -6062,7 +6141,7 @@ function scoreSourceTopicAgreement(sourceMetadata, question) {
     return 0.5;
   }
 
-  const candidateTopic = question.tags.truthTopic ?? question.tags.weightedTopic ?? null;
+  const candidateTopic = candidateTopicFor(question);
   if (!candidateTopic) {
     return 0.35;
   }
@@ -6434,7 +6513,7 @@ function evaluateStructuralCompatibility(item, itemShape, sourceMetadata, questi
     softSignals.push("prompt-family");
   }
 
-  if (Number(sourceMetadata?.topicConfidence ?? 0) >= 0.82 && provisionalTopicAgreement === 0) {
+  if (Number(sourceMetadata?.topicConfidence ?? 0) >= (topicNarrowingEnabled ? 0.65 : 0.82) && provisionalTopicAgreement === 0) {
     softSignals.push("topic");
   }
 
@@ -6451,7 +6530,7 @@ function evaluateStructuralCompatibility(item, itemShape, sourceMetadata, questi
     { value: optionCountAgreement, weight: 0.2, available: true },
     { value: answerStructureAgreement, weight: 0.15, available: itemShape?.effectiveType === "ROW" },
     { value: promptFamilyAgreement, weight: 0.1, available: Boolean(sourceMetadata?.sourcePromptFamily) },
-    { value: provisionalTopicAgreement, weight: 0.12, available: Boolean(sourceMetadata?.provisionalTopic) },
+    { value: provisionalTopicAgreement, weight: topicNarrowingEnabled ? 0.20 : 0.12, available: Boolean(sourceMetadata?.provisionalTopic) },
     { value: imageObjectAgreement, weight: 0.09, available: Boolean(sourceMetadata?.expectedObjectTags?.length) },
     { value: imageColorAgreement, weight: 0.04, available: Boolean(sourceMetadata?.expectedColorTags?.length) },
   ], 0.5);

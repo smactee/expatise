@@ -75,7 +75,7 @@ const topCandidates = Number(args["top-candidates"] ?? (analysisMode === "diagno
 const imageOnly = String(args["image-only"] ?? "false").trim().toLowerCase() === "true";
 const correctionRulesPath = args["correction-rules"]
   ? path.resolve(String(args["correction-rules"]))
-  : null;
+  : path.join(path.dirname(DEFAULT_FEATURE_STORE_PATH), "correction-rules.json");
 const featureStorePath = args["feature-store"]
   ? path.resolve(String(args["feature-store"]))
   : DEFAULT_FEATURE_STORE_PATH;
@@ -106,7 +106,7 @@ const filteredIntake = imageOnly
     items: intake.items.filter((item) => item.hasImage === true),
   }
   : intake;
-const correctionRules = correctionRulesPath
+const correctionRules = correctionRulesPath && fileExists(correctionRulesPath)
   ? await loadCorrectionRulesFile(correctionRulesPath)
   : null;
 const results = processBatchAgainstIndex(filteredIntake, matchIndex, {
