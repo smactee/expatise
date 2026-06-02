@@ -1,0 +1,195 @@
+{
+  "generatedAt": "2026-06-02T10:08:38.932Z",
+  "lang": "es",
+  "batchId": "batch-004",
+  "dataset": "2023-test1",
+  "matchIndexPath": "qbank-tools/generated/match-index.json",
+  "syntheticMatchIndexPath": "qbank-tools/generated/match-index.ja.synthetic.json",
+  "featureStorePath": "qbank-tools/history/qid-feature-store.json",
+  "featureStoreRebuilt": false,
+  "featureSchemaVersion": 3,
+  "correctionRulesPath": "qbank-tools/history/correction-rules.json",
+  "claimedQidExclusion": {
+    "enabled": true,
+    "claimedQidCount": 150,
+    "duplicateSuspectItems": [
+      {
+        "itemId": "screenshots/Screenshot 2026-05-24 at 13.03.56 1.png",
+        "topExcludedClaimed": {
+          "qid": "q0590",
+          "number": 590,
+          "score": 126.687,
+          "prompt": "What pedal is it?",
+          "translatedPrompt": "이 페달은 무엇인가?"
+        }
+      },
+      {
+        "itemId": "screenshots/Screenshot 2026-05-24 at 13.03.56.png",
+        "topExcludedClaimed": {
+          "qid": "q0848",
+          "number": 848,
+          "score": 60.463,
+          "prompt": "What’s the meaning of this guide arrow?",
+          "translatedPrompt": "다음 교통경찰 수신호의 의미는?"
+        }
+      },
+      {
+        "itemId": "screenshots/Screenshot 2026-05-24 at 13.03.53.png",
+        "topExcludedClaimed": {
+          "qid": "q0119",
+          "number": 119,
+          "score": 31.535,
+          "prompt": "When a driver needs to borrow a lane to bypass an obstacle in front and a vehicle in the opposite direction is approaching the obstacle, the driver should ___________.",
+          "translatedPrompt": "앞의 장애물을 피하려고 차로를 잠시 빌려야 하는데 반대 방향 차량이 장애물 쪽으로 오고 있다면 운전자는 어떻게 해야 하는가?"
+        }
+      },
+      {
+        "itemId": "screenshots/Screenshot 2026-05-24 at 13.04.03 1.png",
+        "topExcludedClaimed": {
+          "qid": "q0227",
+          "number": 227,
+          "score": 31.869,
+          "prompt": "You may not use the turn signal when you change to the right lane.",
+          "translatedPrompt": "우측 차로로 변경할 때 방향지시등을 사용할 수 없다."
+        }
+      }
+    ]
+  },
+  "analysisMode": "standard",
+  "intakeStats": {
+    "originalItems": 50,
+    "itemsProcessed": 50,
+    "nonImageItemsSkipped": 0,
+    "imageOnly": false
+  },
+  "outputs": [
+    {
+      "kind": "matched",
+      "count": 0
+    },
+    {
+      "kind": "review-needed",
+      "count": 44
+    },
+    {
+      "kind": "unresolved",
+      "count": 6
+    }
+  ],
+  "decisionSummary": {
+    "byDisposition": {
+      "matched": {
+        "count": 0,
+        "profiles": {},
+        "reasonCodes": {}
+      },
+      "review-needed": {
+        "count": 44,
+        "profiles": {
+          "mcq-image": 21,
+          "row-text": 15,
+          "mcq-text": 4,
+          "row-image": 4
+        },
+        "reasonCodes": {
+          "total-low": 28,
+          "gap-small": 25,
+          "option-weak": 17,
+          "gloss-weak": 21,
+          "signal-agreement-low": 18,
+          "option-signature-weak": 18,
+          "option-set-mismatch": 7,
+          "weak-family-separation": 10,
+          "structural-weak": 10,
+          "family-mismatch": 5,
+          "indicator-vs-sign-conflict": 2,
+          "signal-conflict": 7,
+          "force-review": 8,
+          "signal-separation-low": 14,
+          "runner-up-close": 14,
+          "sign-vs-action-conflict": 2,
+          "numeric-mismatch": 2,
+          "prompt-family-mismatch": 2,
+          "indicator-vs-action-conflict": 1,
+          "weak-action-separation": 5,
+          "image-weak": 1,
+          "option-set-near-match": 2,
+          "contrast-unclear": 4,
+          "structural-penalty": 1,
+          "insufficient-discriminative-evidence": 1,
+          "top2-semantic-near-duplicate": 2
+        }
+      },
+      "unresolved": {
+        "count": 6,
+        "profiles": {
+          "row-text": 3,
+          "mcq-text": 3
+        },
+        "reasonCodes": {
+          "review-floor": 6,
+          "total-low": 6,
+          "signal-separation-low": 1,
+          "runner-up-close": 1,
+          "structural-weak": 3,
+          "gap-small": 4,
+          "numeric-mismatch": 1,
+          "option-weak": 3,
+          "signal-agreement-low": 3,
+          "option-signature-weak": 3,
+          "prompt-family-mismatch": 1,
+          "claimed-qid-duplicate-suspect": 2,
+          "force-review": 2,
+          "gloss-weak": 2,
+          "negation-conflict": 1,
+          "weak-action-separation": 1,
+          "option-set-mismatch": 1
+        }
+      }
+    },
+    "byReasonCode": {
+      "total-low": 34,
+      "gap-small": 29,
+      "option-weak": 20,
+      "gloss-weak": 23,
+      "signal-agreement-low": 21,
+      "option-signature-weak": 21,
+      "option-set-mismatch": 8,
+      "weak-family-separation": 10,
+      "structural-weak": 13,
+      "family-mismatch": 5,
+      "indicator-vs-sign-conflict": 2,
+      "signal-conflict": 7,
+      "force-review": 10,
+      "signal-separation-low": 15,
+      "runner-up-close": 15,
+      "sign-vs-action-conflict": 2,
+      "numeric-mismatch": 3,
+      "prompt-family-mismatch": 3,
+      "indicator-vs-action-conflict": 1,
+      "weak-action-separation": 6,
+      "image-weak": 1,
+      "option-set-near-match": 2,
+      "contrast-unclear": 4,
+      "structural-penalty": 1,
+      "insufficient-discriminative-evidence": 1,
+      "top2-semantic-near-duplicate": 2,
+      "review-floor": 6,
+      "claimed-qid-duplicate-suspect": 2,
+      "negation-conflict": 1
+    },
+    "byProfile": {
+      "matched": {},
+      "review-needed": {
+        "mcq-image": 21,
+        "row-text": 15,
+        "mcq-text": 4,
+        "row-image": 4
+      },
+      "unresolved": {
+        "row-text": 3,
+        "mcq-text": 3
+      }
+    }
+  }
+}

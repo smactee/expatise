@@ -1,10 +1,10 @@
 # Decision Memory
 
-Generated: 2026-06-02T09:45:59.324Z
+Generated: 2026-06-02T15:04:11.251Z
 
 ## Summary
 
-- Total records: 30142
+- Total records: 30561
 - High-risk qids: q0018, q0025, q0053, q0062, q0064, q0069, q0070, q0084, q0162, q0176, q0187, q0208, q0210, q0223, q0226, q0234, q0237, q0245, q0260, q0261, q0262, q0275, q0285, q0293, q0302, q0316, q0325, q0336, q0345, q0347, q0352, q0358, q0359, q0462, q0488, q0514, q0575, q0640, q0647, q0649, q0801, q0904, q0908, q0913, q0918, q0921, q0945, q0947, q0950, q0973, q0983, q0984, q0991, q1005, q1008, q1011, q1012
 - Master-data issue qids: q0518, q0906, q0990, q0997, q1000, q1008, q1010
 - Rejected/needs-fix qids: q0018, q0025, q0062, q0064, q0069, q0070, q0084, q0162, q0187, q0204, q0208, q0210, q0223, q0226, q0234, q0237, q0248, q0260, q0261, q0262, q0274, q0275, q0285, q0293, q0302, q0316, q0323, q0325, q0336, q0345, q0347, q0352, q0358, q0359, q0367, q0383, q0420, q0442, q0446, q0462, q0471, q0474, q0488, q0514, q0517, q0522, q0525, q0534, q0575, q0577, q0635, q0640, q0647, q0649, q0720, q0726, q0802, q0863, q0904, q0908, q0913, q0918, q0921, q0929, q0941, q0945, q0947, q0948, q0950, q0957, q0973, q0981, q0983, q0984, q0991, q0994, q0995, q1005, q1008, q1011, q1012
@@ -13,13 +13,13 @@ Generated: 2026-06-02T09:45:59.324Z
 
 | key | count |
 | --- | --- |
-| answer-key | 10971 |
+| answer-key | 11127 |
 | backfill-generation | 1297 |
 | duplicate | 6 |
 | master-data-fix | 13 |
-| match | 6922 |
-| merge | 8133 |
-| new-question | 2293 |
+| match | 6991 |
+| merge | 8283 |
+| new-question | 2337 |
 | quality-review | 334 |
 | reject | 92 |
 | skip | 81 |
@@ -30,8 +30,8 @@ Generated: 2026-06-02T09:45:59.324Z
 | --- | --- |
 | ai-review | 334 |
 | integrity-audit | 19 |
-| manual | 16672 |
-| production-merge | 8326 |
+| manual | 16941 |
+| production-merge | 8476 |
 | script | 4791 |
 
 ## Reusable Matching Lessons
