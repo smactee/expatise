@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-06-02T06:25:52.574Z",
+  "generatedAt": "2026-06-02T09:45:57.558Z",
   "sourceHistoryPath": "qbank-tools/history/match-history.jsonl",
   "historyRecordCount": 1959,
   "ruleCounts": {
     "candidateConfusionPair": 20,
     "approvedQidAnswerKeyOverride": 39,
     "topCandidateRequiresReview": 47,
-    "topCandidateHighPrecision": 18,
-    "total": 124
+    "topCandidateHighPrecision": 22,
+    "total": 128
   },
   "rules": [
     {
@@ -1339,6 +1339,69 @@
       "notes": "This top candidate has been consistently confirmed by reviewers."
     },
     {
+      "id": "top_candidate_high_precision:q0098",
+      "type": "top_candidate_high_precision",
+      "when": {
+        "topCandidate": "q0098"
+      },
+      "evidenceCount": 3,
+      "evidenceSampleItemIds": [
+        "screenshots/Screenshot 2026-05-24 at 13.03.29.png",
+        "screenshots/Screenshot 2026-05-08 at 21.26.44.png",
+        "screenshots/Screenshot 2026-04-19 at 18.52.26.png"
+      ],
+      "stats": {
+        "precision": 1,
+        "correctCount": 3
+      },
+      "action": {
+        "lowerAutoMatchThresholdBy": 2
+      },
+      "notes": "This top candidate has been consistently confirmed by reviewers."
+    },
+    {
+      "id": "top_candidate_high_precision:q0093",
+      "type": "top_candidate_high_precision",
+      "when": {
+        "topCandidate": "q0093"
+      },
+      "evidenceCount": 3,
+      "evidenceSampleItemIds": [
+        "screenshots/Screenshot 2026-05-24 at 13.03.32.png",
+        "screenshots/Screenshot 2026-05-08 at 21.24.58.png",
+        "screenshots/Screenshot 2026-04-19 at 18.59.14 1.png"
+      ],
+      "stats": {
+        "precision": 1,
+        "correctCount": 3
+      },
+      "action": {
+        "lowerAutoMatchThresholdBy": 2
+      },
+      "notes": "This top candidate has been consistently confirmed by reviewers."
+    },
+    {
+      "id": "top_candidate_high_precision:q0060",
+      "type": "top_candidate_high_precision",
+      "when": {
+        "topCandidate": "q0060"
+      },
+      "evidenceCount": 3,
+      "evidenceSampleItemIds": [
+        "screenshots/Screenshot 2026-05-24 at 13.03.33 1.png",
+        "screenshots/Screenshot 2026-05-08 at 21.26.32 1.png",
+        "screenshots/Screenshot 2026-04-19 at 18.53.39.png"
+      ],
+      "stats": {
+        "precision": 1,
+        "correctCount": 3
+      },
+      "action": {
+        "lowerAutoMatchThresholdBy": 2
+      },
+      "notes": "This top candidate has been consistently confirmed by reviewers."
+    },
+    {
       "id": "top_candidate_high_precision:q0179",
       "type": "top_candidate_high_precision",
       "when": {
@@ -1349,6 +1412,27 @@
         "screenshots/Screenshot 2026-05-24 at 13.03.43 1.png",
         "screenshots/Screenshot 2026-05-08 at 21.25.11.png",
         "screenshots/Screenshot 2026-04-19 at 18.52.11.png"
+      ],
+      "stats": {
+        "precision": 1,
+        "correctCount": 3
+      },
+      "action": {
+        "lowerAutoMatchThresholdBy": 2
+      },
+      "notes": "This top candidate has been consistently confirmed by reviewers."
+    },
+    {
+      "id": "top_candidate_high_precision:q0031",
+      "type": "top_candidate_high_precision",
+      "when": {
+        "topCandidate": "q0031"
+      },
+      "evidenceCount": 3,
+      "evidenceSampleItemIds": [
+        "screenshots/Screenshot 2026-05-24 at 13.03.43.png",
+        "screenshots/Screenshot 2026-05-08 at 21.25.12.png",
+        "screenshots/Screenshot 2026-04-19 at 18.51.27 1.png"
       ],
       "stats": {
         "precision": 1,
