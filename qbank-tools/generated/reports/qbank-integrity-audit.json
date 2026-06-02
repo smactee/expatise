@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T07:41:33.372Z",
+  "generatedAt": "2026-05-31T10:40:18.715Z",
   "dataset": "2023-test1",
   "sourcePaths": {
     "questions": "public/qbank/2023-test1/questions.json",
@@ -14,10 +14,10 @@
     ]
   },
   "fileHashes": {
-    "public/qbank/2023-test1/questions.json": "bfe76209d185c99b3d8e113578d6c97f88a45a1cb81737bca36c4d7b07443416",
+    "public/qbank/2023-test1/questions.json": "f6bc04d600668f6693233f6f169af126b10c947a74ff1281083a863d3cd1d1d2",
     "public/qbank/2023-test1/questions.raw.json": "501a1b5c72bad8218d2f78e0b4d46c1053d5ea155d3c4fc56f9dd66b67755d13",
-    "public/qbank/2023-test1/tags.patch.json": "17bc0aec6653fbc58ff0b107ec92839e96d6b8d3932787c77c910ecbec0e355b",
-    "public/qbank/2023-test1/image-color-tags.json": "a9f2da22c5a9a095840a676d1a672b5eb77b6bf133b2088075d7ed45ea172cbb",
+    "public/qbank/2023-test1/tags.patch.json": "3a3883393d2b150a7806daecea2a22f317a5eb733b1e0e99f2250167bfd3cad5",
+    "public/qbank/2023-test1/image-color-tags.json": "8ca814e5cd98044ecf74153f9338ea422bad95dbbe43e203a4c67076739639b1",
     "public/qbank/2023-test1/translations.fr.json": "ce622ab7a3af76850a5912854f52f8faf24877b50582f7b9b7a26fbd0ad595af",
     "public/qbank/2023-test1/translations.ja.json": "7a1e9c36c4988bfcea5ba610ea30cf7f59d0f8f046e6e17b4a1c11f74b560d7d",
     "public/qbank/2023-test1/translations.ko.json": "f007c994fc67b6e0600ba8b76213176a061cab76801af111336e5cd2bddc9b25",
@@ -29,7 +29,7 @@
     "translationLanguages": 4,
     "criticalBlockers": 0,
     "warnings": 19,
-    "duplicateCandidates": 8,
+    "duplicateCandidates": 6,
     "missingImageAssets": 0
   },
   "criticalBlockers": [],
@@ -77,21 +77,33 @@
       "details": {}
     },
     {
+      "type": "tags-patch-qid-not-in-master",
+      "qid": "q0990",
+      "reason": "tags.patch.json has qid not in questions.json",
+      "details": {}
+    },
+    {
+      "type": "tags-patch-qid-not-in-master",
+      "qid": "q0997",
+      "reason": "tags.patch.json has qid not in questions.json",
+      "details": {}
+    },
+    {
+      "type": "tags-patch-qid-not-in-master",
+      "qid": "q1000",
+      "reason": "tags.patch.json has qid not in questions.json",
+      "details": {}
+    },
+    {
+      "type": "tags-patch-qid-not-in-master",
+      "qid": "q1010",
+      "reason": "tags.patch.json has qid not in questions.json",
+      "details": {}
+    },
+    {
       "type": "image-question-missing-tags",
       "qid": "q1008",
       "reason": "question has image assets but no image color/object tag entry",
-      "details": {}
-    },
-    {
-      "type": "image-tags-without-image",
-      "qid": "q0001",
-      "reason": "question has image tags but no master image asset",
-      "details": {}
-    },
-    {
-      "type": "image-tags-without-image",
-      "qid": "q0003",
-      "reason": "question has image tags but no master image asset",
       "details": {}
     },
     {
@@ -183,35 +195,6 @@
     },
     {
       "type": "duplicate-candidate",
-      "qid": "q0583,q0620",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0583",
-          "q0620"
-        ],
-        "prompts": [
-          {
-            "qid": "q0583",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0620",
-            "prompt": "It lights to indicate that ______."
-          }
-        ],
-        "answerLogic": [
-          "B"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_af5f2fb3b3b9cebac5262595107b300a.jpeg",
-          "/qbank/2023-test1/images/img_e71668f2b3368e3b7d4cf94b089b65eb.jpeg"
-        ]
-      }
-    },
-    {
-      "type": "duplicate-candidate",
       "qid": "q0677,q0727",
       "reason": "medium confidence duplicate candidate",
       "details": {
@@ -265,35 +248,6 @@
         "imageRefs": [
           "/qbank/2023-test1/images/img_eff297599873e099c2fdcba0571eb781.jpeg",
           "/qbank/2023-test1/images/img_8422bed3475eae2e5515abc6d9d590da.jpeg"
-        ]
-      }
-    },
-    {
-      "type": "duplicate-candidate",
-      "qid": "q0747,q0792",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0747",
-          "q0792"
-        ],
-        "prompts": [
-          {
-            "qid": "q0747",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0792",
-            "prompt": "What’s the meaning of this sign?"
-          }
-        ],
-        "answerLogic": [
-          "C"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_cd1d9c40b39cfe3932a5176f51b031a3.jpeg",
-          "/qbank/2023-test1/images/img_382158d8af9518928a3139d0838a4e98.jpeg"
         ]
       }
     },
@@ -842,7 +796,7 @@
       "rawOnlyQids": 2,
       "typeMismatches": 0,
       "optionCountMismatches": 0,
-      "promptMismatches": 280
+      "promptMismatches": 286
     }
   },
   "masterAnswers": {
@@ -1077,30 +1031,6 @@
       {
         "confidence": "medium",
         "qids": [
-          "q0583",
-          "q0620"
-        ],
-        "prompts": [
-          {
-            "qid": "q0583",
-            "prompt": "It lights to indicate that ______."
-          },
-          {
-            "qid": "q0620",
-            "prompt": "It lights to indicate that ______."
-          }
-        ],
-        "answerLogic": [
-          "B"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_af5f2fb3b3b9cebac5262595107b300a.jpeg",
-          "/qbank/2023-test1/images/img_e71668f2b3368e3b7d4cf94b089b65eb.jpeg"
-        ]
-      },
-      {
-        "confidence": "medium",
-        "qids": [
           "q0677",
           "q0727"
         ],
@@ -1149,30 +1079,6 @@
       {
         "confidence": "medium",
         "qids": [
-          "q0747",
-          "q0792"
-        ],
-        "prompts": [
-          {
-            "qid": "q0747",
-            "prompt": "What’s the meaning of this sign?"
-          },
-          {
-            "qid": "q0792",
-            "prompt": "What’s the meaning of this sign?"
-          }
-        ],
-        "answerLogic": [
-          "C"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_cd1d9c40b39cfe3932a5176f51b031a3.jpeg",
-          "/qbank/2023-test1/images/img_382158d8af9518928a3139d0838a4e98.jpeg"
-        ]
-      },
-      {
-        "confidence": "medium",
-        "qids": [
           "q0752",
           "q0842"
         ],
@@ -1197,25 +1103,26 @@
     ],
     "truncated": false,
     "counts": {
-      "totalCandidates": 8,
+      "totalCandidates": 6,
       "high": 0,
-      "medium": 8,
+      "medium": 6,
       "low": 0
     }
   },
   "tags": {
     "tagPatchQidsNotInMaster": [
       "q0518",
-      "q0906"
+      "q0906",
+      "q0990",
+      "q0997",
+      "q1000",
+      "q1010"
     ],
     "imageTagQidsNotInMaster": [],
     "questionsWithImageButNoImageTags": [
       "q1008"
     ],
-    "questionsWithNoImageButImageTags": [
-      "q0001",
-      "q0003"
-    ],
+    "questionsWithNoImageButImageTags": [],
     "questionsWithImageButNoObjectTags": [
       "q1008"
     ]

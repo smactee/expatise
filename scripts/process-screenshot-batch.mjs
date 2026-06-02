@@ -13,6 +13,7 @@ import {
   buildSyntheticMatchIndex,
   ensurePipelineDirs,
   fileExists,
+  loadClaimedQidsForLang,
   loadCorrectionRulesFile,
   loadFeatureStoreFile,
   loadQbankContext,
@@ -73,6 +74,10 @@ const { lang, batchId, dataset } = batchOptionsFromArgs(args);
 const analysisMode = String(args["analysis-mode"] ?? "standard");
 const topCandidates = Number(args["top-candidates"] ?? (analysisMode === "diagnostic" ? 8 : 5));
 const imageOnly = String(args["image-only"] ?? "false").trim().toLowerCase() === "true";
+// Exclude master qids already localized for this language by a prior batch
+// (read from production translations.<lang>.json). Default ON. Disable with
+// `--exclude-claimed false` when intentionally re-matching an already-merged batch.
+const excludeClaimed = String(args["exclude-claimed"] ?? "true").trim().toLowerCase() !== "false";
 const correctionRulesPath = args["correction-rules"]
   ? path.resolve(String(args["correction-rules"]))
   : path.join(path.dirname(DEFAULT_FEATURE_STORE_PATH), "correction-rules.json");
@@ -109,10 +114,12 @@ const filteredIntake = imageOnly
 const correctionRules = correctionRulesPath && fileExists(correctionRulesPath)
   ? await loadCorrectionRulesFile(correctionRulesPath)
   : null;
+const claimedQids = excludeClaimed ? loadClaimedQidsForLang({ dataset, lang }) : new Set();
 const results = processBatchAgainstIndex(filteredIntake, matchIndex, {
   analysisMode,
   candidateLimit: topCandidates,
   correctionRules,
+  claimedQids,
   sourceLang: lang,
 });
 
@@ -139,6 +146,16 @@ await writeJson(path.join(REPORTS_DIR, `process-screenshot-batch-${lang}-${batch
   featureStoreRebuilt: shouldRebuildFeatureStore,
   featureSchemaVersion: featureStore.featureSchemaVersion,
   correctionRulesPath: correctionRulesPath ? path.relative(process.cwd(), correctionRulesPath) : null,
+  claimedQidExclusion: {
+    enabled: excludeClaimed,
+    claimedQidCount: claimedQids.size,
+    duplicateSuspectItems: [...results.matched, ...results.reviewNeeded, ...results.unresolved]
+      .filter((item) => item?.analysis?.claimedQidExclusion?.duplicateSuspect === true)
+      .map((item) => ({
+        itemId: item.itemId,
+        topExcludedClaimed: item.analysis.claimedQidExclusion.topExcludedClaimed?.[0] ?? null,
+      })),
+  },
   analysisMode,
   intakeStats: {
     originalItems: intake.items.length,
@@ -158,6 +175,19 @@ await writeJson(path.join(REPORTS_DIR, `process-screenshot-batch-${lang}-${batch
   }),
 });
 
+const duplicateSuspectCount = [...results.matched, ...results.reviewNeeded, ...results.unresolved]
+  .filter((item) => item?.analysis?.claimedQidExclusion?.duplicateSuspect === true).length;
+
 console.log(
   `Processed ${filteredIntake.items.length} intake item(s): ${results.matched.length} matched, ${results.reviewNeeded.length} review-needed, ${results.unresolved.length} unresolved.`,
 );
+if (excludeClaimed) {
+  console.log(
+    `Claimed-qid exclusion ON: ${claimedQids.size} qid(s) already localized for "${lang}" were excluded from the candidate pool` +
+      (duplicateSuspectCount > 0
+        ? `; ${duplicateSuspectCount} item(s) flagged as likely target-language duplicate(s) (claimed-qid-duplicate-suspect).`
+        : "."),
+  );
+} else {
+  console.log(`Claimed-qid exclusion OFF (--exclude-claimed false).`);
+}

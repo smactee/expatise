@@ -4,7 +4,7 @@ import { LOCALE_REGISTRY, type Locale } from '@/messages';
 
 type FutureLanguageCode = 'zh' | 'es' | 'ru' | 'de' | 'ar';
 type PendingLanguageCode = Exclude<FutureLanguageCode, Locale>;
-type DevLanguageCode = 'ru';
+type DevLanguageCode = 'ru' | 'es';
 
 type LanguageOptionBase = {
   code: Locale | PendingLanguageCode;
@@ -16,7 +16,7 @@ type LanguageOptionBase = {
 export type LanguageOption = LanguageOptionBase;
 export type LanguageOptionCode = LanguageOption['code'];
 
-const DEV_LANGUAGE_CODES = new Set<DevLanguageCode>(['ru']);
+const DEV_LANGUAGE_CODES = new Set<DevLanguageCode>(['ru', 'es']);
 
 export function areDevLanguagesEnabled(): boolean {
   return process.env.NODE_ENV !== 'production';

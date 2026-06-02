@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-06-01T14:26:30.009Z",
+  "lang": "es",
+  "batchId": "batch-002",
+  "dataset": "2023-test1",
+  "scope": "review-preview-only",
+  "sourceWorkbenchDecisionsPath": "qbank-tools/generated/staging/es-batch-002-workbench-decisions.json",
+  "sourceFullAnswerKeyDecisionsPath": "qbank-tools/generated/staging/es-batch-002-answer-key-decisions.json",
+  "previewQidCount": 43,
+  "excludedQids": [],
+  "items": [
+    {
+      "qid": "q0140",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Claude low-risk approveExistingQid: option-set fingerprint matches q0140 (reduce speed/observe vs maintain/honk/accelerate); master correct 'reduce speed, observe' = ES option A"
+    },
+    {
+      "qid": "q0508",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude low-risk approveExistingQid: option-set match q0508 (first license/upgrade probation period); master correct 12 months = ES option B"
+    },
+    {
+      "qid": "q0729",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image-dependent railway-crossing POV: tag-agreement picks q0729 (train/railway master image) over text-top q0974 (snow scene, no tag overlap); master correct 'no exceeding stop line' = ES option D"
+    },
+    {
+      "qid": "q0787",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image-dependent blank red-circle prohibition sign; q0787 stored tags (red+white circle, no symbol) match; master 'no passing/통행금지' = ES 'Prohibido el paso'=B"
+    },
+    {
+      "qid": "q0792",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image-dependent blue-circle car sign; q0792 tag match (white car, blue circle); master correct 'passing for vehicle/motor-vehicle' = ES 'Circulación de vehículos motorizados'=B"
+    },
+    {
+      "qid": "q0457",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude high-risk keepUnresolved: high-beam->low-beam switch distance (>200/>150/<100/<50 m); no candidate has matching option set, top1 q0368 is following-distance not beam-switch distance; no safe master match"
+    },
+    {
+      "qid": "q0725",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: q0725 on requires-review list but option-set+image (yellow dashed+solid center line) match strongly; master correct 'no crossing on the SOLID-line side' = ES option A; flagged medium per requires-review rule"
+    },
+    {
+      "qid": "q0603",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: q0603 on requires-review list; image is front-wiper symbol matching q0603 (front windshield wiper); master correct 'front windshield wiper' = ES 'Limpiaparabrisas delanteros'=A; competitor q0577 adds washer; medium per rule"
+    },
+    {
+      "qid": "q0757",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Claude high-risk keepUnresolved: blue overhead lane-direction guide sign (500m, left/straight/right arrows); none of top candidates (q0519 left-turn POV, q0746 lights, q0868/q0753 arrow signs) match an overhead destination guide sign; no safe match"
+    },
+    {
+      "qid": "q0576",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image dashboard fog-lamp indicator (yellow); q0576 tag match (yellow rear-fog lamp) and option set; master correct 'rear fog light on' = ES 'faros antiniebla traseros'=B"
+    },
+    {
+      "qid": "q0848",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image white painted U-turn pavement arrow; q0848 (U-turn) tag match, on requires-review list; master meaning 'U-turn' = ES 'Girar en U'=B; medium per rule"
+    },
+    {
+      "qid": "q0491",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image queue/wait POV double-yellow; q0491 text match (waiting in queue, what to do); master correct 'wait in line' = ES 'Esperar haciendo la cola'=A"
+    },
+    {
+      "qid": "q0421",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Claude high-risk keepUnresolved: penalty-points for driving without license plate (12/6/3/2); q0981 (forged permit) top1 is on requires-review and is a different offense; q0421/q0449 (no plate / forged plate, 12pts) closer but not surfaced as clean option-set match; route to review"
+    },
+    {
+      "qid": "q0402",
+      "confirmedCorrectOptionKey": "D",
+      "unknown": false,
+      "reviewerNotes": "Claude high-risk keepUnresolved: image U-turn-at-intersection MCQ (crosswalk/after entering/right lane/broken center lines); top1 q0519 is left-turn-at-intersection different question; no candidate option set matches; route to review"
+    },
+    {
+      "qid": "q0479",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Claude low-risk approveExistingQid: option-set match q0479 (lights when changing to left lane); master correct 'turn on left-turn signal in advance' = ES option C"
+    },
+    {
+      "qid": "q0394",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Claude high-risk keepUnresolved: penalty-points for disobeying traffic light (2/3/6/12); top1 q0981 (forged permit, requires-review) wrong; q0394 (signal violation = 6pts) is closer but buried at 29.8 with reversed option order; route to review"
+    },
+    {
+      "qid": "q0826",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude high-risk keepUnresolved: image white solid line in circled multi-lane top-down; q0826 top1 (guide line) but image tags poor; option set (reversible/lane-direction/flow/one-way) doesn't cleanly match any candidate; route to review"
+    },
+    {
+      "qid": "q0373",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Claude high-risk keepUnresolved: image mountain sharp-curve POV with yellow curve-warning sign; all top candidates (q0974 snow, q0427 pedestrians, q0465 night, q0453 fog) fail tag agreement; correct answer is reduce speed+horn but no matching master qid surfaced; route to review"
+    },
+    {
+      "qid": "q0381",
+      "confirmedCorrectOptionKey": "A",
+      "unknown": false,
+      "reviewerNotes": "Claude low-risk approveExistingQid: option-set match q0381 (vehicle breakdown immovable, correct action); master correct 'turn on hazard lights' = ES 'luces de emergencia/intermitentes' option A"
+    },
+    {
+      "qid": "q0741",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image brown tourist sign showing '16 km' distance; tag-agreement picks q0741 (master image literally '16km', meaning 'distance to tourist area') over text-top q0825 (direction/arrow); master meaning 'distance' = ES 'Distancia'=B"
+    },
+    {
+      "qid": "q0851",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image yellow triangle ferry/boat warning sign; q0851 (ferry) image tags (ship/boat) match; master meaning 'ferry' = ES 'Embarcadero/Ferry' = option C 'Ferry / wharf'"
+    },
+    {
+      "qid": "q0654",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image white hatched circle road marking; tag-agreement picks q0654 (white-circle master image, 'central circle') over text-top q0803 (square-arrows image); master meaning 'central circle' = ES 'Circulo central'=C"
+    },
+    {
+      "qid": "q0121",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude low-risk approveExistingQid: option-set match q0121 (missed expressway exit, what to do); master correct 'continue to next exit' = ES 'Seguir conduciendo para buscar otra salida'=B"
+    },
+    {
+      "qid": "q0590",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image highlighted middle pedal (?); q0585 (brake pedal=middle) best match score 82.8; near-dup pedal family q0590/q0587 so medium; master correct 'brake pedal' = ES 'Pedal de freno'=C"
+    },
+    {
+      "qid": "q0726",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image white solid center line same-direction; q0726 image+meaning match (same-direction dividing line, no crossing); master correct 'same-direction dividing line that can NOT be crossed' = ES option C 'cruzar... misma direccion prohibido'"
+    },
+    {
+      "qid": "q0847",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image green sign with radio-waves/frequency; q0847 (traffic radio frequency on highway) tag+meaning match; master meaning 'traffic radio frequency' = ES 'frecuencia de radio de trafico'=B"
+    },
+    {
+      "qid": "q0415",
+      "confirmedCorrectOptionKey": "B",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image blue combined U-turn+left-turn lane sign; q0737 (U-turn & left-turn lane) tag+meaning match; q0737 on requires-review and had K-answerkey correction; master meaning 'U-turn & left turn' = ES 'giro en U y giro a la izquierda'=C"
+    },
+    {
+      "qid": "q0737",
+      "confirmedCorrectOptionKey": "C",
+      "unknown": false,
+      "reviewerNotes": "Claude medium-risk approveExistingQid: image open rural road no-markings POV; q0415 text+image match (how to drive this road); master correct 'run in the middle of the road' = ES 'Por el centro de la via'=B (note: prior K-correction moved staged D->B, consistent)"
+    }
+  ]
+}

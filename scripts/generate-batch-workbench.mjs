@@ -931,6 +931,15 @@ function buildHtml({
   notebookArtifacts,
   codexRecommendations,
 }) {
+  // Compact qid -> master answer-key letter map (MCQ: A/B/C/D, ROW: R/W) so the
+  // client can auto-stage the master's answer key when a qid is entered.
+  const masterAnswerKeyByQid = {};
+  for (const [qid, candidate] of Object.entries(masterCandidateByQid ?? {})) {
+    const key = candidate?.correctOptionKey || candidate?.correctRow || null;
+    if (key) {
+      masterAnswerKeyByQid[qid] = String(key).trim().toUpperCase();
+    }
+  }
   const displaySectionMap = new Map(Object.entries(displaySectionById ?? {}));
   const itemsInDisplaySection = (sectionId) =>
     items.filter((item) => (displaySectionMap.get(item.id) ?? item.section) === sectionId);
@@ -1769,6 +1778,7 @@ function buildHtml({
   <script>
     const ITEMS = ${serializeJsonForInlineScript(items)};
     const ITEMS_BY_ID = new Map(ITEMS.map((item) => [item.id, item]));
+    const MASTER_ANSWER_KEYS = ${serializeJsonForInlineScript(masterAnswerKeyByQid)};
     const INITIAL_DECISIONS = ${serializeJsonForInlineScript(decisions)};
     const DISPLAY_SECTION_BY_ID = ${serializeJsonForInlineScript(displaySectionById)};
     const VISIBLE_SECTIONS = ${serializeJsonForInlineScript(visibleDisplaySections)};
@@ -3724,6 +3734,7 @@ function buildHtml({
 
         function commitApprovedQidInput() {
           const id = input.dataset.approvedQidFor;
+          const previousQid = normalizeDecisionQid(getDecision(id)?.approvedQid);
           updateDecision(
             id,
             {
@@ -3734,7 +3745,21 @@ function buildHtml({
             },
             { preserveContext: false },
           );
+          const committedQid = normalizeDecisionQid(getDecision(id)?.approvedQid);
           input.value = getDecision(id)?.approvedQid || '';
+          // When a (different) valid qid is entered, auto-stage the master's answer
+          // key as the locale answer key default. The reviewer can still override it
+          // if this locale's option order differs from the master's.
+          if (committedQid && committedQid !== previousQid) {
+            const masterKey = MASTER_ANSWER_KEYS[committedQid];
+            if (masterKey) {
+              updateDecision(id, {
+                confirmedCorrectOptionKey: masterKey,
+                useCurrentStagedAnswerKey: false,
+                answerKeyUnknown: false,
+              });
+            }
+          }
         }
 
         input.addEventListener('blur', commitApprovedQidInput);
@@ -4400,7 +4425,7 @@ function fallbackChoiceKey(index) {
 
 function normalizeChoiceKey(value) {
   const text = String(value ?? "").trim().toUpperCase();
-  return /^[A-D]$/.test(text) ? text : null;
+  return /^[A-DRWF]$/.test(text) ? text : null;
 }
 
 function normalizeCanonicalQid(value) {

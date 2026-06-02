@@ -5,6 +5,7 @@ const PRODUCTION_TRANSLATION_URLS: Record<string, string> = {
   ja: '/qbank/2023-test1/translations.ja.json',
   fr: '/qbank/2023-test1/translations.fr.json',
   ru: '/qbank/2023-test1/translations.ru.json',
+  es: '/qbank/2023-test1/translations.es.json',
 };
 
 const TRANSLATION_NOTICE_LABELS: Record<string, string> = {
@@ -12,6 +13,7 @@ const TRANSLATION_NOTICE_LABELS: Record<string, string> = {
   ja: 'Japanese',
   fr: 'French',
   ru: 'Russian',
+  es: 'Spanish',
 };
 
 export const showLanguageDebugCounts =

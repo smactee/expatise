@@ -902,6 +902,31 @@ export function discoverKnownLanguages({ dataset = DEFAULT_DATASET } = {}) {
   return [...languages].sort();
 }
 
+// Per-language set of master qids that have already been localized (i.e. matched
+// and merged into production translations.<lang>.json by a prior batch). The
+// matcher uses this to hard-exclude already-claimed qids from a later batch's
+// candidate pool, so two screenshots in the same language can't both map to one
+// master question. Excluded qids are still recorded as diagnostics on each item
+// (see processBatchAgainstIndex) so a genuine target-language duplicate stays
+// recognizable instead of vanishing silently.
+export function loadClaimedQidsForLang({ dataset = DEFAULT_DATASET, lang } = {}) {
+  const normalizedLang = normalizeLang(lang);
+  const datasetPaths = getDatasetPaths(dataset, normalizedLang);
+  const translationPath = datasetPaths.translationPath;
+
+  if (!translationPath || !fileExists(translationPath)) {
+    return new Set();
+  }
+
+  try {
+    const doc = JSON.parse(fs.readFileSync(translationPath, "utf8"));
+    const questions = doc?.questions && typeof doc.questions === "object" ? doc.questions : {};
+    return new Set(Object.keys(questions));
+  } catch (error) {
+    throw new Error(`Failed to read claimed qids from ${translationPath}: ${error.message}`);
+  }
+}
+
 export async function ensureDir(dirPath) {
   await fsp.mkdir(dirPath, { recursive: true });
 }
@@ -6700,13 +6725,31 @@ function applyWeightedReranking(entries) {
           ((breakdown.contradictionPenalty ?? 0) * 6)
         )
         : 0;
+      // Option-row priority cascade (MCQ): when a candidate's option set is a
+      // near-EXACT match to the source's, the option stack is the decisive
+      // fingerprint, so float it above candidates that only lead on other signals.
+      // Gated to confident/near-exact matches only (calibrated on real data: genuine
+      // matches sit at optionSetScore≈1 / conceptExactSet=1 / sig≈0.8, while weak
+      // cross-lingual option similarity tops out ~0.5). Below the gate the option
+      // rows are treated as TIED and ranking falls through to the existing blend
+      // (question-text keywords/prompt, then image tags) — which is where ambiguous
+      // option sets are correctly disambiguated. ROW items never qualify.
+      const confidentOptionMatch = isMcq && (
+        (breakdown.optionSetScore ?? 0) >= 0.9 ||
+        (breakdown.optionConceptExactSet ?? 0) >= 0.85 ||
+        (breakdown.optionSignatureScore ?? 0) >= 0.72
+      );
+      const optionRowPriorityBoost = confidentOptionMatch
+        ? round(clamp01(Math.max(breakdown.optionSignatureScore ?? 0, breakdown.optionSetScore ?? 0)) * 40)
+        : 0;
       const rerankAdjustment = round(
         ((breakdown.structuralAgreement ?? 0.5) - 0.5) * (isMcq ? 14 : 26) +
         localizedAdjustment +
         numericGroupAdjustment +
         imageTagAdjustment -
         ((breakdown.structuralPenalty ?? 0) * 18) +
-        mcqEvidenceAdjustment,
+        mcqEvidenceAdjustment +
+        optionRowPriorityBoost,
       );
 
       return {
@@ -6719,6 +6762,7 @@ function applyWeightedReranking(entries) {
             ...entry.score.breakdown,
             baseScore: round(entry.score.baseTotal),
             rerankAdjustment,
+            optionRowPriorityBoost,
           },
         },
       };
@@ -9204,6 +9248,10 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
   const autoPromptThreshold = Number(options.autoPromptThreshold ?? (analysisMode === "diagnostic" ? 0.35 : 0.3));
   const sourceLang = normalizeLang(options.sourceLang ?? batchIntake?.meta?.lang ?? DEFAULT_REFERENCE_LANG);
   const correctionRules = normalizeCorrectionRulesOption(options.correctionRules);
+  const claimedQids =
+    options.claimedQids instanceof Set
+      ? options.claimedQids
+      : new Set(Array.isArray(options.claimedQids) ? options.claimedQids : []);
   const corpus = buildMatchCorpus(matchIndex);
   const matched = [];
   const reviewNeeded = [];
@@ -9311,7 +9359,35 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
       ranked: reranked,
       correctionRules,
     });
-    const ranked = learnedAdjustment.ranked;
+    const rankedAll = learnedAdjustment.ranked;
+
+    // Claimed-qid exclusion: a master qid already localized for this language by a
+    // prior batch is hard-excluded from this item's matchable pool, but the top
+    // excluded candidates are recorded so a genuine target-language duplicate
+    // (same Spanish question shown twice) stays recognizable in review.
+    const excludedClaimed = claimedQids.size
+      ? rankedAll.filter(({ question }) => claimedQids.has(question.qid))
+      : [];
+    const ranked = claimedQids.size
+      ? rankedAll.filter(({ question }) => !claimedQids.has(question.qid))
+      : rankedAll;
+    const topExcludedClaimed = excludedClaimed[0] ?? null;
+    const duplicateSuspect =
+      topExcludedClaimed != null &&
+      (!ranked[0] || topExcludedClaimed.score.total >= ranked[0].score.total);
+    const claimedExclusion = {
+      applied: claimedQids.size > 0,
+      claimedQidCount: claimedQids.size,
+      excludedFromPool: excludedClaimed.length,
+      duplicateSuspect,
+      topExcludedClaimed: excludedClaimed.slice(0, 3).map(({ question, score }) => ({
+        qid: question.qid,
+        number: question.number,
+        score: round(score.total),
+        prompt: question.prompt,
+        translatedPrompt: question.translatedPrompt,
+      })),
+    };
 
     const top = ranked[0];
     const runnerUp = ranked[1];
@@ -9340,12 +9416,17 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
         itemId: item.itemId,
         sourceImage: item.sourceImage,
         ...sourceReviewMetadata,
-        reason:
-          analysisMode === "diagnostic"
+        reason: duplicateSuspect
+          ? `Best master match(es) are already localized for this language (claimed by a prior batch) and were excluded — likely a target-language duplicate. See claimedQidExclusion.topExcludedClaimed.`
+          : analysisMode === "diagnostic"
             ? "No candidate produced a plausible review shortlist after semantic normalization. See shortlist diagnostics."
             : "No candidate passed the minimum similarity threshold.",
         analysis: {
           mode: analysisMode,
+          claimedQidExclusion: claimedExclusion,
+          decisionReasonCodes: duplicateSuspect
+            ? unique([...decision.reasonCodes, "claimed-qid-duplicate-suspect"])
+            : decision.reasonCodes,
           effectiveQuestionType: itemShape.effectiveType,
           declaredQuestionType: itemShape.declaredType,
           booleanChoiceDetected: itemShape.booleanOptions,
@@ -9368,7 +9449,6 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
           correctionRuleIdsAppliedToGating: gatingAdjustments.appliedRuleIds,
           reviewFloorDelta: gatingAdjustments.reviewFloorDelta,
           matchingProfile: decision.profile,
-          decisionReasonCodes: decision.reasonCodes,
           autoMatch: {
             profile: decision.profile,
             topScore: round(top?.score.total ?? 0),
@@ -9426,6 +9506,7 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
       },
       analysis: {
         mode: analysisMode,
+        claimedQidExclusion: claimedExclusion,
         effectiveQuestionType: itemShape.effectiveType,
         declaredQuestionType: itemShape.declaredType,
         booleanChoiceDetected: itemShape.booleanOptions,

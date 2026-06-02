@@ -114,6 +114,27 @@ After writing the intake, continue with the normal pipeline below
 (`validate-screenshot-intake` → `process-screenshot-batch` → workbench). The agent-driven
 path replaces *only* the OpenAI vision call; everything downstream is unchanged.
 
+#### MANDATORY: never mix up sequential sibling captures (`" 1.png"`)
+
+**Hard rule, validated by a real failure (es batch-002, 2026-06-01).** Files like
+`Screenshot … 13.02.54.png` and `Screenshot … 13.02.54 1.png` are *distinct* sequential
+questions, not duplicates — and they are the #1 swap hazard in agent-driven extraction.
+In that batch the content of two adjacent siblings (a sign question and a road-POV
+question) was **swapped** between the files: prompt, options, AND visual tags all went to
+the wrong sibling. The matcher then faithfully matched the wrong content and the Step-2.5
+pre-fill compounded it. The screenshot is ALWAYS ground truth; extracted text is corrected
+to match the image, never the reverse.
+
+To prevent it:
+- Attribute each item's content to **the specific file you are reading at that moment** —
+  don't read a group of siblings and then write their intake entries from memory.
+- After writing intake, **self-verify image items**: for each `hasImage:true` entry, glance
+  back at *its own* screenshot and confirm `promptRaw` + `optionsRaw[0]` + `visualObjectTags`
+  actually describe that image. Pay special attention to every `" N.png"` sibling pair.
+- A mismatch found later is fixed at the **intake** (swap the content fields back, keeping
+  `itemId`/`file`/`sourceImage`/`lang`), then re-run `process-screenshot-batch` for the
+  affected items and refresh the workbench — do not just edit the qid in the decisions file.
+
 #### Image-dependent items: MANDATORY tag-agreement checklist
 
 Validated on a 20-screenshot French sample (2026-05-31): every wrong match on an
@@ -125,10 +146,22 @@ questions, dashboard indicators, road-scene MCQs, intersection POV diagrams), yo
 **not** name a qid until every step below has been completed. If you skip any step, the
 match is invalid and must be redone.
 
+**Constrain inferred tags to the controlled vocabulary — don't invent.** When you read an
+image and assign `visualObjectTags`/`visualColorTags`, infer them from the existing
+controlled vocabulary, not free-form. The canonical lists live in
+`public/qbank/2023-test1/image-color-tags.json` under `meta.objectVocabulary` (343 object
+tags), `meta.colorVocabulary` (12 colors), and `meta.pinyinVocabulary` /
+`meta.chineseTextVocabulary` (for any OCR'd in-image text). A tag you coin that isn't in the
+vocabulary can never agree with a master tag, so it's dead weight; pick the closest
+vocabulary term instead. (`tag-intelligence.mjs` flags `tagsOutsideVocabulary` for exactly
+this reason.) If the image genuinely shows something with no vocabulary term, that's a signal
+to add it to the vocabulary deliberately (additive-only, see `PROTECTED_FILES.md`) — not to
+sprinkle ad-hoc tags into one item's intake.
+
 ```
 TAG-AGREEMENT CHECKLIST — image-dependent items
-[ ] 1. visualObjectTags written into intake (specific: e.g. arrow,triangle,downhill,slope)
-[ ] 2. visualColorTags written into intake
+[ ] 1. visualObjectTags written into intake (from meta.objectVocabulary; e.g. arrow,triangle,slope)
+[ ] 2. visualColorTags written into intake (from meta.colorVocabulary)
 [ ] 3. visualNumberTags / visualLayoutTags written into intake when applicable
 [ ] 4. Lexical shortlist of candidate qids built (~top 8)
 [ ] 5. For each candidate, fetched stored tags from image-color-tags.json
@@ -190,13 +223,87 @@ Only use it when an interactive agent run isn't possible.
 ```bash
 npm run validate-screenshot-intake -- --lang ja --batch batch-003
 
-# Match each item to a master qid (auto-loads correction-rules.json)
+# Match each item to a master qid (auto-loads correction-rules.json AND
+# excludes qids already localized for this language by a prior batch — see below)
 npm run process-screenshot-batch -- --lang ja --batch batch-003
 npm run validate-localization-batch -- --lang ja --batch batch-003
 
 # Build the single review workbench (HTML the human opens)
 npm run generate-batch-workbench -- --lang ja --batch batch-003
 ```
+
+#### Claimed-qid exclusion (deduplication across batches of the same language)
+
+`process-screenshot-batch` **hard-excludes** any master qid that has already been
+localized for this language (i.e. it's a key under `.questions` in production
+`public/qbank/<dataset>/translations.<lang>.json`, written by a prior merged batch).
+This stops two screenshots in the same language from both mapping onto one master
+question. It is **per-language** (Spanish's claimed set never affects French) and
+**ON by default**.
+
+Crucially it is *not silent*: an excluded qid is still recorded on the item as
+`analysis.claimedQidExclusion.topExcludedClaimed`, and when the best-scoring match
+*was* a claimed qid the item is flagged with the `claimed-qid-duplicate-suspect`
+reason code. That is the signal that the screenshot may be a **genuine
+target-language duplicate** (the foreign app showing the same question twice) — review
+it and disposition it (e.g. `deleteQuestion`, or `keepUnresolved` with a duplicate
+note) rather than forcing it onto the fresh fallback qid. So: duplicates can no longer
+be auto-created, and real duplicates surface for you to handle as they occur.
+
+- The claimed set is read from **production** `translations.<lang>.json`, so it
+  reflects every batch already merged. **Merge each batch to production before
+  matching the next** (the normal flow already does) for the dedup to see prior work.
+- **Re-matching an already-merged batch?** Every one of its qids is now "claimed", so
+  the matcher would exclude its own correct answers. Disable the layer for that run:
+  `npm run process-screenshot-batch -- --lang <lang> --batch <batch> --exclude-claimed false`.
+- The run report (`generated/reports/process-screenshot-batch-<lang>-<batch>.json`)
+  lists `claimedQidExclusion.duplicateSuspectItems` for quick triage.
+
+### Step 2.5 — MANDATORY verdict pre-fill (replaces what Codex used to do)
+
+Don't hand the human a workbench with empty decisions and 40+ review-needed items to
+choose from blank. Fill in a best-effort verdict for **every** item BEFORE the human
+opens the HTML, so they confirm or override instead of choosing from scratch. This is
+the standard Codex pattern from earlier languages and is non-negotiable in the
+agent-driven flow.
+
+For each of the 50 items in
+`qbank-tools/generated/staging/<lang>-<batch>-workbench-decisions.json`, pick one of
+four actions and set the corresponding fields:
+
+| Action | Fields to set |
+|---|---|
+| **approveExistingQid** | `approvedQid: "qXXXX"`, `confirmedCorrectOptionKey: "A/B/C/D"` (locale letter — see mapping below), or `useCurrentStagedAnswerKey: true` if matcher's `currentStagedLocaleCorrectOptionKey` is already right; `reviewerNotes` |
+| **createNewQuestion** | `createNewQuestion: true`, `newQuestionLocalAnswerKey`, `newQuestionProvisionalTopic` (one of the 4 topics), `newQuestionProvisionalSubtopics` (e.g. `["traffic-signals:road-signs"]`), `reviewerNotes` |
+| **keepUnresolved** | `keepUnresolved: true`, `reviewerNotes` |
+| **deleteQuestion** | `deleteQuestion: true`, `reviewerNotes` |
+
+**Answer-key locale mapping** (the trickiest part — do NOT just copy the master letter):
+1. Look up the master qid's options + `correctOptionId` in `public/qbank/2023-test1/questions.json`. The master correct option has a meaning (e.g. "reduce speed and stop").
+2. Look at the localized options for this item (`intake.json`). Find which localized option means the same thing as the master's correct option.
+3. The localized letter (A/B/C/D) of that option is the `confirmedCorrectOptionKey`.
+4. If the matcher's `currentStagedLocaleCorrectOptionKey` already equals your derived letter, set `useCurrentStagedAnswerKey: true` and leave `confirmedCorrectOptionKey: null`.
+
+**reviewerNotes style** (matches the Codex convention so decision-memory aggregates cleanly):
+
+```
+Claude <low|medium|high>-risk <action>: <one-sentence rationale>
+```
+
+Risk is *your* confidence: low = clear answer / strong evidence, medium = some
+ambiguity, high = uncertain. When in doubt, prefer `keepUnresolved` over a guessed
+`approveExistingQid` — better an honest unresolved than a wrong forced match. High-risk
+items effectively delegate to the human; that's the review-gate doing its job.
+
+**Inputs you have to draw on:** `imports/<lang>/<batch>/intake.json` (the source
+items you wrote), `imports/<lang>/<batch>/{matched,review-needed,unresolved}.json`
+(the matcher's surfaced candidates with scores + master prompts + answer keys per
+qid), `public/qbank/2023-test1/questions.json` (master), `public/qbank/2023-test1/image-color-tags.json` (tags), `qbank-tools/history/qid-topics.json` (topic per qid),
+`qbank-tools/history/correction-rules.json` (requires-review / confusion pairs to heed).
+
+**After filling**, re-run `npm run generate-batch-workbench` — it MERGES with your
+filled decisions (does not overwrite them) and refreshes the HTML so the reviewer sees
+your pre-fills.
 
 If an additional model-review pass runs (Codex or Claude in a separate session),
 snapshot its recommendations **before** human edits so the model-vs-human comparison
@@ -208,13 +315,40 @@ npm run snapshot-codex-recommendations -- --lang ja --batch batch-003
 
 After the human edits the workbench and exports decisions:
 
+**Preferred — one command (`ship-batch`).** Once the reviewed decisions are exported
+(default location `/Users/huni/Downloads/Expatise/<lang>-<batch>-workbench-decisions.json`),
+this runs the entire post-review chain and **aborts before touching production** if
+anything is unsafe (missing decisions, intra-batch duplicate qids, or qids already shipped
+for this language, or a non-clean dry-run gate):
+
+```bash
+npm run ship-batch -- --lang es --batch batch-003
+# add --export-dir <path> if the reviewed JSON is elsewhere
+```
+
+It does: locate export → pre-flight safety → copy onto staging (backing up the old one)
+→ `apply-batch-workbench-decisions` → **enforce** the `full-batch-merge-review` gate
+(`safeToMergeNextStep` && 0 blockers) → `apply-production-localization-merge` (with the
+correct explicit `.full.*` paths) → `build-decision-memory` → `refresh-correction-rules`,
+then prints the new production count. It deliberately skips the vestigial
+`build-codex-human-decision-memory` step. Verify after with
+`npm run guard-protected-qbank-files && npm run build`.
+
+**Manual / step-by-step equivalent** (use when debugging or when a step needs inspection):
+
 ```bash
 # 4. Apply: stages reviewed items, answer-key confirmations, unresolved rescues,
 #    keeps new-question candidates separate, and builds the dry-run merge.
 npm run apply-batch-workbench-decisions -- --lang ja --batch batch-003
+#    GATE: confirm generated/reports/full-batch-merge-review-<lang>-<batch>.json has
+#    safeToMergeNextStep:true and 0 blockers BEFORE the next step (it writes production
+#    directly — no --apply flag, no rollback).
+npm run apply-production-localization-merge -- --lang ja --batch batch-003 \
+  --preview-path qbank-tools/generated/staging/translations.ja.batch-003.full.preview.json \
+  --dry-run-path qbank-tools/generated/staging/translations.ja.batch-003.full.merge-dry-run.json \
+  --dry-run-review-path qbank-tools/generated/reports/full-batch-merge-review-ja-batch-003.json
 
 # 5. Capture this batch's decisions back into memory + refresh rules for next time
-npm run build-codex-human-decision-memory -- --lang ja --batch batch-003
 npm run build-decision-memory
 npm run refresh-correction-rules
 ```
@@ -247,6 +381,24 @@ boosts* — never equal anchors to English.
   intuition you've proven in practice: most MCQs are uniquely identifiable by their unique
   options alone; only when options are similar/identical does question-text keyword overlap
   decide.
+  - **Option-row priority cascade (implemented 2026-06-01).** For MCQ, this intuition is
+    enforced as an explicit, *gated* tie-break cascade rather than a flat blend:
+    1. **Option row stack** — when a candidate's option set is a **near-exact** match
+       (`optionSetScore ≥ 0.9` / `optionConceptExactSet ≥ 0.85` / `optionSignatureScore ≥
+       0.72`), the option stack is the decisive fingerprint and that candidate is boosted to
+       the top (`optionRowPriorityBoost` in the score breakdown, in `applyWeightedReranking`).
+    2. **Tie → question text** — when option rows are *not* near-exact (or several candidates
+       tie on options), the override does **not** fire; ranking falls through to the calibrated
+       blend, which is led by question-text keyword overlap + prompt similarity.
+    3. **→ image tags** — for image items the blend then leans on image object/color tag
+       agreement (see image-based profile below).
+    Why gated, not a blind override: cross-lingual option similarity is **weak and noisy**
+    (correct matches often score only ~0.1–0.4 after Spanish→English glossing). A strict
+    "option always wins" was built, validated, and **reverted** (2026-06-01) because tiny
+    noise differences overrode the correct calibrated pick (e.g. it broke a verified q0415
+    match). Only *near-exact* option matches (≈1.0 set score) are confident enough to override;
+    everything below is a tie that defers to text/image. Don't loosen the gate without
+    re-validating on a real batch.
 - **Image-based** — lead with extracted image object/color tags compared against
   `image-color-tags.json`, then gloss similarity, then option similarity. Generic sign
   prompts ("What's the meaning of this sign?") carry *reduced* prompt-text weight because
