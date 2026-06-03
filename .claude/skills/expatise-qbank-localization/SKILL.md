@@ -185,11 +185,22 @@ If you ever find a qid that *still* has `needs-tag-review`, append the inferred 
 `image-color-tags.json` (additive only — see `PROTECTED_FILES.md`) so future batches
 benefit, and re-run the checklist.
 
-#### MANDATORY review-gate: don't auto-stage anything the system already doubts
+#### MANDATORY: never leave a question unresolved — always assign the closest qid + closest answer key
 
-The matcher and the agent both produce honest signals when a match is uncertain. None of
-them should be ignored. An item **must** route to human review (never auto-stage to
-`approvedQid`) when **any** of these holds:
+**Hard rule (owner directive, 2026-06-03, during es batch-005 review).** The Step-2.5
+pre-fill must **never** hand the human a `keepUnresolved` / blank verdict. Every item gets
+a best-effort `approvedQid` (the closest available master question) **and** a best-effort
+`confirmedCorrectOptionKey` derived from that qid's master correct answer (see the
+answer-key mapping in Step 2.5). When no match is clean, you still pick the closest one and
+**do your best** on the answer key — an approximate, clearly-flagged match the human can
+confirm in one glance beats a blank that forces them to choose from scratch. The matcher is
+~80–90% accurate in practice, so the closest candidate is usually right or one click away.
+
+This does **not** mean stage blindly. The signals below no longer route an item to
+*unresolved* — instead they set the **risk level** you record in `reviewerNotes`, so the
+human knows exactly which pre-fills to scrutinize. The item still appears in the workbench
+for review; it just arrives with a proposed qid + answer key instead of empty. Bump an item
+to **`high`-risk** (still with a closest-qid pick) when **any** of these holds:
 
 1. **`requires-review` correction rule fires** — the top-1 qid is on the
    chronically-mismatched list in `qbank-tools/history/correction-rules.json` (where
@@ -197,21 +208,26 @@ them should be ignored. An item **must** route to human review (never auto-stage
    "we've gotten this wrong before" memory; treat it as authoritative.
 2. **Agent self-reported confidence is `low` OR `med`** — calibration data from the
    2026-05-31 20-batch test showed med/low confidence reliably correlated with misses
-   and ambiguity. "Medium" is not "good enough"; it means human eyes.
+   and ambiguity. Still assign the closest qid; mark it medium/high-risk.
 3. **Top-1 qid appears in a known confusion pair** — `candidate_confusion_pair` rules in
    `correction-rules.json` capture historically-confused pairs (e.g. q0903→q0312). If
-   you're proposing the demoted side, route to review.
+   you're proposing the demoted side, flag it and name the confusion partner in the note.
 4. **No tag agreement** for an image-dependent item — if the checklist above produced no
-   tag overlap with any top-8 candidate, do not pick by text alone. Review.
+   tag overlap with any top-8 candidate, pick the closest by combined evidence and mark
+   high-risk; do not silently trust text alone.
 5. **Near-duplicate ROW pairs** — when two candidates have nearly identical statement text
-   (the `top2SemanticNearDuplicate` situation the matcher detects), route to review.
+   (the `top2SemanticNearDuplicate` situation the matcher detects), pick the better of the
+   two, name both in the note, and mark high-risk.
 
-Routing to review is **free**: the workbench is built for it, the human catches it in
-seconds, and the resulting correction feeds back into the correction-rules loop so the
-matcher gets smarter for the next language. A wrong auto-staged match, by contrast, must
-be hunted down post-merge — far more expensive.
+A high-risk **flagged** pre-fill is **free**: the workbench surfaces it, the human confirms
+or corrects it in seconds, and the correction feeds back into the correction-rules loop so
+the matcher gets smarter for the next language. The only thing that's expensive is a blank
+the human has to research from zero — which is exactly what this rule eliminates.
 
-When in doubt, route to review. The skill's bias is correctness over throughput.
+**Sole exception — genuine duplicates.** A `claimed-qid-duplicate-suspect` item's closest
+qid is already localized for this language, so forcing it would collide at ship time
+(`ship-batch` pre-flight aborts on intra-language dup). For those, use `deleteQuestion`
+(true app-side duplicate) — not `keepUnresolved`. Everything else gets a closest-qid pick.
 
 **Legacy alternative** — the OpenAI script still works and stays in the repo for
 unattended/automated runs (it bills per-token to `OPENAI_API_KEY`):
@@ -245,10 +261,11 @@ Crucially it is *not silent*: an excluded qid is still recorded on the item as
 `analysis.claimedQidExclusion.topExcludedClaimed`, and when the best-scoring match
 *was* a claimed qid the item is flagged with the `claimed-qid-duplicate-suspect`
 reason code. That is the signal that the screenshot may be a **genuine
-target-language duplicate** (the foreign app showing the same question twice) — review
-it and disposition it (e.g. `deleteQuestion`, or `keepUnresolved` with a duplicate
-note) rather than forcing it onto the fresh fallback qid. So: duplicates can no longer
-be auto-created, and real duplicates surface for you to handle as they occur.
+target-language duplicate** (the foreign app showing the same question twice) — disposition
+it with `deleteQuestion` and a duplicate note (the never-unresolved policy forbids
+`keepUnresolved`; `deleteQuestion` is the correct call for a true app-side duplicate) rather
+than forcing it onto the fresh fallback qid. So: duplicates can no longer be auto-created,
+and real duplicates surface for you to handle as they occur.
 
 - The claimed set is read from **production** `translations.<lang>.json`, so it
   reflects every batch already merged. **Merge each batch to production before
@@ -268,21 +285,27 @@ the standard Codex pattern from earlier languages and is non-negotiable in the
 agent-driven flow.
 
 For each of the 50 items in
-`qbank-tools/generated/staging/<lang>-<batch>-workbench-decisions.json`, pick one of
-four actions and set the corresponding fields:
+`qbank-tools/generated/staging/<lang>-<batch>-workbench-decisions.json`, pick an action and
+set the corresponding fields. **Default to `approveExistingQid` for every item** — the
+owner directive above forbids leaving anything unresolved, so `approveExistingQid` (closest
+qid + best-effort answer key) is the expected verdict unless the item is a genuine
+duplicate (`deleteQuestion`) or a genuinely novel question with no plausible analog
+(`createNewQuestion`, rare):
 
 | Action | Fields to set |
 |---|---|
-| **approveExistingQid** | `approvedQid: "qXXXX"`, `confirmedCorrectOptionKey: "A/B/C/D"` (locale letter — see mapping below), or `useCurrentStagedAnswerKey: true` if matcher's `currentStagedLocaleCorrectOptionKey` is already right; `reviewerNotes` |
-| **createNewQuestion** | `createNewQuestion: true`, `newQuestionLocalAnswerKey`, `newQuestionProvisionalTopic` (one of the 4 topics), `newQuestionProvisionalSubtopics` (e.g. `["traffic-signals:road-signs"]`), `reviewerNotes` |
-| **keepUnresolved** | `keepUnresolved: true`, `reviewerNotes` |
-| **deleteQuestion** | `deleteQuestion: true`, `reviewerNotes` |
+| **approveExistingQid** *(default — use for essentially every item)* | `approvedQid: "qXXXX"` (closest available qid), `confirmedCorrectOptionKey: "A/B/C/D"` (locale letter — see mapping below, **always derive it**), or `useCurrentStagedAnswerKey: true` if matcher's `currentStagedLocaleCorrectOptionKey` is already right; `reviewerNotes` with honest risk level |
+| **deleteQuestion** | `deleteQuestion: true`, `reviewerNotes` — **only** for a genuine app-side duplicate (`claimed-qid-duplicate-suspect` whose closest qid is already localized this language) |
+| **createNewQuestion** *(rare)* | `createNewQuestion: true`, `newQuestionLocalAnswerKey`, `newQuestionProvisionalTopic` (one of the 4 topics), `newQuestionProvisionalSubtopics` (e.g. `["traffic-signals:road-signs"]`), `reviewerNotes` — only when no master question is even plausibly close |
+| ~~**keepUnresolved**~~ *(forbidden in pre-fill)* | Do **not** pre-fill this. The owner directive bans handing the human a blank/unresolved verdict. The field still exists for the human to choose during review, but you must always propose a closest-qid pick instead. |
 
-**Answer-key locale mapping** (the trickiest part — do NOT just copy the master letter):
+**Answer-key locale mapping** (the trickiest part — do NOT just copy the master letter).
+Required for **every** item, including approximate closest-match picks:
 1. Look up the master qid's options + `correctOptionId` in `public/qbank/2023-test1/questions.json`. The master correct option has a meaning (e.g. "reduce speed and stop").
 2. Look at the localized options for this item (`intake.json`). Find which localized option means the same thing as the master's correct option.
-3. The localized letter (A/B/C/D) of that option is the `confirmedCorrectOptionKey`.
+3. The localized letter (A/B/C/D) of that option is the `confirmedCorrectOptionKey`. For ROW/true-false items the master `correctRow` (R/W) carries straight over.
 4. If the matcher's `currentStagedLocaleCorrectOptionKey` already equals your derived letter, set `useCurrentStagedAnswerKey: true` and leave `confirmedCorrectOptionKey: null`.
+5. **Closest-answer fallback (do your best).** When the match is approximate and the master's correct option has no exact local twin, pick the localized option whose meaning is *closest* to the master's correct option, and record the uncertainty in `reviewerNotes` (e.g. "Claude high-risk approveExistingQid: closest qid q0xxx; answer key B = nearest local option to master's 'reduce speed', verify"). Never leave the answer key blank on the grounds that the match was imperfect.
 
 **reviewerNotes style** (matches the Codex convention so decision-memory aggregates cleanly):
 
@@ -291,9 +314,11 @@ Claude <low|medium|high>-risk <action>: <one-sentence rationale>
 ```
 
 Risk is *your* confidence: low = clear answer / strong evidence, medium = some
-ambiguity, high = uncertain. When in doubt, prefer `keepUnresolved` over a guessed
-`approveExistingQid` — better an honest unresolved than a wrong forced match. High-risk
-items effectively delegate to the human; that's the review-gate doing its job.
+ambiguity, high = uncertain. When in doubt, **still assign the closest `approvedQid` + a
+best-effort answer key** and mark it `high`-risk — never fall back to `keepUnresolved`
+(owner directive, 2026-06-03). A clearly-flagged high-risk closest-match delegates the
+*verification* to the human (one glance to confirm/correct) while sparing them a blank they
+must research from scratch; that is the review-gate doing its job under the new policy.
 
 **Inputs you have to draw on:** `imports/<lang>/<batch>/intake.json` (the source
 items you wrote), `imports/<lang>/<batch>/{matched,review-needed,unresolved}.json`
@@ -447,10 +472,14 @@ review, so don't paper over a hard case — surface it.
   It inherits that qid's answer key, category, and image asset.
 - **`createNewQuestion: true`** — a genuinely new item with no good master match.
   It is **staged** for a future master superset, never written into `questions.json`
-  directly (the master is human-locked — see guardrails).
-- **`keepUnresolved` / `noneOfThese`** — can't safely decide; leave it for a human.
-  Better an honest unresolved than a wrong mapping.
-- **`unsure`** — flag for a second look.
+  directly (the master is human-locked — see guardrails). Rare: under the
+  never-unresolved policy, prefer the closest existing qid unless nothing is plausibly close.
+- **`keepUnresolved` / `noneOfThese`** — **not allowed as a pre-fill verdict** (owner
+  directive, 2026-06-03). The agent must always propose the closest `approvedQid` + a
+  best-effort answer key instead. The field remains only so the *human* can choose it during
+  review; you never set it.
+- **`unsure`** — flag for a second look (via `high`-risk `reviewerNotes`), but still carry a
+  closest-qid pick — don't blank the verdict.
 - **`confirmedCorrectOptionKey` / `useCurrentStagedAnswerKey`** — the answer key
   (A/B/C/D, or R/W for true-false rows) for this item.
 
