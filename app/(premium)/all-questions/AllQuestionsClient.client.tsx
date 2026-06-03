@@ -83,8 +83,12 @@ function matchesSearchQuery(searchableText: string, queryTokens: string[]): bool
   return queryTokens.every((token) => matchesSearchToken(token, searchableText));
 }
 
-const IMAGE_FILTER_TOKEN_RE = /\bimage\b/i;
-const IMAGE_FILTER_TOKEN_GLOBAL_RE = /\bimage\b/gi;
+// Match the standalone "image" filter keyword only — NOT the "image" inside a
+// hyphenated tag like "no-image". \b treats "-" as a boundary, so /\bimage\b/
+// matched "no-image" and wrongly flipped on the image-only filter; the lookbehind/
+// lookahead for [\w-] prevents that while still matching a bare "image" query.
+const IMAGE_FILTER_TOKEN_RE = /(?<![\w-])image(?![\w-])/i;
+const IMAGE_FILTER_TOKEN_GLOBAL_RE = /(?<![\w-])image(?![\w-])/gi;
 const UNCLASSIFIED_FILTER_TOKEN_RE = /\bunclassified\b/i;
 const UNCLASSIFIED_FILTER_TOKEN_GLOBAL_RE = /\bunclassified\b/gi;
 
