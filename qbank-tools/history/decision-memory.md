@@ -1,10 +1,10 @@
 # Decision Memory
 
-Generated: 2026-06-02T15:04:11.251Z
+Generated: 2026-06-03T10:01:43.428Z
 
 ## Summary
 
-- Total records: 30561
+- Total records: 31316
 - High-risk qids: q0018, q0025, q0053, q0062, q0064, q0069, q0070, q0084, q0162, q0176, q0187, q0208, q0210, q0223, q0226, q0234, q0237, q0245, q0260, q0261, q0262, q0275, q0285, q0293, q0302, q0316, q0325, q0336, q0345, q0347, q0352, q0358, q0359, q0462, q0488, q0514, q0575, q0640, q0647, q0649, q0801, q0904, q0908, q0913, q0918, q0921, q0945, q0947, q0950, q0973, q0983, q0984, q0991, q1005, q1008, q1011, q1012
 - Master-data issue qids: q0518, q0906, q0990, q0997, q1000, q1008, q1010
 - Rejected/needs-fix qids: q0018, q0025, q0062, q0064, q0069, q0070, q0084, q0162, q0187, q0204, q0208, q0210, q0223, q0226, q0234, q0237, q0248, q0260, q0261, q0262, q0274, q0275, q0285, q0293, q0302, q0316, q0323, q0325, q0336, q0345, q0347, q0352, q0358, q0359, q0367, q0383, q0420, q0442, q0446, q0462, q0471, q0474, q0488, q0514, q0517, q0522, q0525, q0534, q0575, q0577, q0635, q0640, q0647, q0649, q0720, q0726, q0802, q0863, q0904, q0908, q0913, q0918, q0921, q0929, q0941, q0945, q0947, q0948, q0950, q0957, q0973, q0981, q0983, q0984, q0991, q0994, q0995, q1005, q1008, q1011, q1012
@@ -13,16 +13,16 @@ Generated: 2026-06-02T15:04:11.251Z
 
 | key | count |
 | --- | --- |
-| answer-key | 11127 |
+| answer-key | 11397 |
 | backfill-generation | 1297 |
 | duplicate | 6 |
 | master-data-fix | 13 |
-| match | 6991 |
-| merge | 8283 |
-| new-question | 2337 |
+| match | 7117 |
+| merge | 8541 |
+| new-question | 2422 |
 | quality-review | 334 |
 | reject | 92 |
-| skip | 81 |
+| skip | 97 |
 
 ## Records By Source System
 
@@ -30,8 +30,8 @@ Generated: 2026-06-02T15:04:11.251Z
 | --- | --- |
 | ai-review | 334 |
 | integrity-audit | 19 |
-| manual | 16941 |
-| production-merge | 8476 |
+| manual | 17438 |
+| production-merge | 8734 |
 | script | 4791 |
 
 ## Reusable Matching Lessons
@@ -41,6 +41,7 @@ Generated: 2026-06-02T15:04:11.251Z
 |  | answer-key | new | Valid no-left-turn sign item; no exact master qid found. Closest prohibitory-sign qids are different signs. |
 |  | match | skipped | Claude low-risk approveExistingQid: turn-signal combination switch; q0618 control device, option-set 0.63. Answer key = matcher staged (verify). |
 |  | answer-key | new |  |
+|  | answer-key | skipped | Claude medium-risk keepUnresolved: gap 0.1 suggests review needed (qq0144 candidate) |
 |  | answer-key | new |  |
 |  | new-question | approved | Codex medium-risk createNewQuestion: No close candidate match found. Source is a valid road-accident rule (mark original position if you moved evidence while assisting); not represented in top candidates — create new question. Local correct option is Yes=A. |
 |  | new-question | approved | Valid MCQ asking the maximum continuous driving time; no exact master qid found. Related q0445 asks the required rest time after more than four hours. |
@@ -62,7 +63,6 @@ Generated: 2026-06-02T15:04:11.251Z
 |  | match | skipped | Claude keepUnresolved: claimed-qid-duplicate-suspect — best match was already-shipped q0845; likely a target-language duplicate. Confirm duplicate vs pick a fresh qid. |
 |  | match | skipped | Codex high-risk keepUnresolved: Potential match q0120 is now hard-locked in French production/merged history (translations.fr.json; batches 001-016 merged). Source/candidate evidence is not strong enough for duplicate override; kept unresolved for manual QC. |
 |  | new-question | approved | Codex medium-risk createNewQuestion: Statement 'A driver who breaks a provision of the highway code must be punished' is a valid true/false item but no clear existing candidate match; recommend creating new question with answer A (Yes). |
-|  | match | skipped | Codex medium-risk keepUnresolved: Image shows an intersection with lights/crosswalk; source asks if right turn is permitted but visual semantics (signal aspect, signage, pedestrians) are ambiguous. Top machine candidate (q0194) is about speeding through an intersection and is not a semantic match. Rejected top matcher… |
 
 ## Recommended Next System Improvements
 

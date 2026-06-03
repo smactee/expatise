@@ -557,6 +557,25 @@ good reason.
 
 ## Finishing a language
 
+### MANDATORY first: clear the unresolved backlog as a final re-run batch
+
+Before finalizing, **the human reviewer's deferred items must be re-run** (owner directive,
+2026-06-03). Across the language's batches, every item the human left `keepUnresolved` (or
+flagged `createNewQuestion`) is accumulated — with its **reviewer notes** — in a committed
+backlog: `qbank-tools/history/<lang>-unresolved-backlog.json`, sourced from the reviewed
+workbench-decisions exports archived under `qbank-tools/history/decisions/`.
+
+**Do NOT trust the pipeline's `follow-up-review.<lang>.<batch>.unresolved.json`** for this —
+it is lossy (es batch-005: it captured only 2 of 12 held-back items). The backlog file
+(rebuilt from the reviewed exports) is the source of truth.
+
+To clear it: assemble the backlog's screenshots into one final batch (e.g. `batch-final`),
+run the normal pipeline (`process-screenshot-batch` → workbench), and **pre-fill using the
+preserved reviewer notes** (they often already state the answer, e.g. "match to q0866 but
+fix the local answer key", "duplicate of q0166", "MCQ version reusing q0528's image"). The
+fresh matcher (now carrying all the language's correction rules) plus the human notes should
+resolve most. Only after the backlog is cleared/dispositioned do you finalize:
+
 ```bash
 npm run audit-qbank-integrity                      # zero critical blockers
 npm run build-decision-memory
