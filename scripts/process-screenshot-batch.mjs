@@ -14,6 +14,7 @@ import {
   ensurePipelineDirs,
   fileExists,
   loadClaimedQidsForLang,
+  loadDuplicateExclusionsForLang,
   loadCorrectionRulesFile,
   loadFeatureStoreFile,
   loadQbankContext,
@@ -78,6 +79,10 @@ const imageOnly = String(args["image-only"] ?? "false").trim().toLowerCase() ===
 // (read from production translations.<lang>.json). Default ON. Disable with
 // `--exclude-claimed false` when intentionally re-matching an already-merged batch.
 const excludeClaimed = String(args["exclude-claimed"] ?? "true").trim().toLowerCase() !== "false";
+// Drop intake items whose screenshot is a confirmed in-app verbatim duplicate
+// (registry built by `apply-duplicate-decisions`). Default ON. Disable with
+// `--exclude-duplicates false`.
+const excludeDuplicates = String(args["exclude-duplicates"] ?? "true").trim().toLowerCase() !== "false";
 const correctionRulesPath = args["correction-rules"]
   ? path.resolve(String(args["correction-rules"]))
   : path.join(path.dirname(DEFAULT_FEATURE_STORE_PATH), "correction-rules.json");
@@ -105,12 +110,25 @@ const matchIndex = buildMatchIndex(context, {
 });
 const syntheticJaIndex = buildSyntheticMatchIndex(matchIndex, { lang: "ja" });
 const intake = readBatchIntake({ lang, batchId });
+// Confirmed verbatim-duplicate screenshots to drop before matching.
+const duplicateExclusions = excludeDuplicates
+  ? loadDuplicateExclusionsForLang({ dataset, lang })
+  : { files: new Set(), details: new Map() };
+const isDuplicateScreenshot = (item) => {
+  if (duplicateExclusions.files.size === 0) return false;
+  const base = path.basename(String(item.file || item.sourceImage || ""));
+  return base ? duplicateExclusions.files.has(base) : false;
+};
+const duplicateExcludedItems = excludeDuplicates ? intake.items.filter(isDuplicateScreenshot) : [];
+const dedupedItems = excludeDuplicates
+  ? intake.items.filter((item) => !isDuplicateScreenshot(item))
+  : intake.items;
 const filteredIntake = imageOnly
   ? {
     ...intake,
-    items: intake.items.filter((item) => item.hasImage === true),
+    items: dedupedItems.filter((item) => item.hasImage === true),
   }
-  : intake;
+  : { ...intake, items: dedupedItems };
 const correctionRules = correctionRulesPath && fileExists(correctionRulesPath)
   ? await loadCorrectionRulesFile(correctionRulesPath)
   : null;
@@ -156,11 +174,21 @@ await writeJson(path.join(REPORTS_DIR, `process-screenshot-batch-${lang}-${batch
         topExcludedClaimed: item.analysis.claimedQidExclusion.topExcludedClaimed?.[0] ?? null,
       })),
   },
+  duplicateExclusion: {
+    enabled: excludeDuplicates,
+    registrySize: duplicateExclusions.files.size,
+    excludedItems: duplicateExcludedItems.map((item) => {
+      const base = path.basename(String(item.file || item.sourceImage || ""));
+      const rec = duplicateExclusions.details.get(base);
+      return { itemId: item.itemId, file: base, group: rec?.group ?? null, keep: rec?.keep ?? null };
+    }),
+  },
   analysisMode,
   intakeStats: {
     originalItems: intake.items.length,
     itemsProcessed: filteredIntake.items.length,
-    nonImageItemsSkipped: imageOnly ? intake.items.length - filteredIntake.items.length : 0,
+    duplicateItemsSkipped: duplicateExcludedItems.length,
+    nonImageItemsSkipped: imageOnly ? dedupedItems.length - filteredIntake.items.length : 0,
     imageOnly,
   },
   outputs: [
@@ -181,6 +209,16 @@ const duplicateSuspectCount = [...results.matched, ...results.reviewNeeded, ...r
 console.log(
   `Processed ${filteredIntake.items.length} intake item(s): ${results.matched.length} matched, ${results.reviewNeeded.length} review-needed, ${results.unresolved.length} unresolved.`,
 );
+if (excludeDuplicates && duplicateExcludedItems.length > 0) {
+  console.log(
+    `Duplicate exclusion ON: dropped ${duplicateExcludedItems.length} confirmed verbatim-duplicate screenshot(s) before matching ` +
+      `(registry: ${duplicateExclusions.files.size} for "${lang}").`,
+  );
+} else if (excludeDuplicates && duplicateExclusions.files.size > 0) {
+  console.log(
+    `Duplicate exclusion ON: ${duplicateExclusions.files.size} registered for "${lang}"; none present in this batch.`,
+  );
+}
 if (excludeClaimed) {
   console.log(
     `Claimed-qid exclusion ON: ${claimedQids.size} qid(s) already localized for "${lang}" were excluded from the candidate pool` +

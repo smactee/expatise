@@ -927,6 +927,39 @@ export function loadClaimedQidsForLang({ dataset = DEFAULT_DATASET, lang } = {})
   }
 }
 
+// Per-language registry of screenshot files confirmed to be in-app verbatim
+// duplicates (same question shown at more than one position in the foreign app).
+// Populated by `apply-duplicate-decisions` from a reviewed duplicate-workbench
+// export. The matcher drops any intake item whose screenshot is on this list so
+// the redundant copy never gets matched/shipped. Returns { files, details } where
+// `files` is a Set of screenshot basenames and `details` maps basename -> record.
+export function duplicateExclusionsPath({ dataset = DEFAULT_DATASET, lang } = {}) {
+  return path.join(HISTORY_DIR, `duplicate-exclusions.${normalizeLang(lang)}.json`);
+}
+
+export function loadDuplicateExclusionsForLang({ dataset = DEFAULT_DATASET, lang } = {}) {
+  const registryPath = duplicateExclusionsPath({ dataset, lang });
+  const files = new Set();
+  const details = new Map();
+  if (!fileExists(registryPath)) {
+    return { files, details };
+  }
+  try {
+    const doc = JSON.parse(fs.readFileSync(registryPath, "utf8"));
+    for (const entry of Array.isArray(doc?.exclusions) ? doc.exclusions : []) {
+      const base = path.basename(String(entry?.file ?? "").trim());
+      if (!base) {
+        continue;
+      }
+      files.add(base);
+      details.set(base, entry);
+    }
+  } catch (error) {
+    throw new Error(`Failed to read duplicate exclusions from ${registryPath}: ${error.message}`);
+  }
+  return { files, details };
+}
+
 export async function ensureDir(dirPath) {
   await fsp.mkdir(dirPath, { recursive: true });
 }
