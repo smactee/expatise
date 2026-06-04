@@ -32,6 +32,13 @@ export const LOCALE_REGISTRY = {
     label: 'Français',
     messages: fr,
   },
+  // British Chinglish: the verbatim pre-correction PDF extract, surfaced as a
+  // selectable question language. UI chrome stays English (reuses `en` messages);
+  // only the qbank question/option text differs (see translations.en-orig.json).
+  'en-orig': {
+    label: 'British Chinglish, (original test version)',
+    messages: en,
+  },
 } as const satisfies Record<string, LocaleDefinition>;
 
 export type Locale = keyof typeof LOCALE_REGISTRY;

@@ -16,6 +16,7 @@ export const DATASETS: Record<DatasetId, DatasetConfig> = {
     url: '/qbank/2023-test1/questions.json',
     patchUrl: '/qbank/2023-test1/tags.patch.json', // ✅ new
     translationUrls: {
+      'en-orig': '/qbank/2023-test1/translations.en-orig.json',
       ja: '/qbank/2023-test1/translations.ja.json',
       ko: '/qbank/2023-test1/translations.ko.json',
       fr: '/qbank/2023-test1/translations.fr.json',

@@ -1,6 +1,7 @@
 const BASE_QUESTION_URL = '/qbank/2023-test1/questions.json';
 
 const PRODUCTION_TRANSLATION_URLS: Record<string, string> = {
+  'en-orig': '/qbank/2023-test1/translations.en-orig.json',
   ko: '/qbank/2023-test1/translations.ko.json',
   ja: '/qbank/2023-test1/translations.ja.json',
   fr: '/qbank/2023-test1/translations.fr.json',
@@ -9,6 +10,7 @@ const PRODUCTION_TRANSLATION_URLS: Record<string, string> = {
 };
 
 const TRANSLATION_NOTICE_LABELS: Record<string, string> = {
+  'en-orig': 'Original PDF (British Chinglish)',
   ko: 'Korean',
   ja: 'Japanese',
   fr: 'French',
@@ -30,7 +32,10 @@ export function hasProductionQuestionTranslations(locale: string | null | undefi
 
 export function isTranslatedOnlyQuestionLocale(locale: string | null | undefined): boolean {
   const normalized = normalizeLocale(locale);
-  if (normalized === 'ja') return true;
+  // ja (partial translation) and en-orig (only the 969 questions that exist in the
+  // source PDF) intentionally show ONLY their translated questions, in every build —
+  // so British Chinglish drops the 35 master questions that aren't in the PDF.
+  if (normalized === 'ja' || normalized === 'en-orig') return true;
   return isDevelopmentVisibilityEnabled() && hasProductionQuestionTranslations(normalized);
 }
 
