@@ -47,8 +47,14 @@ const PENDING_LANGUAGE_OPTIONS: readonly LanguageOption[] = [
 // To enable a future language:
 // 1. Add/register its messages in messages/index.ts
 // 2. Remove its pending entry below so it becomes implemented via LOCALE_REGISTRY
+
+// The original-test pseudo-language ("British Chinglish") is pinned to the very
+// top of the picker so users can jump straight to the verbatim PDF text.
+const ORIGINAL_TEST_LANGUAGE_CODE: Locale = 'en-orig';
+
 export const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
-  ...IMPLEMENTED_LANGUAGE_OPTIONS,
+  ...IMPLEMENTED_LANGUAGE_OPTIONS.filter((option) => option.code === ORIGINAL_TEST_LANGUAGE_CODE),
+  ...IMPLEMENTED_LANGUAGE_OPTIONS.filter((option) => option.code !== ORIGINAL_TEST_LANGUAGE_CODE),
   ...PENDING_LANGUAGE_OPTIONS,
 ];
 
