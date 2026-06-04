@@ -1,9 +1,9 @@
 {
   "lang": "es",
   "purpose": "Accumulated unresolved/deferred es items to RE-RUN as the final es batch. Reviewer notes are authoritative human guidance. Do not lose these. Compiled because the pipeline follow-up file only captured a subset.",
-  "updatedAt": "2026-06-03T10:04:32.801Z",
+  "updatedAt": "2026-06-04T12:25:58Z",
   "sourceOfTruth": "reviewed workbench-decisions exports (archived in qbank-tools/history/decisions/)",
-  "count": 13,
+  "count": 17,
   "items": [
     {
       "batch": "batch-005",
@@ -243,6 +243,78 @@
       "optionsRaw": [
         "A Verdadero",
         "B Falso"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-006",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 13.09.11.png",
+      "screenshotPath": "imports/es/batch-006/screenshots/Screenshot 2026-05-24 at 13.09.11.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0014",
+      "reviewerNotes": "Claude high-risk approveExistingQid (RECLASSIFIED from delete): matcher flagged duplicate-suspect but this question matches NO already-localized es question (max sim 0.22) → treating as NEW. Closest unclaimed master = q0014 (score 38.9); answer key B — VERIFY qid+key.",
+      "newQuestionLocalAnswerKey": null,
+      "newQuestionProvisionalTopic": "proper-driving",
+      "promptEn": "When driving and you encounter a stretch of road with accumulated water, you must pass at low speed after analyzing the water situation and ensuring safety.",
+      "promptRaw": "Cuando conduce un vehículo y se encuentra con un tramo de la vía con acumulación de agua, debe {jasar a poca vebcidad después de analizar la situación del agua y garantizar la seguridad",
+      "optionsRaw": [
+        "A) Verdadero",
+        "B) Falso"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-006",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 13.09.28.png",
+      "screenshotPath": "imports/es/batch-006/screenshots/Screenshot 2026-05-24 at 13.09.28.png",
+      "disposition": "createNewQuestion",
+      "initialSuggestedQid": "q0736",
+      "reviewerNotes": "Claude QA FLAG — ASSIGNED QID WRONG: app 381 = red-circle GIVE-WAY-to-oncoming sign (会车让行, black-down/red-up arrows; complement of priority sign q0877). Assigned q0736 (no-turn prohibition) wrong. Correct local A (give way to oncoming). No clean unclaimed sign-meaning master found in quick search. Human: match.\n\nsame image asset as 964. It is a new question. ",
+      "newQuestionLocalAnswerKey": "A",
+      "newQuestionProvisionalTopic": "proper-driving",
+      "promptEn": "What does this sign mean?",
+      "promptRaw": "Qué significa esta señal ?",
+      "optionsRaw": [
+        "A) Al encontrarse dos o más vehículos, ceder el paso al vehículo que circula en sentido contrario",
+        "B) Se aproxima una vía de dos sentidos",
+        "C) Prohibido el paso de bs vehículos del lado derecho",
+        "D) Al encontrarse dos o más vehículos, detener la marcha y ceder el paso al vehículo de la derecha"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-006",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 13.09.10.png",
+      "screenshotPath": "imports/es/batch-006/screenshots/Screenshot 2026-05-24 at 13.09.10.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0131",
+      "reviewerNotes": "Claude high-risk approveExistingQid: q0131 (score 32.0, unresolved); MCQ master \"stop to evade\" → A (gloss-overlap 0.00).",
+      "newQuestionLocalAnswerKey": null,
+      "newQuestionProvisionalTopic": "proper-driving",
+      "promptEn": "In which of the following circumstances can vehicles in the same lane NOT overtake the vehicle ahead?",
+      "promptRaw": "En cuál de las siguientes circunstancias los vehículos del mismo carril no puede adelantar cuando se encuentra con el vehículo delantero?",
+      "optionsRaw": [
+        "A) Están aparcando",
+        "B) Disminuyendo la vebcidad y abandonando b vía",
+        "C) Dando vueltas",
+        "D) Pasando con vebcidad normal"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-006",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 13.09.31.png",
+      "screenshotPath": "imports/es/batch-006/screenshots/Screenshot 2026-05-24 at 13.09.31.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0097",
+      "reviewerNotes": "Claude high-risk approveExistingQid: \"drive without a circulation permit after repair\" — NO good master match (top candidate q0097 is lane-change, score ~32, wrong topic). Likely a vehicle-registration question or createNewQuestion. REVIEWER: verify / reassign / mark new.\ncould be 987",
+      "newQuestionLocalAnswerKey": null,
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "You can drive a vehicle that does not have a circulation permit even when it has been repaired.",
+      "promptRaw": "Se puede circular con un vehícub que no tenga permiso de circulación aún cuando éste haya sido reparado.",
+      "optionsRaw": [
+        "A) Verdadero",
+        "B) Falso"
       ],
       "correctKeyRaw": null
     }
