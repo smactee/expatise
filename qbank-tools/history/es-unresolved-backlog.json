@@ -1,9 +1,9 @@
 {
   "lang": "es",
   "purpose": "Accumulated unresolved/deferred es items to RE-RUN as the final es batch. Reviewer notes are authoritative human guidance. Do not lose these. Compiled because the pipeline follow-up file only captured a subset.",
-  "updatedAt": "2026-06-04T12:25:58Z",
+  "updatedAt": "2026-06-05",
   "sourceOfTruth": "reviewed workbench-decisions exports (archived in qbank-tools/history/decisions/)",
-  "count": 17,
+  "count": 18,
   "items": [
     {
       "batch": "batch-005",
@@ -312,6 +312,23 @@
       "newQuestionProvisionalTopic": null,
       "promptEn": "You can drive a vehicle that does not have a circulation permit even when it has been repaired.",
       "promptRaw": "Se puede circular con un vehícub que no tenga permiso de circulación aún cuando éste haya sido reparado.",
+      "optionsRaw": [
+        "A) Verdadero",
+        "B) Falso"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-007",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 13.11.45.png",
+      "screenshotPath": "imports/es/batch-007/screenshots/Screenshot 2026-05-24 at 13.11.45.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0312",
+      "reviewerNotes": "Claude high-risk approveExistingQid(dup-suspect): matcher top-1 q0312 (review-needed); suspected duplicate of claimed q0339 — verify; if already localized mark delete\nno matching question. potential new question",
+      "newQuestionLocalAnswerKey": null,
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "Any person who flees the scene of an accident, where it does not constitute a crime, has 12 points deducted at once.",
+      "promptRaw": "Toda persona que escape al ocurrir accidentes, sin constituir delito, se le anotan 12 puntos de una vez.",
       "optionsRaw": [
         "A) Verdadero",
         "B) Falso"
