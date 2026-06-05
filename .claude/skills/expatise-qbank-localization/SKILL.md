@@ -224,10 +224,29 @@ or corrects it in seconds, and the correction feeds back into the correction-rul
 the matcher gets smarter for the next language. The only thing that's expensive is a blank
 the human has to research from zero — which is exactly what this rule eliminates.
 
-**Sole exception — genuine duplicates.** A `claimed-qid-duplicate-suspect` item's closest
-qid is already localized for this language, so forcing it would collide at ship time
-(`ship-batch` pre-flight aborts on intra-language dup). For those, use `deleteQuestion`
-(true app-side duplicate) — not `keepUnresolved`. Everything else gets a closest-qid pick.
+**Sole exception — CONFIRMED duplicates only.** A `claimed-qid-duplicate-suspect` item may
+be a genuine app-side duplicate (closest qid already localized this language) → then use
+`deleteQuestion` (not `keepUnresolved`). **But the flag is NOT proof of duplication** — it
+only means "the top *global* match was an already-localized qid," which is frequently a
+*coincidental* overlap (text: shared keywords; image/sign: shared generic tags like
+`triangle`+`yellow`). **Before deleting, CONFIRM the item actually matches an
+already-localized question:**
+- **Text item:** does its English gloss strongly match (≈≥0.45 token-Jaccard) the prompt of
+  *any* qid already in production `translations.<lang>.json`? If yes → real duplicate →
+  delete. If it matches none → it's a NEW question → `approveExistingQid` to its best
+  *unclaimed* candidate (`topCandidates[0]`).
+- **Image/sign item:** is it the *same sign* as an already-localized image qid (not just
+  sharing `triangle`/`yellow`)? If you can't confirm same-sign, **do NOT delete** — approve
+  the best unclaimed candidate and add a high-risk note "suspected duplicate of qXXXX —
+  verify; if already localized, mark delete." The human recognizes a repeated sign instantly.
+
+**Hard lesson (es batch-006, 2026-06-03):** blindly mapping all 42 `duplicate-suspect`
+items to `deleteQuestion` was wrong — QA showed 14/15 text "duplicates" matched NO localized
+question, and the image ones matched localized qids only by coincidental shared tags. They
+were nearly all NEW questions about to be deleted. Deleting a new question is unrecoverable
+(must re-capture); a wrongly-approved true-duplicate is caught at human review + `ship-batch`
+pre-flight. So when unsure, **approve-with-flag, never auto-delete.** Everything else still
+gets a closest-qid pick.
 
 **Legacy alternative** — the OpenAI script still works and stays in the repo for
 unattended/automated runs (it bills per-token to `OPENAI_API_KEY`):
@@ -283,6 +302,19 @@ choose from blank. Fill in a best-effort verdict for **every** item BEFORE the h
 opens the HTML, so they confirm or override instead of choosing from scratch. This is
 the standard Codex pattern from earlier languages and is non-negotiable in the
 agent-driven flow.
+
+**Pre-fill PER QUESTION, while it's fresh (owner directive, 2026-06-03).** Don't read all
+N screenshots and then come back cold to decide N verdicts in one late pass — by then the
+visual detail of each image is gone from context and you re-derive everything. Instead, the
+moment you finish extracting a question, also form its provisional verdict (closest qid +
+best-effort answer key + risk note) right then, while the screenshot is fresh in mind. In
+the agent-driven loop that means: read screenshot → write its intake entry → record its
+provisional decision, *before* moving to the next screenshot. After
+`process-screenshot-batch` runs, reconcile your provisional picks against the matcher's
+ranked candidates (the matcher may surface a better/closer qid, and it flags claimed-qid
+duplicates) and fix intra-batch qid collisions, but the per-question judgment is captured up
+front, not deferred. (Learned on es batch-006: deferring all 101 verdicts to the end was
+slow, context-heavy, and lower-fidelity.)
 
 For each of the 50 items in
 `qbank-tools/generated/staging/<lang>-<batch>-workbench-decisions.json`, pick an action and
