@@ -37,6 +37,7 @@ import {
   REPORTS_DIR,
   ROOT,
 } from "../qbank-tools/lib/pipeline.mjs";
+import { runBatchConsistencyCheck } from "../qbank-tools/lib/decision-consistency.mjs";
 
 const DEFAULT_EXPORT_DIR = "/Users/huni/Downloads/Expatise";
 
@@ -62,6 +63,7 @@ const lang = normalizeLang(args.lang);
 const batchId = normalizeBatchId(args.batch);
 const dataset = String(args.dataset ?? DEFAULT_DATASET);
 const exportDir = args["export-dir"] ? path.resolve(String(args["export-dir"])) : DEFAULT_EXPORT_DIR;
+const allowConsistencyMismatch = args["allow-consistency-mismatch"] === true || args["allow-consistency-mismatch"] === "true";
 
 const exportPath = path.join(exportDir, `${lang}-${batchId}-workbench-decisions.json`);
 const stagingPath = path.join(STAGING_DIR, `${lang}-${batchId}-workbench-decisions.json`);
@@ -122,6 +124,31 @@ if (counts.keepUnresolved > 0) console.log(`  ⚠ ${counts.keepUnresolved} item(
 if (counts.createNew > 0) console.log(`  ⚠ ${counts.createNew} new-question candidate(s) — staged separately, not merged into production.`);
 if (counts.delete > 0) console.log(`  ⚠ ${counts.delete} item(s) marked delete.`);
 ok(`pre-flight clean: ${counts.approve} approve, no duplicates, no missing decisions`);
+
+// 2b. Type / numeric-option consistency gate (calibrated on es batch-007).
+//     Hard-blocks an approved item whose source disagrees with its master qid on
+//     question type, or whose numeric option set barely overlaps the master's.
+//     Prose option overlap is intentionally NOT gated (too noisy cross-lingually).
+step("decision-consistency gate (type + numeric-option mismatches)");
+const consistency = runBatchConsistencyCheck({ lang, batchId, dataset, decisionsPath: exportPath });
+console.log(`  findings: ${JSON.stringify(consistency.summary.byCode)} (report: ${path.relative(ROOT, consistency.reportPath)})`);
+if (!consistency.ok) {
+  for (const item of consistency.items) {
+    for (const f of item.findings.filter((x) => x.severity === "block")) {
+      console.error(`    ✗ ${item.itemId.replace(/.*at /, "")} [${item.approvedQid}] ${f.code}: ${f.message}`);
+    }
+  }
+  if (allowConsistencyMismatch) {
+    console.log(`  ⚠ ${consistency.summary.blockingItems} consistency block(s) OVERRIDDEN via --allow-consistency-mismatch`);
+  } else {
+    die(
+      `${consistency.summary.blockingItems} approved item(s) disagree with their master qid on type/numeric-options.\n` +
+      `  Fix the qid(s) in the workbench and re-export, or pass --allow-consistency-mismatch if these are deliberate.`,
+    );
+  }
+} else {
+  ok("consistency gate clean (no type/numeric-option mismatches)");
+}
 
 // 3. Back up staging, then copy the reviewed export onto staging.
 if (fs.existsSync(stagingPath)) {
