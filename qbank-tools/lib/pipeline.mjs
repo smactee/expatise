@@ -5794,6 +5794,63 @@ function combineAvailableScores(entries, fallback = 0) {
   return weight > 0 ? total / weight : fallback;
 }
 
+function dotProduct(a, b) {
+  let sum = 0;
+  const n = Math.min(a.length, b.length);
+  for (let i = 0; i < n; i += 1) sum += a[i] * b[i];
+  return sum;
+}
+
+// Option A — semantic re-ranker. Re-orders an item's top-k candidates using
+// bge-small-en-v1.5 cosine (incoming gloss vs candidate master prompt), blended with
+// the matcher's own score, gated so it only steers content-rich prompts (generic/short
+// prompts, where the image/options discriminate, keep matcher order). Vectors are
+// precomputed by scripts/qbank-embed.py and passed in via options.embedRerank; this is a
+// safe no-op when they're absent or incomplete. A rank-preserving rescale keeps the
+// original top-k score values (reassigned by the new order) so downstream gap/threshold
+// logic stays on the same distribution.
+function applyEmbeddingRerank(ranked, embedRerank, item) {
+  if (!embedRerank || ranked.length < 2) return ranked;
+  const glossVec = embedRerank.glossVectors?.get?.(item.itemId);
+  if (!glossVec) return ranked;
+  const topK = Math.min(embedRerank.topK ?? 8, ranked.length);
+  const head = ranked.slice(0, topK);
+  const cosines = head.map(({ question }) => {
+    const masterVec = embedRerank.masterVectors?.get?.(question.qid);
+    return masterVec ? dotProduct(glossVec, masterVec) : null;
+  });
+  if (cosines.some((c) => c == null)) return ranked;
+  const gloss = item.translatedPrompt || item.promptGlossEn || item.translatedText?.prompt || "";
+  const generic = informativeSemanticTokens(gloss).length <= (embedRerank.genericTokenThreshold ?? 4);
+  const weight = generic ? (embedRerank.genericWeight ?? 0) : (embedRerank.richWeight ?? 0.9);
+  if (weight <= 0) return ranked;
+  const totals = head.map((entry) => entry.score.total);
+  const normalize = (values) => {
+    const lo = Math.min(...values);
+    const hi = Math.max(...values);
+    const range = hi - lo || 1;
+    return values.map((value) => (value - lo) / range);
+  };
+  const ns = normalize(totals);
+  const nc = normalize(cosines);
+  const blended = head.map((_, i) => (1 - weight) * ns[i] + weight * nc[i]);
+  const order = head.map((_, i) => i).sort((a, b) => blended[b] - blended[a]);
+  const sortedTotals = [...totals].sort((a, b) => b - a);
+  const reorderedHead = order.map((origIndex, newPosition) => {
+    const entry = head[origIndex];
+    return {
+      ...entry,
+      score: {
+        ...entry.score,
+        total: sortedTotals[newPosition],
+        embedCosine: round(cosines[origIndex]),
+        embedReranked: origIndex !== newPosition,
+      },
+    };
+  });
+  return [...reorderedHead, ...ranked.slice(topK)];
+}
+
 function correctAnswerSimilarityFromSignals(answerSignals, candidateTexts) {
   const normalizedSignals = answerSignals.filter(Boolean);
   const normalizedCandidates = candidateTexts.filter(Boolean);
@@ -9281,6 +9338,7 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
   const autoPromptThreshold = Number(options.autoPromptThreshold ?? (analysisMode === "diagnostic" ? 0.35 : 0.3));
   const sourceLang = normalizeLang(options.sourceLang ?? batchIntake?.meta?.lang ?? DEFAULT_REFERENCE_LANG);
   const correctionRules = normalizeCorrectionRulesOption(options.correctionRules);
+  const embedRerank = options.embedRerank ?? null;
   const claimedQids =
     options.claimedQids instanceof Set
       ? options.claimedQids
@@ -9401,9 +9459,10 @@ export function processBatchAgainstIndex(batchIntake, matchIndex, options = {}) 
     const excludedClaimed = claimedQids.size
       ? rankedAll.filter(({ question }) => claimedQids.has(question.qid))
       : [];
-    const ranked = claimedQids.size
+    const rankedBase = claimedQids.size
       ? rankedAll.filter(({ question }) => !claimedQids.has(question.qid))
       : rankedAll;
+    const ranked = applyEmbeddingRerank(rankedBase, embedRerank, item);
     const topExcludedClaimed = excludedClaimed[0] ?? null;
     const duplicateSuspect =
       topExcludedClaimed != null &&

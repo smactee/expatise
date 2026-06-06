@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import path from "node:path";
+import fs from "node:fs";
 
 import {
   CURRENT_FEATURE_SCHEMA_VERSION,
@@ -13,6 +14,7 @@ import {
   buildSyntheticMatchIndex,
   ensurePipelineDirs,
   fileExists,
+  getBatchDir,
   loadClaimedQidsForLang,
   loadDuplicateExclusionsForLang,
   loadCorrectionRulesFile,
@@ -133,12 +135,47 @@ const correctionRules = correctionRulesPath && fileExists(correctionRulesPath)
   ? await loadCorrectionRulesFile(correctionRulesPath)
   : null;
 const claimedQids = excludeClaimed ? loadClaimedQidsForLang({ dataset, lang }) : new Set();
+// Option-A semantic re-ranker (bge-small-en-v1.5) — ON by default. Uses precomputed
+// vectors from scripts/qbank-embed.py when present, and is a safe no-op otherwise.
+// Disable with `--embed-rerank false` or env QBANK_EMBED_RERANK=0.
+const embedRerankDisabled =
+  String(args["embed-rerank"] ?? "").trim().toLowerCase() === "false" ||
+  process.env.QBANK_EMBED_RERANK === "0";
+const embedRerankRequested =
+  String(args["embed-rerank"] ?? "").trim().toLowerCase() === "true" ||
+  process.env.QBANK_EMBED_RERANK === "1";
+let embedRerank = null;
+if (!embedRerankDisabled) {
+  const loadVectorMap = (vectorPath) => {
+    if (!fileExists(vectorPath)) return null;
+    try {
+      const doc = JSON.parse(fs.readFileSync(vectorPath, "utf8"));
+      const map = new Map();
+      for (const [key, vec] of Object.entries(doc.vectors ?? {})) map.set(key, Float32Array.from(vec));
+      return map;
+    } catch {
+      return null;
+    }
+  };
+  const masterVectors = loadVectorMap(path.join(GENERATED_DIR, "qid-prompt-embeddings.json"));
+  const glossVectors = loadVectorMap(path.join(getBatchDir(lang, batchId), "gloss-embeddings.json"));
+  if (masterVectors && glossVectors) {
+    embedRerank = { masterVectors, glossVectors, richWeight: 0.9, genericWeight: 0, genericTokenThreshold: 4, topK: 8 };
+    console.log(`Semantic re-rank ON (bge-small-en-v1.5): ${masterVectors.size} master + ${glossVectors.size} gloss vectors.`);
+  } else if (embedRerankRequested) {
+    console.warn(
+      `embed-rerank requested but embeddings missing — run \`python scripts/qbank-embed.py build-master\` and ` +
+        `\`python scripts/qbank-embed.py embed-batch --lang ${lang} --batch ${batchId}\`. Proceeding WITHOUT re-rank.`,
+    );
+  }
+}
 const results = processBatchAgainstIndex(filteredIntake, matchIndex, {
   analysisMode,
   candidateLimit: topCandidates,
   correctionRules,
   claimedQids,
   sourceLang: lang,
+  embedRerank,
 });
 
 await writeJson(featureStorePath, featureStore);
