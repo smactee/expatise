@@ -772,4 +772,9 @@ export const fr = {
     missingEnv: 'La configuration de l’app est incomplète. Veuillez réessayer plus tard.',
     failed: 'La suppression du compte a échoué.',
   },
+  legal: {
+    englishNoticeTitle: 'Cette page est en anglais',
+    englishNoticeBody:
+      'Ce document juridique est disponible uniquement en anglais. Les traductions ailleurs dans l’application sont fournies à titre indicatif ; en cas de conflit, la version anglaise de nos documents juridiques fait foi.',
+  },
 } satisfies MessageSchema<typeof en>;

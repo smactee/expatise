@@ -758,4 +758,9 @@ export const ko = {
     missingEnv: '앱 설정이 올바르지 않습니다. 잠시 후 다시 시도해주세요.',
     failed: '계정 삭제에 실패했습니다.',
   },
+  legal: {
+    englishNoticeTitle: '이 페이지는 영어로 제공됩니다',
+    englishNoticeBody:
+      '이 법적 문서는 영어로만 제공됩니다. 앱의 다른 번역은 편의를 위해 제공되며, 법적 문서는 충돌이 있을 경우 영어 버전이 우선합니다.',
+  },
 } as const satisfies MessageSchema<typeof en>;

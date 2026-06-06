@@ -768,4 +768,9 @@ export const en = {
     missingEnv: 'App configuration is incomplete. Please try again later.',
     failed: 'Account deletion failed.',
   },
+  legal: {
+    englishNoticeTitle: 'This page is in English',
+    englishNoticeBody:
+      'This legal document is only available in English. Translated text elsewhere in the app is provided for your convenience; the English version of our legal documents governs in case of any conflict.',
+  },
 } as const;

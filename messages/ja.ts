@@ -797,4 +797,9 @@ export const ja = {
     missingEnv: 'アプリ設定が不完全です。しばらくしてから再度お試しください。',
     failed: 'アカウント削除に失敗しました。',
   },
+  legal: {
+    englishNoticeTitle: 'このページは英語で表示されます',
+    englishNoticeBody:
+      'この法的文書は英語でのみ提供されます。アプリ内の他の翻訳は便宜のために提供されており、法的文書については相違がある場合は英語版が優先されます。',
+  },
 } satisfies MessageSchema<typeof en>;

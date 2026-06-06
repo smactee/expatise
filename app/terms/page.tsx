@@ -1,6 +1,8 @@
 // app/terms/page.tsx
 import Link from "next/link";
 
+import LegalLanguageNotice from "@/components/LegalLanguageNotice.client";
+
 export const metadata = {
   title: "Terms of Service · Expatise",
 };
@@ -35,6 +37,8 @@ export default function TermsPage() {
         <div>Effective date: {EFFECTIVE_DATE}</div>
         <div>Last updated: {LAST_UPDATED}</div>
       </div>
+
+      <LegalLanguageNotice />
 
       <p style={{ marginTop: 16 }}>
         These Terms of Service (“Terms”) govern your use of <b>{APP_NAME}</b>

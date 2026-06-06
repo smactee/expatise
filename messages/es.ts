@@ -771,4 +771,9 @@ export const es = {
     missingEnv: 'La configuración de la app está incompleta. Inténtalo de nuevo más tarde.',
     failed: 'La eliminación de la cuenta falló.',
   },
+  legal: {
+    englishNoticeTitle: 'Esta página está en inglés',
+    englishNoticeBody:
+      'Este documento legal solo está disponible en inglés. Las traducciones en otras partes de la app se ofrecen por comodidad; en caso de conflicto, prevalece la versión en inglés de nuestros documentos legales.',
+  },
 } satisfies MessageSchema<typeof en>;

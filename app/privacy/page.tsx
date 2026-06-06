@@ -1,6 +1,8 @@
 // app/privacy/page.tsx
 import Link from "next/link";
 
+import LegalLanguageNotice from "@/components/LegalLanguageNotice.client";
+
 export const metadata = {
   title: "Privacy Policy · Expatise",
 };
@@ -37,6 +39,8 @@ export default function PrivacyPolicyPage() {
         <div>Effective date: {EFFECTIVE_DATE}</div>
         <div>Last updated: {LAST_UPDATED}</div>
       </div>
+
+      <LegalLanguageNotice />
 
       <p style={{ marginTop: 16 }}>
         This Privacy Policy explains how <b>{APP_NAME}</b> (the “App”), operated
