@@ -1,9 +1,9 @@
 {
   "lang": "es",
   "purpose": "Accumulated unresolved/deferred es items to RE-RUN as the final es batch. Reviewer notes are authoritative human guidance. Do not lose these. Compiled because the pipeline follow-up file only captured a subset.",
-  "updatedAt": "2026-06-05",
+  "updatedAt": "2026-06-06",
   "sourceOfTruth": "reviewed workbench-decisions exports (archived in qbank-tools/history/decisions/)",
-  "count": 18,
+  "count": 20,
   "items": [
     {
       "batch": "batch-005",
@@ -332,6 +332,44 @@
       "optionsRaw": [
         "A) Verdadero",
         "B) Falso"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-008",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 13.14.42 1.png",
+      "screenshotPath": "imports/es/batch-008/screenshots/Screenshot 2026-05-24 at 13.14.42 1.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0655",
+      "reviewerNotes": "Claude low-risk approveExistingQid: matcher top-1 looks clean\nit matched correctly, but the problem lies within the target question. we must change the local answer key to mean \"no right turn\" the gloss is showing \"right turn allowed\"= permiso, when it should be following the other options and replace that word with \"prohibido\"",
+      "newQuestionLocalAnswerKey": null,
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "What does this yellow road marking mean?",
+      "promptRaw": "Qué significa la señal amarilla en la vía ?",
+      "optionsRaw": [
+        "A) Prohibido girar a la izquierda",
+        "B) Prohibido girar en U",
+        "C) Permiso de girar a la derecha",
+        "D) Prohibido seguir recto"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-008",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 13.15.01.png",
+      "screenshotPath": "imports/es/batch-008/screenshots/Screenshot 2026-05-24 at 13.15.01.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0850",
+      "reviewerNotes": "the question text does not match the image asset.",
+      "newQuestionLocalAnswerKey": null,
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "How should you drive the vehicle when encountering this situation (highway-tunnel/wide-road scene)?",
+      "promptRaw": "Cómo conduce el vehículo cuando se encuentra con esta situación?",
+      "optionsRaw": [
+        "A) Se prohibe conducir el vehículo en bs carribs la te rafes",
+        "B) Entra en bs carriles laterales con desaceleración",
+        "C) Entra en el carril de fe derecha",
+        "D) Entra en bs carriles laterales con aceleración"
       ],
       "correctKeyRaw": null
     }
