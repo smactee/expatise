@@ -5391,7 +5391,10 @@ function inferExpectedObjectTagsFromText(text) {
   if (/\b(?:dashboard|indicator|warning light|indicator light|warning lamp|instrument panel|symbol indicate|it lights|lights to indicate|signal about)\b/.test(text)) {
     tags.push("indicator", "dashboard-indicator", "warning-light");
   }
-  if (/\b(?:car|vehicle|hood|engine compartment|engine-compartment|door|one-side-door|both-side-doors|luggage compartment|luggage-compartment|trunk)\b/.test(text)) {
+  // Bare "car"/"vehicle" is far too common (almost every road question mentions a vehicle) and
+  // falsely manufactured a car-icon -> dashboard-indicator cascade onto unrelated questions
+  // (e.g. a U-turn road-scene item matched a door-indicator qid). Require a specific car-part cue.
+  if (/\b(?:hood|engine compartment|engine-compartment|door|one-side-door|both-side-doors|luggage compartment|luggage-compartment|trunk)\b/.test(text)) {
     tags.push("car-icon");
   }
   if (/\b(?:open hood|hood open|open engine-compartment|engine-compartment open|engine compartment(?: is)? opened?|opened? engine compartment|engine-compartment(?: is)? opened?|opened? engine-compartment)\b/.test(text)) {
