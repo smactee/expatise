@@ -1857,7 +1857,14 @@ function buildHtml({
     }
 
     function normalizeDecisionQid(value) {
-      const text = String(value ?? '').trim();
+      // Tolerate values pasted from the app that carry surrounding whitespace or
+      // stray periods (e.g. copying "415." or "q415 ." gives the right qid).
+      // Strip leading/trailing dots + spaces, then accept an optional 'q'
+      // prefix + digits and normalize to qNNNN.
+      const text = String(value ?? '')
+        .trim()
+        .replace(/^[\\s.]+/, '')
+        .replace(/[\\s.]+$/, '');
       if (!text) {
         return null;
       }
@@ -4434,7 +4441,10 @@ function normalizeCanonicalQid(value) {
     return null;
   }
 
-  const match = text.match(/^q?(\d+)$/i);
+  // Tolerate a trailing period and stray surrounding dots/spaces, e.g. a qid
+  // pasted from the app as "415." → q0415.
+  const cleaned = text.replace(/^[\s.]+/, "").replace(/[\s.]+$/, "");
+  const match = cleaned.match(/^q?(\d+)$/i);
   if (!match) {
     return null;
   }
