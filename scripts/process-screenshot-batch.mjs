@@ -209,7 +209,7 @@ if (!embedRerankDisabled) {
   if (masterVectors && glossVectors) {
     embedRerank = {
       masterVectors, glossVectors, masterImageVectors, imageVectors,
-      richWeight: 0.9, imageWeight: 0.4, imageItemTextWeight: 0.4, genericTokenThreshold: 4, topK: 8,
+      richWeight: 0.9, imageWeight: 0.5, imageItemTextWeight: 0.3, genericTokenThreshold: 4, topK: 8,
     };
     console.log(`Semantic re-rank ON: ${masterVectors.size} text + ${masterImageVectors?.size ?? 0} image master vectors (bge-small + clip-ViT-B-32).`);
   } else if (embedRerankRequested) {

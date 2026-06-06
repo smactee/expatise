@@ -131,26 +131,43 @@ def build_master_images():
 
 
 def crop_question_image(path):
-    # Source captures are the phone screen letterboxed in a black canvas, with the question
-    # image as a colorful band amid white UI. Isolate it: drop the letterbox (columns/rows that
-    # are mostly non-black, ignoring stray dots), then keep the saturated band in the upper 60%
-    # (the photo/diagram; UI text is white/black). Falls back to the whole image if unsure.
+    # Source captures are the phone screen letterboxed in a black canvas, with the question image
+    # as a band amid white UI. Isolate it: drop the letterbox (columns/rows mostly non-black,
+    # ignoring stray dots), then keep the tallest contiguous band of "image" rows in the upper
+    # ~two-thirds. A row is "image" if it has a meaningful count of COLORFUL pixels (catches signs
+    # and scenes, incl. their thin/sparse arcs) OR is densely non-white (catches gray icons and
+    # line diagrams). Per-pixel counts, not row means, so a thin sign arc still registers. Falls
+    # back to the whole de-letterboxed image if nothing is found.
     from PIL import Image
     import numpy as np
     im = Image.open(path).convert("RGB")
-    arr = np.asarray(im)
-    nb = arr.sum(axis=2) > 30
+    a = np.asarray(im).astype("int16")
+    nb = a.sum(axis=2) > 30
     H, W = nb.shape
     cols = np.where(nb.sum(axis=0) > H * 0.2)[0]
     rows = np.where(nb.sum(axis=1) > W * 0.2)[0]
     if len(cols) and len(rows):
-        im = im.crop((int(cols.min()), int(rows.min()), int(cols.max()) + 1, int(rows.max()) + 1))
-    sat = np.asarray(im.convert("HSV"))[:, :, 1].mean(axis=1)
-    h = len(sat)
-    band = np.where(sat[: int(h * 0.6)] > max(sat.max() * 0.4, 25))[0]
-    if len(band) >= 10:
-        im = im.crop((0, max(0, int(band.min()) - 5), im.width, min(im.height, int(band.max()) + 6)))
-    return im
+        x0, y0, x1, y1 = int(cols.min()), int(rows.min()), int(cols.max()) + 1, int(rows.max()) + 1
+        im = im.crop((x0, y0, x1, y1)); a = a[y0:y1, x0:x1]
+    h, w, _ = a.shape
+    hsv = np.asarray(Image.fromarray(a.astype("uint8")).convert("HSV"))
+    colorful = (hsv[:, :, 1] > 60).mean(axis=1)
+    dense = (a.max(axis=2) < 235).mean(axis=1)
+    signal = (colorful > 0.015) | (dense > 0.14)
+    start, upper = int(h * 0.10), int(h * 0.66)
+    runs, i = [], start
+    while i < upper:
+        if signal[i]:
+            j = i
+            while j < h and signal[j]:
+                j += 1
+            runs.append((i, j)); i = j
+        else:
+            i += 1
+    if not runs:
+        return im
+    y0, y1 = max(runs, key=lambda t: t[1] - t[0])
+    return im.crop((0, max(0, y0 - 6), im.width, min(im.height, y1 + 6)))
 
 
 def embed_batch_images(lang, batch):

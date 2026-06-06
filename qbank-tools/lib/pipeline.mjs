@@ -5841,8 +5841,8 @@ function applyEmbeddingRerank(ranked, embedRerank, item) {
   let weightText;
   let weightImage;
   if (isImageItem) {
-    weightImage = imageOk ? (embedRerank.imageWeight ?? 0.4) : 0;
-    weightText = textOk ? (embedRerank.imageItemTextWeight ?? 0.4) : 0;
+    weightImage = imageOk ? (embedRerank.imageWeight ?? 0.5) : 0;
+    weightText = textOk ? (embedRerank.imageItemTextWeight ?? 0.3) : 0;
   } else {
     weightImage = 0;
     const gloss = item.translatedPrompt || item.promptGlossEn || item.translatedText?.prompt || "";
