@@ -2,6 +2,7 @@
 
 import path from "node:path";
 import fs from "node:fs";
+import { spawnSync } from "node:child_process";
 
 import {
   CURRENT_FEATURE_SCHEMA_VERSION,
@@ -70,6 +71,41 @@ function summarizeDecisions(groups) {
   }
 
   return summary;
+}
+
+// Keep the semantic re-ranker's vectors current automatically: rebuild master-prompt
+// vectors whenever questions.json is newer, and (re)embed this batch whenever its intake
+// is newer. Runs the Python sidecar with the repo's .venv-embed (or QBANK_EMBED_PYTHON,
+// else python3). Best-effort: on any failure it warns and the matcher proceeds without
+// re-rank, so matching never breaks if the embedding env is unavailable.
+function ensureEmbeddingArtifacts(lang, batchId, dataset) {
+  const repoVenvPython = path.join(process.cwd(), ".venv-embed", "bin", "python");
+  const python = process.env.QBANK_EMBED_PYTHON
+    || (fileExists(repoVenvPython) ? repoVenvPython : "python3");
+  const sidecar = path.join("scripts", "qbank-embed.py");
+  const mtime = (filePath) => (fileExists(filePath) ? fs.statSync(filePath).mtimeMs : 0);
+  const masterVectors = path.join(GENERATED_DIR, "qid-prompt-embeddings.json");
+  const questionsPath = path.join("public", "qbank", dataset, "questions.json");
+  const batchDir = getBatchDir(lang, batchId);
+  const glossVectors = path.join(batchDir, "gloss-embeddings.json");
+  const intakePath = path.join(batchDir, "intake.json");
+  const jobs = [];
+  if (!fileExists(masterVectors) || mtime(questionsPath) > mtime(masterVectors)) {
+    jobs.push(["build-master"]);
+  }
+  if (fileExists(intakePath) && (!fileExists(glossVectors) || mtime(intakePath) > mtime(glossVectors))) {
+    jobs.push(["embed-batch", "--lang", lang, "--batch", batchId]);
+  }
+  for (const jobArgs of jobs) {
+    const result = spawnSync(python, [sidecar, ...jobArgs], { stdio: "inherit" });
+    if (result.error || result.status !== 0) {
+      console.warn(
+        `Semantic re-rank: embedding step \`${sidecar} ${jobArgs.join(" ")}\` did not complete ` +
+          `(python: ${python}). Proceeding with existing vectors if present; install fastembed or set QBANK_EMBED_PYTHON to enable.`,
+      );
+      return;
+    }
+  }
 }
 
 const args = parseArgs();
@@ -146,6 +182,7 @@ const embedRerankRequested =
   process.env.QBANK_EMBED_RERANK === "1";
 let embedRerank = null;
 if (!embedRerankDisabled) {
+  ensureEmbeddingArtifacts(lang, batchId, dataset);
   const loadVectorMap = (vectorPath) => {
     if (!fileExists(vectorPath)) return null;
     try {
