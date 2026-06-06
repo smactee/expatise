@@ -1,9 +1,9 @@
 {
   "lang": "es",
   "purpose": "Accumulated unresolved/deferred es items to RE-RUN as the final es batch. Reviewer notes are authoritative human guidance. Do not lose these. Compiled because the pipeline follow-up file only captured a subset.",
-  "updatedAt": "2026-06-06",
+  "updatedAt": "2026-06-07T00:25:07Z",
   "sourceOfTruth": "reviewed workbench-decisions exports (archived in qbank-tools/history/decisions/)",
-  "count": 21,
+  "count": 22,
   "items": [
     {
       "batch": "batch-005",
@@ -389,6 +389,23 @@
         "B) 6 meses",
         "C) 12 meses",
         "D) 24 meses"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-010",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 13.16.52.png",
+      "screenshotPath": "imports/es/batch-010/screenshots/Screenshot 2026-05-24 at 13.16.52.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0127",
+      "reviewerNotes": "Owner left UNRESOLVED at review (Claude prefill had flagged claimed-qid-duplicate-suspect; matcher top global was a claimed qid). For batch-final: re-match with full correction rules and disposition (likely a real already-localized duplicate or a near-dup needing the right unclaimed qid).",
+      "promptEn": "What should the driver do when encountering an oncoming vehicle that forces an overtake by occupying the driver's lane?",
+      "promptRaw": "Qué debe hacer cuando un conductor se encuentra con un vehículo en sentido contrario que adelanta a la fuerza ocupando el carril del conductor citado?",
+      "optionsRaw": [
+        "A) Conducir con aceleración",
+        "B) Disminuir la vebcidad b más posible hasta detenerse",
+        "C) Conducir a la vebcidad original",
+        "D) Bloquear su camino"
       ],
       "correctKeyRaw": null
     }
