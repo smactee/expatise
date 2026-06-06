@@ -5815,18 +5815,41 @@ function dotProduct(a, b) {
 function applyEmbeddingRerank(ranked, embedRerank, item) {
   if (!embedRerank || ranked.length < 2) return ranked;
   const glossVec = embedRerank.glossVectors?.get?.(item.itemId);
-  if (!glossVec) return ranked;
+  const imageVec = embedRerank.imageVectors?.get?.(item.itemId);
+  const isImageItem = Boolean(imageVec) && Boolean(embedRerank.masterImageVectors);
+  if (!glossVec && !isImageItem) return ranked;
   const topK = Math.min(embedRerank.topK ?? 8, ranked.length);
   const head = ranked.slice(0, topK);
-  const cosines = head.map(({ question }) => {
-    const masterVec = embedRerank.masterVectors?.get?.(question.qid);
-    return masterVec ? dotProduct(glossVec, masterVec) : null;
-  });
-  if (cosines.some((c) => c == null)) return ranked;
-  const gloss = item.translatedPrompt || item.promptGlossEn || item.translatedText?.prompt || "";
-  const generic = informativeSemanticTokens(gloss).length <= (embedRerank.genericTokenThreshold ?? 4);
-  const weight = generic ? (embedRerank.genericWeight ?? 0) : (embedRerank.richWeight ?? 0.9);
-  if (weight <= 0) return ranked;
+  const textCos = glossVec
+    ? head.map(({ question }) => {
+      const masterVec = embedRerank.masterVectors?.get?.(question.qid);
+      return masterVec ? dotProduct(glossVec, masterVec) : null;
+    })
+    : null;
+  const imageCos = isImageItem
+    ? head.map(({ question }) => {
+      const masterVec = embedRerank.masterImageVectors?.get?.(question.qid);
+      return masterVec ? dotProduct(imageVec, masterVec) : null;
+    })
+    : null;
+  const textOk = textCos != null && textCos.every((c) => c != null);
+  const imageOk = imageCos != null && imageCos.every((c) => c != null);
+  // Weighting: image items lean on the cropped image-content cosine (validated as the
+  // discriminator for sign/scene/indicator questions where the prompt is generic), blended
+  // with text and the matcher score. Text-only items keep the prompt-embedding re-rank gated
+  // by genericness (generic prompts can't be re-ranked by text, so they keep matcher order).
+  let weightText;
+  let weightImage;
+  if (isImageItem) {
+    weightImage = imageOk ? (embedRerank.imageWeight ?? 0.4) : 0;
+    weightText = textOk ? (embedRerank.imageItemTextWeight ?? 0.4) : 0;
+  } else {
+    weightImage = 0;
+    const gloss = item.translatedPrompt || item.promptGlossEn || item.translatedText?.prompt || "";
+    const generic = informativeSemanticTokens(gloss).length <= (embedRerank.genericTokenThreshold ?? 4);
+    weightText = textOk && !generic ? (embedRerank.richWeight ?? 0.9) : 0;
+  }
+  if (weightText <= 0 && weightImage <= 0) return ranked;
   const totals = head.map((entry) => entry.score.total);
   const normalize = (values) => {
     const lo = Math.min(...values);
@@ -5835,8 +5858,10 @@ function applyEmbeddingRerank(ranked, embedRerank, item) {
     return values.map((value) => (value - lo) / range);
   };
   const ns = normalize(totals);
-  const nc = normalize(cosines);
-  const blended = head.map((_, i) => (1 - weight) * ns[i] + weight * nc[i]);
+  const nt = weightText > 0 ? normalize(textCos) : head.map(() => 0);
+  const ni = weightImage > 0 ? normalize(imageCos) : head.map(() => 0);
+  const weightOrig = Math.max(0, 1 - weightText - weightImage);
+  const blended = head.map((_, i) => weightOrig * ns[i] + weightText * nt[i] + weightImage * ni[i]);
   const order = head.map((_, i) => i).sort((a, b) => blended[b] - blended[a]);
   const sortedTotals = [...totals].sort((a, b) => b - a);
   const reorderedHead = order.map((origIndex, newPosition) => {
@@ -5846,7 +5871,8 @@ function applyEmbeddingRerank(ranked, embedRerank, item) {
       score: {
         ...entry.score,
         total: sortedTotals[newPosition],
-        embedCosine: round(cosines[origIndex]),
+        embedTextCosine: textOk ? round(textCos[origIndex]) : null,
+        embedImageCosine: imageOk ? round(imageCos[origIndex]) : null,
         embedReranked: origIndex !== newPosition,
       },
     };

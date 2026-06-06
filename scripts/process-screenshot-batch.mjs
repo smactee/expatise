@@ -96,6 +96,14 @@ function ensureEmbeddingArtifacts(lang, batchId, dataset) {
   if (fileExists(intakePath) && (!fileExists(glossVectors) || mtime(intakePath) > mtime(glossVectors))) {
     jobs.push(["embed-batch", "--lang", lang, "--batch", batchId]);
   }
+  const masterImageVectors = path.join(GENERATED_DIR, "qid-image-embeddings.json");
+  const batchImageVectors = path.join(batchDir, "image-embeddings.json");
+  if (!fileExists(masterImageVectors) || mtime(questionsPath) > mtime(masterImageVectors)) {
+    jobs.push(["build-master-images"]);
+  }
+  if (fileExists(intakePath) && (!fileExists(batchImageVectors) || mtime(intakePath) > mtime(batchImageVectors))) {
+    jobs.push(["embed-batch-images", "--lang", lang, "--batch", batchId]);
+  }
   for (const jobArgs of jobs) {
     const result = spawnSync(python, [sidecar, ...jobArgs], { stdio: "inherit" });
     if (result.error || result.status !== 0) {
@@ -196,9 +204,14 @@ if (!embedRerankDisabled) {
   };
   const masterVectors = loadVectorMap(path.join(GENERATED_DIR, "qid-prompt-embeddings.json"));
   const glossVectors = loadVectorMap(path.join(getBatchDir(lang, batchId), "gloss-embeddings.json"));
+  const masterImageVectors = loadVectorMap(path.join(GENERATED_DIR, "qid-image-embeddings.json"));
+  const imageVectors = loadVectorMap(path.join(getBatchDir(lang, batchId), "image-embeddings.json"));
   if (masterVectors && glossVectors) {
-    embedRerank = { masterVectors, glossVectors, richWeight: 0.9, genericWeight: 0, genericTokenThreshold: 4, topK: 8 };
-    console.log(`Semantic re-rank ON (bge-small-en-v1.5): ${masterVectors.size} master + ${glossVectors.size} gloss vectors.`);
+    embedRerank = {
+      masterVectors, glossVectors, masterImageVectors, imageVectors,
+      richWeight: 0.9, imageWeight: 0.4, imageItemTextWeight: 0.4, genericTokenThreshold: 4, topK: 8,
+    };
+    console.log(`Semantic re-rank ON: ${masterVectors.size} text + ${masterImageVectors?.size ?? 0} image master vectors (bge-small + clip-ViT-B-32).`);
   } else if (embedRerankRequested) {
     console.warn(
       `embed-rerank requested but embeddings missing — run \`python scripts/qbank-embed.py build-master\` and ` +

@@ -86,6 +86,92 @@ def embed_batch(lang, batch):
                  "lang": lang, "batch": batch, "vectors": dict(zip(ids, vecs))})
 
 
+IMAGE_MODEL = "Qdrant/clip-ViT-B-32-vision"
+MASTER_IMG_OUT = os.path.join(ROOT, "qbank-tools", "generated", "qid-image-embeddings.json")
+
+
+def _image_model():
+    try:
+        from fastembed import ImageEmbedding
+    except ImportError:
+        sys.exit("fastembed ImageEmbedding not available. Run: pip install fastembed pillow")
+    return ImageEmbedding(IMAGE_MODEL)
+
+
+def _embed_images(model, paths):
+    import numpy as np
+    arr = np.asarray(list(model.embed(list(paths))), dtype=np.float32)
+    norms = np.linalg.norm(arr, axis=1, keepdims=True)
+    norms[norms == 0] = 1.0
+    arr = arr / norms
+    return [[round(float(x), 6) for x in row] for row in arr]
+
+
+def _master_image_path(src):
+    # src like "/qbank/2023-test1/images/img_*.png" -> public/qbank/.../images/...
+    return os.path.join(ROOT, "public", str(src or "").lstrip("/"))
+
+
+def build_master_images():
+    qpath = os.path.join(ROOT, "public", "qbank", DATASET, "questions.json")
+    questions = json.load(open(qpath, encoding="utf-8"))["questions"]
+    qids, paths = [], []
+    for q in questions:
+        src = next((a.get("src") for a in (q.get("assets") or [])
+                    if a.get("kind") == "image" and a.get("src")), None)
+        if not src:
+            continue
+        p = _master_image_path(src)
+        if os.path.exists(p):
+            qids.append(q["id"]); paths.append(p)
+    model = _image_model()
+    vecs = _embed_images(model, paths)
+    _write(MASTER_IMG_OUT, {"model": IMAGE_MODEL, "dim": len(vecs[0]) if vecs else 0,
+                            "vectors": dict(zip(qids, vecs))})
+
+
+def crop_question_image(path):
+    # Source captures are the phone screen letterboxed in a black canvas, with the question
+    # image as a colorful band amid white UI. Isolate it: drop the letterbox (columns/rows that
+    # are mostly non-black, ignoring stray dots), then keep the saturated band in the upper 60%
+    # (the photo/diagram; UI text is white/black). Falls back to the whole image if unsure.
+    from PIL import Image
+    import numpy as np
+    im = Image.open(path).convert("RGB")
+    arr = np.asarray(im)
+    nb = arr.sum(axis=2) > 30
+    H, W = nb.shape
+    cols = np.where(nb.sum(axis=0) > H * 0.2)[0]
+    rows = np.where(nb.sum(axis=1) > W * 0.2)[0]
+    if len(cols) and len(rows):
+        im = im.crop((int(cols.min()), int(rows.min()), int(cols.max()) + 1, int(rows.max()) + 1))
+    sat = np.asarray(im.convert("HSV"))[:, :, 1].mean(axis=1)
+    h = len(sat)
+    band = np.where(sat[: int(h * 0.6)] > max(sat.max() * 0.4, 25))[0]
+    if len(band) >= 10:
+        im = im.crop((0, max(0, int(band.min()) - 5), im.width, min(im.height, int(band.max()) + 6)))
+    return im
+
+
+def embed_batch_images(lang, batch):
+    base = os.path.join(ROOT, "imports", lang, batch)
+    intake = json.load(open(os.path.join(base, "intake.json"), encoding="utf-8"))
+    items = intake["items"] if isinstance(intake, dict) and "items" in intake else intake
+    ids, imgs = [], []
+    for it in items:
+        if it.get("hasImage") is not True:
+            continue
+        rel = it.get("itemId") or it.get("file") or it.get("sourceImage")
+        p = os.path.join(base, rel) if rel else None
+        if p and os.path.exists(p):
+            ids.append(it["itemId"]); imgs.append(crop_question_image(p))
+    model = _image_model()
+    vecs = _embed_images(model, imgs)
+    _write(os.path.join(base, "image-embeddings.json"),
+           {"model": IMAGE_MODEL, "dim": len(vecs[0]) if vecs else 0,
+            "lang": lang, "batch": batch, "vectors": dict(zip(ids, vecs))})
+
+
 def main():
     ap = argparse.ArgumentParser(description="Precompute qbank sentence embeddings.")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -93,11 +179,19 @@ def main():
     eb = sub.add_parser("embed-batch")
     eb.add_argument("--lang", required=True)
     eb.add_argument("--batch", required=True)
+    sub.add_parser("build-master-images")
+    ebi = sub.add_parser("embed-batch-images")
+    ebi.add_argument("--lang", required=True)
+    ebi.add_argument("--batch", required=True)
     args = ap.parse_args()
     if args.cmd == "build-master":
         build_master()
     elif args.cmd == "embed-batch":
         embed_batch(args.lang, args.batch)
+    elif args.cmd == "build-master-images":
+        build_master_images()
+    elif args.cmd == "embed-batch-images":
+        embed_batch_images(args.lang, args.batch)
 
 
 if __name__ == "__main__":
