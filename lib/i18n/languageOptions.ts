@@ -29,12 +29,20 @@ export function isLanguageAvailable(code: LanguageOptionCode | string): boolean 
 
 const IMPLEMENTED_LANGUAGE_OPTIONS: LanguageOption[] = (
   Object.entries(LOCALE_REGISTRY) as [Locale, { label: string }][]
-).map(([code, definition]) => ({
-  code,
-  label: definition.label,
-  enabled: true,
-  productionReady: true,
-}));
+).map(([code, definition]) => {
+  // A locale can have its full UI messages registered (so the translated UI
+  // is ready and testable in dev) while its QUESTION bank is still being
+  // built. Such locales stay dev-only — they appear as "Not ready" in
+  // production and are not selectable until promoted. To promote, remove the
+  // code from DEV_LANGUAGE_CODES above.
+  const devOnly = DEV_LANGUAGE_CODES.has(code as DevLanguageCode);
+  return {
+    code,
+    label: definition.label,
+    enabled: devOnly ? areDevLanguagesEnabled() : true,
+    productionReady: !devOnly,
+  };
+});
 
 const PENDING_LANGUAGE_OPTIONS: readonly LanguageOption[] = [
   { code: 'zh', label: '中文', enabled: isLanguageAvailable('zh'), productionReady: false },
