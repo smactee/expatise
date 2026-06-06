@@ -748,11 +748,42 @@ export const ja = {
     inAppBody:
       'アプリにアクセスできる場合は、プロフィール → アカウント削除 から画面の案内に従ってください。自動フローが成功すると、即時に削除されログアウトされます。',
     emailTitle: '方法B — メールで削除依頼（アプリに入れない場合）',
+    emailIntroPrefix: '{team} 宛に次のアドレスへメール送信：',
+    emailIntroMiddle: '件名は次のとおりにしてください：',
+    emailIntroSuffix: '。',
+    pleaseInclude: '次の情報を記載してください：',
+    includeSignIn: 'ログインに使用したメールアドレス（または Google／Apple などのプロバイダー）',
+    includeIdentifier: '該当する場合は、識別に役立つ情報（ユーザー名／表示名）',
+    includeStatement: '明確な依頼文：「私のアカウントと関連データを削除してください。」',
+    verifyNote:
+      'アカウント保護のため、削除依頼の処理前に本人確認をお願いする場合があります。',
     processingTimeTitle: '対応時間',
+    processingInApp: 'アプリ内削除：自動フローが成功した場合は即時に完了します。',
+    processingEmail:
+      'メールでの削除依頼：（必要に応じて）本人確認の後、通常 {days} 日以内に完了します。',
+    whatWeDeleteTitle: '削除する内容',
     deleteAccountRecord: 'アカウント情報（認証 / プロフィール）',
     deleteServerData: 'サーバーに保存されたアカウント関連データ',
+    examplesNote:
+      '例として、プロフィール情報や、アカウントに紐づくコンテンツ・アクティビティなどが含まれる場合があります。',
+    retainTitle: '保持する場合がある情報',
+    retainLegal: '法令・コンプライアンス・紛争対応のために必要な範囲の限定的な情報',
+    retainSecurity: '該当する場合、セキュリティ／不正防止に関する記録',
+    retainNote:
+      'バックアップでは、上書きされるまでの一定期間データが保持される場合があります。可能な限り、保持するデータは制限し最小限にとどめます。',
     needHelpTitle: 'サポートが必要な場合',
+    needHelpPrefix: '登録時のメールアドレスにアクセスできない場合は、',
+    needHelpSuffix: 'までご連絡のうえ状況をお知らせください。安全に対応できる方法をご案内します。',
     lastUpdated: '最終更新日: {date}',
+    emailTemplate: {
+      subject: 'アカウント削除のご依頼',
+      greeting: '{team} 御中、',
+      request: '私のアカウントと関連データを削除してください。',
+      details: 'アカウント情報（本人特定のため）：',
+      signIn: '- ログイン用メールアドレス（または Google／Apple などのプロバイダー）：',
+      username: '- ユーザー名／表示名（該当する場合）：',
+      thanks: 'よろしくお願いいたします。',
+    },
   },
   deleteAccount: {
     ...en.deleteAccount,

@@ -3,6 +3,7 @@
 import type { MessageSchema } from '@/lib/i18n/types';
 
 import { en } from './en';
+import { es } from './es';
 import { fr } from './fr';
 import { ja } from './ja';
 import { ko } from './ko';
@@ -31,6 +32,10 @@ export const LOCALE_REGISTRY = {
   fr: {
     label: 'Français',
     messages: fr,
+  },
+  es: {
+    label: 'Español',
+    messages: es,
   },
   // British Chinglish: the verbatim pre-correction PDF extract, surfaced as a
   // selectable question language. UI chrome stays English (reuses `en` messages);
