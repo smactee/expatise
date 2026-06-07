@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-31T10:40:18.715Z",
+  "generatedAt": "2026-06-07T09:34:15.222Z",
   "dataset": "2023-test1",
   "sourcePaths": {
     "questions": "public/qbank/2023-test1/questions.json",
@@ -7,6 +7,8 @@
     "tagsPatch": "public/qbank/2023-test1/tags.patch.json",
     "imageColorTags": "public/qbank/2023-test1/image-color-tags.json",
     "translations": [
+      "public/qbank/2023-test1/translations.en-orig.json",
+      "public/qbank/2023-test1/translations.es.json",
       "public/qbank/2023-test1/translations.fr.json",
       "public/qbank/2023-test1/translations.ja.json",
       "public/qbank/2023-test1/translations.ko.json",
@@ -14,28 +16,42 @@
     ]
   },
   "fileHashes": {
-    "public/qbank/2023-test1/questions.json": "f6bc04d600668f6693233f6f169af126b10c947a74ff1281083a863d3cd1d1d2",
+    "public/qbank/2023-test1/questions.json": "a2c59cf50b06a2c0dec11bcf15859b22c87539482e50ec7f6fd62e96a02a64e4",
     "public/qbank/2023-test1/questions.raw.json": "501a1b5c72bad8218d2f78e0b4d46c1053d5ea155d3c4fc56f9dd66b67755d13",
-    "public/qbank/2023-test1/tags.patch.json": "3a3883393d2b150a7806daecea2a22f317a5eb733b1e0e99f2250167bfd3cad5",
-    "public/qbank/2023-test1/image-color-tags.json": "8ca814e5cd98044ecf74153f9338ea422bad95dbbe43e203a4c67076739639b1",
-    "public/qbank/2023-test1/translations.fr.json": "ce622ab7a3af76850a5912854f52f8faf24877b50582f7b9b7a26fbd0ad595af",
-    "public/qbank/2023-test1/translations.ja.json": "7a1e9c36c4988bfcea5ba610ea30cf7f59d0f8f046e6e17b4a1c11f74b560d7d",
-    "public/qbank/2023-test1/translations.ko.json": "f007c994fc67b6e0600ba8b76213176a061cab76801af111336e5cd2bddc9b25",
-    "public/qbank/2023-test1/translations.ru.json": "976ce28848bce69f66b222846620374ed128010835d20360f3bc29e9d807c396"
+    "public/qbank/2023-test1/tags.patch.json": "9a214a267c90546d71fe1d2952df7da5bbb58410e9e5c016d140e2476cc0bbf0",
+    "public/qbank/2023-test1/image-color-tags.json": "6b21fd466a13519a7c1e173e70535fc5e10ab014d4029f3e846f2f480a479912",
+    "public/qbank/2023-test1/translations.en-orig.json": "409f703aa94edf387e2e5f158e965efb76d357238ec5562344cbb1a1e1bed5f8",
+    "public/qbank/2023-test1/translations.es.json": "910375daa5f5749454feac9de07cff2bbc1b1a5d873cc6ed0bf0683491086878",
+    "public/qbank/2023-test1/translations.fr.json": "d96cadd723a0b35b59b52fc9b02c5356a89752a79f44fa20ced324ace8e82c96",
+    "public/qbank/2023-test1/translations.ja.json": "5be23e45969f6611fa3bc5d86aec55675b7e85e9512cc6b105041865d12db5b4",
+    "public/qbank/2023-test1/translations.ko.json": "53c7a220c1609ab6f5c6e30852d1fe023f00892a3aa9c7d8402c9d64b410640b",
+    "public/qbank/2023-test1/translations.ru.json": "3c2c1f9f7668289acd8b1c11e09495b924e3a419d95b6067f1a64258ce11fb2d"
   },
   "summary": {
-    "masterQids": 1006,
+    "masterQids": 1004,
     "rawQids": 1008,
-    "translationLanguages": 4,
+    "translationLanguages": 6,
     "criticalBlockers": 0,
-    "warnings": 19,
-    "duplicateCandidates": 6,
+    "warnings": 46,
+    "duplicateCandidates": 4,
     "missingImageAssets": 0
   },
   "criticalBlockers": [],
   "warnings": [
     {
       "type": "raw-only-qid",
+      "qid": "q0431",
+      "reason": "qid exists in questions.raw.json but not questions.json",
+      "details": {}
+    },
+    {
+      "type": "raw-only-qid",
+      "qid": "q0450",
+      "reason": "qid exists in questions.raw.json but not questions.json",
+      "details": {}
+    },
+    {
+      "type": "raw-only-qid",
       "qid": "q0518",
       "reason": "qid exists in questions.raw.json but not questions.json",
       "details": {}
@@ -47,56 +63,218 @@
       "details": {}
     },
     {
-      "type": "translation-extra-qid",
-      "qid": "q0906",
-      "reason": "ja: translation qid is not in questions.json",
+      "type": "translation-missing-qid",
+      "qid": "q0974",
+      "reason": "en-orig: missing production translation",
       "details": {}
     },
     {
-      "type": "translation-extra-qid",
-      "qid": "q0906",
-      "reason": "ko: translation qid is not in questions.json",
+      "type": "translation-missing-qid",
+      "qid": "q0975",
+      "reason": "en-orig: missing production translation",
       "details": {}
     },
     {
-      "type": "translation-extra-qid",
-      "qid": "q0906",
-      "reason": "ru: translation qid is not in questions.json",
+      "type": "translation-missing-qid",
+      "qid": "q0976",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0977",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0978",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0979",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0980",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0981",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0982",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0983",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0984",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0985",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0986",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0987",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0988",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0989",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0991",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0992",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0993",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0994",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0995",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0996",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0998",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q0999",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1001",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1002",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1003",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1004",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1005",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1006",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1007",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1008",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1009",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1011",
+      "reason": "en-orig: missing production translation",
+      "details": {}
+    },
+    {
+      "type": "translation-missing-qid",
+      "qid": "q1012",
+      "reason": "en-orig: missing production translation",
       "details": {}
     },
     {
       "type": "tags-patch-qid-not-in-master",
-      "qid": "q0518",
-      "reason": "tags.patch.json has qid not in questions.json",
-      "details": {}
-    },
-    {
-      "type": "tags-patch-qid-not-in-master",
-      "qid": "q0906",
-      "reason": "tags.patch.json has qid not in questions.json",
-      "details": {}
-    },
-    {
-      "type": "tags-patch-qid-not-in-master",
-      "qid": "q0990",
-      "reason": "tags.patch.json has qid not in questions.json",
-      "details": {}
-    },
-    {
-      "type": "tags-patch-qid-not-in-master",
-      "qid": "q0997",
-      "reason": "tags.patch.json has qid not in questions.json",
-      "details": {}
-    },
-    {
-      "type": "tags-patch-qid-not-in-master",
-      "qid": "q1000",
-      "reason": "tags.patch.json has qid not in questions.json",
-      "details": {}
-    },
-    {
-      "type": "tags-patch-qid-not-in-master",
-      "qid": "q1010",
+      "qid": "q0431",
       "reason": "tags.patch.json has qid not in questions.json",
       "details": {}
     },
@@ -111,32 +289,6 @@
       "qid": "q1008",
       "reason": "question has image assets but no objectTags",
       "details": {}
-    },
-    {
-      "type": "duplicate-candidate",
-      "qid": "q0369,q0431",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0369",
-          "q0431"
-        ],
-        "prompts": [
-          {
-            "qid": "q0369",
-            "prompt": "The police can detain the vehicle if one drives a vehicle without a ______."
-          },
-          {
-            "qid": "q0431",
-            "prompt": "The police can detain the vehicle if one drives a vehicle without a ______."
-          }
-        ],
-        "answerLogic": [
-          "A"
-        ],
-        "imageRefs": []
-      }
     },
     {
       "type": "duplicate-candidate",
@@ -190,35 +342,6 @@
         "imageRefs": [
           "/qbank/2023-test1/images/img_919c975409bba6f7d3863bbfc9b439ce.jpeg",
           "/qbank/2023-test1/images/img_83ce4b2e18009e7249c2c1171bec314d.jpeg"
-        ]
-      }
-    },
-    {
-      "type": "duplicate-candidate",
-      "qid": "q0677,q0727",
-      "reason": "medium confidence duplicate candidate",
-      "details": {
-        "confidence": "medium",
-        "qids": [
-          "q0677",
-          "q0727"
-        ],
-        "prompts": [
-          {
-            "qid": "q0677",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____."
-          },
-          {
-            "qid": "q0727",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____ ."
-          }
-        ],
-        "answerLogic": [
-          "C"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_350dfe9a2fa8e91e7ef55ad674a5327a.jpeg",
-          "/qbank/2023-test1/images/img_61dd087d55e2b1108e8bd8c51a055888.jpeg"
         ]
       }
     },
@@ -284,6 +407,8 @@
   "masterRaw": {
     "masterOnlyQids": [],
     "rawOnlyQids": [
+      "q0431",
+      "q0450",
       "q0518",
       "q0906"
     ],
@@ -304,6 +429,11 @@
         "qid": "q0009",
         "masterPrompt": "If seatbelts are available in the car, the driver should require passengers to fasten their seatbelts.",
         "rawPrompt": "In a vehicle that has safety belts, the driver should request the passengers to buckle up. 1"
+      },
+      {
+        "qid": "q0013",
+        "masterPrompt": "When a vehicle changes lanes, the driver should turn on the turn signal and rapidly enter the new lane.",
+        "rawPrompt": "When a vehicle changes lane, the driver should turn on the turn signal and rapidly enter the new lane."
       },
       {
         "qid": "q0015",
@@ -421,6 +551,11 @@
         "rawPrompt": "When a vehicle passes a curve on a mountain road, the driver should reduce speed, honk and stick to the right."
       },
       {
+        "qid": "q0099",
+        "masterPrompt": "When the driver has a flat tire and steers off the main road, he should refrain from applying emergency brake so as to avoid a vehicle turn…",
+        "rawPrompt": "When the driver discovers a tire is leaking and steers the vehicle off the main carriageway, he should refrain from applying emergency so a…"
+      },
+      {
         "qid": "q0101",
         "masterPrompt": "When driving at night, the driver's observation ability is visibly poorer and his visibility range becomes shorter than driving in the dayt…",
         "rawPrompt": "When driving at night, the drivers observation ability is visibly poorer and his visibility range becomes shorter than driving in the dayti…"
@@ -452,7 +587,7 @@
       },
       {
         "qid": "q0112",
-        "masterPrompt": "When passing an unmanned railway crossing, the driver should ________.",
+        "masterPrompt": "When passing an unmanned(un-barriered) railway crossing, the driver should ________.",
         "rawPrompt": "When passing an unmanned level crossing, the driver should ________."
       },
       {
@@ -612,7 +747,7 @@
       },
       {
         "qid": "q0205",
-        "masterPrompt": "A driver of a passenger car involved in a fatal accident, but who has not been deprived of a driver's license, must submit their driver's l…",
+        "masterPrompt": "The driver of a small vehicle who causes an accident with loss of human life, assuming 50% responsibility, and whose driving licence has no…",
         "rawPrompt": "If a small motor vehicle driver has assumed equal or main liability for a traffic accident causing human deaths, and his driving license ha…"
       },
       {
@@ -657,7 +792,7 @@
       },
       {
         "qid": "q0216",
-        "masterPrompt": "A driver applying for a driver's license for the first time may drive on a motorway alone during the probationary period without being acco…",
+        "masterPrompt": "A driver applying for a driver's license for the first time may drive on a motorway alone during the practice (probationary) period without…",
         "rawPrompt": "A driver applies for the driving license for the first time and is during the period of probation, he can drive a motorized vehicle on expr…"
       },
       {
@@ -689,6 +824,11 @@
         "qid": "q0224",
         "masterPrompt": "One shall not drive a vehicle during the period of deferred license checking due to military service, going abroad, or other reasons.",
         "rawPrompt": "One shall not drive a motorized vehicle during the period of deferred license checking due to military service, abroad and other reasons."
+      },
+      {
+        "qid": "q0225",
+        "masterPrompt": "If the traffic light signal differs from the traffic police signal, you proceed according to the traffic lights.",
+        "rawPrompt": "Going though the intersection according to the traffic lights when traffic lights and command of the traffic police are inconsistency."
       },
       {
         "qid": "q0226",
@@ -774,29 +914,14 @@
         "qid": "q0256",
         "masterPrompt": "You have the right of way in this situation.",
         "rawPrompt": "You have the priviledged passing right of way in this situation."
-      },
-      {
-        "qid": "q0258",
-        "masterPrompt": "A vehicle is not allowed to stop in the section 50 meters to the bridge, steep slope, or tunnel.",
-        "rawPrompt": "A motorized vehicle is not allowed to stop in the section 50 meters to the bridge, steep slope or tunnel."
-      },
-      {
-        "qid": "q0259",
-        "masterPrompt": "Can leave the highway into the ramp from this location directly.",
-        "rawPrompt": "Can leave the expressway into the ramp from this location directly."
-      },
-      {
-        "qid": "q0261",
-        "masterPrompt": "It is allowed to watch videos while driving in good road conditions",
-        "rawPrompt": "May watch car video in good road conditions."
       }
     ],
     "counts": {
       "masterOnlyQids": 0,
-      "rawOnlyQids": 2,
+      "rawOnlyQids": 4,
       "typeMismatches": 0,
       "optionCountMismatches": 0,
-      "promptMismatches": 286
+      "promptMismatches": 292
     }
   },
   "masterAnswers": {
@@ -811,9 +936,74 @@
   },
   "translations": [
     {
-      "lang": "fr",
-      "path": "public/qbank/2023-test1/translations.fr.json",
-      "translatedQids": 1006,
+      "lang": "en-orig",
+      "path": "public/qbank/2023-test1/translations.en-orig.json",
+      "translatedQids": 969,
+      "coveragePercent": 96.51,
+      "placeholderQids": [],
+      "missingQids": [
+        "q0974",
+        "q0975",
+        "q0976",
+        "q0977",
+        "q0978",
+        "q0979",
+        "q0980",
+        "q0981",
+        "q0982",
+        "q0983",
+        "q0984",
+        "q0985",
+        "q0986",
+        "q0987",
+        "q0988",
+        "q0989",
+        "q0991",
+        "q0992",
+        "q0993",
+        "q0994",
+        "q0995",
+        "q0996",
+        "q0998",
+        "q0999",
+        "q1001",
+        "q1002",
+        "q1003",
+        "q1004",
+        "q1005",
+        "q1006",
+        "q1007",
+        "q1008",
+        "q1009",
+        "q1011",
+        "q1012"
+      ],
+      "extraQids": [],
+      "invalidLocaleAnswerKeys": [],
+      "mcqMissingOptions": [],
+      "mcqMissingLocaleAnswerKey": [],
+      "localeAnswerKeyNotInOptions": [],
+      "rowTranslationsWithMcqAnswerKeys": [],
+      "malformedObjects": [],
+      "emptyTextIssues": [],
+      "counts": {
+        "translatedQids": 969,
+        "placeholderQids": 0,
+        "missingQids": 35,
+        "extraQids": 0,
+        "invalidLocaleAnswerKeys": 0,
+        "mcqMissingOptions": 0,
+        "mcqMissingLocaleAnswerKey": 0,
+        "localeAnswerKeyNotInOptions": 0,
+        "rowTranslationsWithMcqAnswerKeys": 0,
+        "malformedObjects": 0,
+        "emptyTextIssues": 0
+      }
+    },
+    {
+      "lang": "es",
+      "path": "public/qbank/2023-test1/translations.es.json",
+      "translatedQids": 1004,
       "coveragePercent": 100,
       "placeholderQids": [],
       "missingQids": [],
@@ -826,7 +1016,36 @@
       "malformedObjects": [],
       "emptyTextIssues": [],
       "counts": {
-        "translatedQids": 1006,
+        "translatedQids": 1004,
+        "placeholderQids": 0,
+        "missingQids": 0,
+        "extraQids": 0,
+        "invalidLocaleAnswerKeys": 0,
+        "mcqMissingOptions": 0,
+        "mcqMissingLocaleAnswerKey": 0,
+        "localeAnswerKeyNotInOptions": 0,
+        "rowTranslationsWithMcqAnswerKeys": 0,
+        "malformedObjects": 0,
+        "emptyTextIssues": 0
+      }
+    },
+    {
+      "lang": "fr",
+      "path": "public/qbank/2023-test1/translations.fr.json",
+      "translatedQids": 1004,
+      "coveragePercent": 100,
+      "placeholderQids": [],
+      "missingQids": [],
+      "extraQids": [],
+      "invalidLocaleAnswerKeys": [],
+      "mcqMissingOptions": [],
+      "mcqMissingLocaleAnswerKey": [],
+      "localeAnswerKeyNotInOptions": [],
+      "rowTranslationsWithMcqAnswerKeys": [],
+      "malformedObjects": [],
+      "emptyTextIssues": [],
+      "counts": {
+        "translatedQids": 1004,
         "placeholderQids": 0,
         "missingQids": 0,
         "extraQids": 0,
@@ -842,13 +1061,11 @@
     {
       "lang": "ja",
       "path": "public/qbank/2023-test1/translations.ja.json",
-      "translatedQids": 1007,
-      "coveragePercent": 100.1,
+      "translatedQids": 1004,
+      "coveragePercent": 100,
       "placeholderQids": [],
       "missingQids": [],
-      "extraQids": [
-        "q0906"
-      ],
+      "extraQids": [],
       "invalidLocaleAnswerKeys": [],
       "mcqMissingOptions": [],
       "mcqMissingLocaleAnswerKey": [],
@@ -857,10 +1074,10 @@
       "malformedObjects": [],
       "emptyTextIssues": [],
       "counts": {
-        "translatedQids": 1007,
+        "translatedQids": 1004,
         "placeholderQids": 0,
         "missingQids": 0,
-        "extraQids": 1,
+        "extraQids": 0,
         "invalidLocaleAnswerKeys": 0,
         "mcqMissingOptions": 0,
         "mcqMissingLocaleAnswerKey": 0,
@@ -873,13 +1090,11 @@
     {
       "lang": "ko",
       "path": "public/qbank/2023-test1/translations.ko.json",
-      "translatedQids": 1007,
-      "coveragePercent": 100.1,
+      "translatedQids": 1004,
+      "coveragePercent": 100,
       "placeholderQids": [],
       "missingQids": [],
-      "extraQids": [
-        "q0906"
-      ],
+      "extraQids": [],
       "invalidLocaleAnswerKeys": [],
       "mcqMissingOptions": [],
       "mcqMissingLocaleAnswerKey": [],
@@ -888,10 +1103,10 @@
       "malformedObjects": [],
       "emptyTextIssues": [],
       "counts": {
-        "translatedQids": 1007,
+        "translatedQids": 1004,
         "placeholderQids": 0,
         "missingQids": 0,
-        "extraQids": 1,
+        "extraQids": 0,
         "invalidLocaleAnswerKeys": 0,
         "mcqMissingOptions": 0,
         "mcqMissingLocaleAnswerKey": 0,
@@ -904,13 +1119,11 @@
     {
       "lang": "ru",
       "path": "public/qbank/2023-test1/translations.ru.json",
-      "translatedQids": 1007,
-      "coveragePercent": 100.1,
+      "translatedQids": 1004,
+      "coveragePercent": 100,
       "placeholderQids": [],
       "missingQids": [],
-      "extraQids": [
-        "q0906"
-      ],
+      "extraQids": [],
       "invalidLocaleAnswerKeys": [],
       "mcqMissingOptions": [],
       "mcqMissingLocaleAnswerKey": [],
@@ -919,10 +1132,10 @@
       "malformedObjects": [],
       "emptyTextIssues": [],
       "counts": {
-        "translatedQids": 1007,
+        "translatedQids": 1004,
         "placeholderQids": 0,
         "missingQids": 0,
-        "extraQids": 1,
+        "extraQids": 0,
         "invalidLocaleAnswerKeys": 0,
         "mcqMissingOptions": 0,
         "mcqMissingLocaleAnswerKey": 0,
@@ -938,6 +1151,16 @@
     "assetReferenceCount": 499,
     "missingAssetReferences": [],
     "translatedImageCompatibility": [
+      {
+        "lang": "en-orig",
+        "translatedQidsWithMasterImages": 495,
+        "untranslatedQidsWithMasterImages": 4
+      },
+      {
+        "lang": "es",
+        "translatedQidsWithMasterImages": 499,
+        "untranslatedQidsWithMasterImages": 0
+      },
       {
         "lang": "fr",
         "translatedQidsWithMasterImages": 499,
@@ -962,27 +1185,6 @@
   },
   "duplicates": {
     "candidates": [
-      {
-        "confidence": "medium",
-        "qids": [
-          "q0369",
-          "q0431"
-        ],
-        "prompts": [
-          {
-            "qid": "q0369",
-            "prompt": "The police can detain the vehicle if one drives a vehicle without a ______."
-          },
-          {
-            "qid": "q0431",
-            "prompt": "The police can detain the vehicle if one drives a vehicle without a ______."
-          }
-        ],
-        "answerLogic": [
-          "A"
-        ],
-        "imageRefs": []
-      },
       {
         "confidence": "medium",
         "qids": [
@@ -1026,30 +1228,6 @@
         "imageRefs": [
           "/qbank/2023-test1/images/img_919c975409bba6f7d3863bbfc9b439ce.jpeg",
           "/qbank/2023-test1/images/img_83ce4b2e18009e7249c2c1171bec314d.jpeg"
-        ]
-      },
-      {
-        "confidence": "medium",
-        "qids": [
-          "q0677",
-          "q0727"
-        ],
-        "prompts": [
-          {
-            "qid": "q0677",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____."
-          },
-          {
-            "qid": "q0727",
-            "prompt": "This set of the hand signals of the traffic police indicates that the vehicles should ____ ."
-          }
-        ],
-        "answerLogic": [
-          "C"
-        ],
-        "imageRefs": [
-          "/qbank/2023-test1/images/img_350dfe9a2fa8e91e7ef55ad674a5327a.jpeg",
-          "/qbank/2023-test1/images/img_61dd087d55e2b1108e8bd8c51a055888.jpeg"
         ]
       },
       {
@@ -1103,20 +1281,15 @@
     ],
     "truncated": false,
     "counts": {
-      "totalCandidates": 6,
+      "totalCandidates": 4,
       "high": 0,
-      "medium": 6,
+      "medium": 4,
       "low": 0
     }
   },
   "tags": {
     "tagPatchQidsNotInMaster": [
-      "q0518",
-      "q0906",
-      "q0990",
-      "q0997",
-      "q1000",
-      "q1010"
+      "q0431"
     ],
     "imageTagQidsNotInMaster": [],
     "questionsWithImageButNoImageTags": [
