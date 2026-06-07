@@ -13,6 +13,7 @@ import TimeTracker from '@/components/TimeTracker.client';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { UserProfileProvider } from '@/components/UserProfile';
 import BrandSplash from '@/components/BrandSplash.client';
+import LanguageSuggestionModal from '@/components/LanguageSuggestionModal.client';
 import { I18nProvider } from '@/lib/i18n/I18nProvider';
 
 type ProvidersProps = {
@@ -23,6 +24,7 @@ export default function Providers({ children }: ProvidersProps) {
   return (
     <I18nProvider>
       <BrandSplash />
+      <LanguageSuggestionModal />
       <EntitlementsProvider>
         <FreeUsageProgressBadge />
         <OnboardingGate />

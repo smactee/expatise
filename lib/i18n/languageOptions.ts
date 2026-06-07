@@ -16,7 +16,7 @@ type LanguageOptionBase = {
 export type LanguageOption = LanguageOptionBase;
 export type LanguageOptionCode = LanguageOption['code'];
 
-const DEV_LANGUAGE_CODES = new Set<DevLanguageCode>(['ru', 'es']);
+const DEV_LANGUAGE_CODES = new Set<DevLanguageCode>(['ru']);
 
 export function areDevLanguagesEnabled(): boolean {
   return process.env.NODE_ENV !== 'production';
@@ -69,7 +69,7 @@ export function isEnabledLanguageOption(option: LanguageOption): boolean {
   return option.enabled && isLanguageAvailable(option.code);
 }
 
-export function getLanguageOption(code: LanguageOptionCode | Locale) {
+export function getLanguageOption(code: LanguageOptionCode | Locale | string) {
   return LANGUAGE_OPTIONS.find((option) => option.code === code) ?? null;
 }
 

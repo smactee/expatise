@@ -4,8 +4,13 @@ import { createContext, useCallback, useEffect, useMemo, useState, type ReactNod
 
 import { DEFAULT_LOCALE, type Locale } from '@/messages';
 
+import { detectDeviceLocale } from './detectDeviceLocale';
 import { AVAILABLE_LOCALES, getLocaleLabel, getMessage, getNextLocale as getRegisteredNextLocale, LOCALE_STORAGE_KEY, resolveLocale, type LocaleOption, type MessageKey } from './messages';
 import { type MessageParams } from './types';
+
+// Set once the device-language suggestion prompt has been shown, so a returning
+// first-run user is never re-prompted (belt-and-suspenders alongside the stored locale).
+const LANGUAGE_PROMPT_SEEN_KEY = 'expatise.languagePromptSeen';
 
 type I18nContextValue = {
   locale: Locale;
@@ -14,6 +19,12 @@ type I18nContextValue = {
   t: (key: MessageKey, params?: MessageParams) => string;
   getLocaleLabel: (locale: Locale) => string;
   getNextLocale: (locale?: Locale) => Locale;
+  /** A locale matching the device language, proposed on first launch (null = no prompt). */
+  suggestedLocale: Locale | null;
+  /** Accept the device-language suggestion: switch to it and dismiss the prompt for good. */
+  acceptLanguageSuggestion: () => void;
+  /** Decline the suggestion: keep the current locale and don't prompt again. */
+  dismissLanguageSuggestion: () => void;
 };
 
 type I18nProviderProps = {
@@ -29,12 +40,15 @@ export function I18nProvider({
 }: I18nProviderProps) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const [hydrated, setHydrated] = useState(false);
+  const [suggestedLocale, setSuggestedLocale] = useState<Locale | null>(null);
 
   useEffect(() => {
     let nextLocale = initialLocale;
+    let hadStoredLocale = false;
 
     try {
       const storedLocale = window.localStorage.getItem(LOCALE_STORAGE_KEY);
+      hadStoredLocale = storedLocale != null;
       nextLocale = resolveLocale(storedLocale, initialLocale);
     } catch {
       // Ignore storage access issues and keep the default locale.
@@ -42,6 +56,22 @@ export function I18nProvider({
 
     setLocaleState(nextLocale);
     setHydrated(true);
+
+    // First launch only (no explicit choice yet): if the device language maps to
+    // an enabled locale that isn't what we're about to show, offer to switch.
+    if (!hadStoredLocale) {
+      try {
+        const alreadyPrompted = window.localStorage.getItem(LANGUAGE_PROMPT_SEEN_KEY);
+        if (!alreadyPrompted) {
+          const detected = detectDeviceLocale();
+          if (detected && detected !== nextLocale) {
+            setSuggestedLocale(detected);
+          }
+        }
+      } catch {
+        // Ignore storage/navigator access issues — just skip the suggestion.
+      }
+    }
   }, [initialLocale]);
 
   useEffect(() => {
@@ -72,6 +102,27 @@ export function I18nProvider({
     setLocaleState(nextLocale);
   }, []);
 
+  const markLanguagePromptSeen = useCallback(() => {
+    try {
+      window.localStorage.setItem(LANGUAGE_PROMPT_SEEN_KEY, '1');
+    } catch {
+      // Ignore storage access issues; the stored locale already prevents re-prompting.
+    }
+  }, []);
+
+  const acceptLanguageSuggestion = useCallback(() => {
+    setSuggestedLocale((suggested) => {
+      if (suggested) setLocaleState(suggested);
+      return null;
+    });
+    markLanguagePromptSeen();
+  }, [markLanguagePromptSeen]);
+
+  const dismissLanguageSuggestion = useCallback(() => {
+    setSuggestedLocale(null);
+    markLanguagePromptSeen();
+  }, [markLanguagePromptSeen]);
+
   const t = useCallback((key: MessageKey, params?: MessageParams) => {
     return getMessage(locale, key, params);
   }, [locale]);
@@ -91,7 +142,10 @@ export function I18nProvider({
     t,
     getLocaleLabel: localeLabel,
     getNextLocale: nextLocale,
-  }), [locale, localeLabel, nextLocale, setLocale, t]);
+    suggestedLocale,
+    acceptLanguageSuggestion,
+    dismissLanguageSuggestion,
+  }), [locale, localeLabel, nextLocale, setLocale, t, suggestedLocale, acceptLanguageSuggestion, dismissLanguageSuggestion]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
