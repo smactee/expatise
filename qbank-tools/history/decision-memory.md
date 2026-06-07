@@ -1,10 +1,10 @@
 # Decision Memory
 
-Generated: 2026-06-06T11:51:19.978Z
+Generated: 2026-06-07T07:27:10.647Z
 
 ## Summary
 
-- Total records: 36449
+- Total records: 38209
 - High-risk qids: q0018, q0025, q0053, q0062, q0064, q0069, q0070, q0084, q0162, q0176, q0187, q0208, q0210, q0223, q0226, q0234, q0237, q0245, q0260, q0261, q0262, q0275, q0285, q0293, q0302, q0316, q0325, q0336, q0345, q0347, q0352, q0358, q0359, q0462, q0488, q0514, q0575, q0640, q0647, q0649, q0801, q0904, q0908, q0913, q0918, q0921, q0945, q0947, q0950, q0973, q0983, q0984, q0991, q1005, q1008, q1011, q1012
 - Master-data issue qids: q0518, q0906, q0990, q0997, q1000, q1008, q1010
 - Rejected/needs-fix qids: q0018, q0025, q0062, q0064, q0069, q0070, q0084, q0162, q0187, q0204, q0208, q0210, q0223, q0226, q0234, q0237, q0248, q0260, q0261, q0262, q0274, q0275, q0285, q0293, q0302, q0316, q0323, q0325, q0336, q0345, q0347, q0352, q0358, q0359, q0367, q0383, q0420, q0442, q0446, q0462, q0471, q0474, q0488, q0489, q0514, q0517, q0522, q0525, q0534, q0575, q0577, q0599, q0623, q0635, q0640, q0647, q0649, q0720, q0726, q0802, q0863, q0904, q0908, q0913, q0918, q0921, q0929, q0941, q0945, q0947, q0948, q0950, q0957, q0973, q0981, q0983, q0984, q0991, q0994, q0995, q1005, q1008, q1011, q1012
@@ -13,16 +13,16 @@ Generated: 2026-06-06T11:51:19.978Z
 
 | key | count |
 | --- | --- |
-| answer-key | 13183 |
+| answer-key | 14039 |
 | backfill-generation | 2014 |
 | duplicate | 6 |
 | master-data-fix | 13 |
-| match | 8266 |
-| merge | 9702 |
-| new-question | 2732 |
+| match | 8439 |
+| merge | 10257 |
+| new-question | 2890 |
 | quality-review | 334 |
-| reject | 92 |
-| skip | 107 |
+| reject | 108 |
+| skip | 109 |
 
 ## Records By Source System
 
@@ -30,8 +30,8 @@ Generated: 2026-06-06T11:51:19.978Z
 | --- | --- |
 | ai-review | 334 |
 | integrity-audit | 19 |
-| manual | 20033 |
-| production-merge | 9893 |
+| manual | 21238 |
+| production-merge | 10448 |
 | script | 6170 |
 
 ## Reusable Matching Lessons
@@ -50,6 +50,7 @@ Generated: 2026-06-06T11:51:19.978Z
 |  | reject | rejected |  |
 |  | reject | rejected |  |
 |  | reject | rejected | Codex high-risk keepUnresolved: Potential new question but local answer key is unknown; kept unresolved for human review. Rejected top matcher: Potential new question but local answer key is unknown; kept unresolved for human review. |
+|  | answer-key | skipped | Claude low-risk approveExistingQid: matcher top-1 looks clean |
 |  | match | skipped | Claude medium-risk approveExistingQid: dashboard open-compartment indicator; q0617 symbol-indicator, score 111. Answer key = matcher staged (verify). |
 |  | answer-key | new |  |
 |  | new-question | approved | Codex medium-risk createNewQuestion: Specific numeric question about minibus safety distance (<100 km/h → at least 50 m). No existing candidate precisely covers 'minibus <100 km/h' distance; recommend creating new localized item. Source indicates option A (50 m). |
@@ -57,12 +58,11 @@ Generated: 2026-06-06T11:51:19.978Z
 |  | reject | rejected | Official qbank rear-tire blowout item is Right; source extracted key B is likely unreliable here. |
 |  | new-question | approved | Valid MCQ asking the maximum continuous driving time; no exact master qid found. Related q0445 asks the required rest time after more than four hours. |
 |  | match | skipped | Codex medium-risk keepUnresolved: Legal-statement item about sentencing (3–7 years) after fleeing and victims dying. Top candidates differ and legal specifics are unclear from source alone; insufficient confidence to approve an existing qid mapping. Rejected top matcher: Top matcher (q0196) asserts 'Wrong' but legal w… |
+|  | reject | rejected | Owner approved to already-localized q0038; flipped to deleteQuestion (target-language duplicate of shipped q0038) per ship dedup policy [Claude, batch-007 precedent] |
 |  | answer-key | new | Valid source row item about reaching/exceeding 12 penalty points and retaking study/exams. q0312/q0327 are related but cover license detention/refusal consequences, not this exact statement. |
 |  | skip | skipped | due to no image, impossible to decide which question this is there are about 6:best potential candidates are 710, 714, 771, 789 |
 |  | match | skipped | Claude medium-risk approveExistingQid: continuous yellow line meaning; q0745 yellow marking. Answer key = matcher staged (verify). |
 |  | match | skipped | Claude keepUnresolved: claimed-qid-duplicate-suspect — best match was already-shipped q0845; likely a target-language duplicate. Confirm duplicate vs pick a fresh qid. |
-|  | match | skipped | Codex high-risk keepUnresolved: Potential match q0120 is now hard-locked in French production/merged history (translations.fr.json; batches 001-016 merged). Source/candidate evidence is not strong enough for duplicate override; kept unresolved for manual QC. |
-|  | new-question | approved | Codex medium-risk createNewQuestion: Statement 'A driver who breaks a provision of the highway code must be punished' is a valid true/false item but no clear existing candidate match; recommend creating new question with answer A (Yes). |
 
 ## Recommended Next System Improvements
 
