@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build",
+    "postbuild": "node scripts/slim-bundle.mjs",
     "start": "next start",
     "lint": "eslint",
     "qbank:health": "node scripts/qbank-health-check.mjs",
