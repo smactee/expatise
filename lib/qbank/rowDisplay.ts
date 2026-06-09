@@ -21,6 +21,10 @@ const ROW_DISPLAY_LABELS: Record<Locale, { right: string; wrong: string }> = {
     right: 'Verdadero',
     wrong: 'Falso',
   },
+  de: {
+    right: 'Richtig',
+    wrong: 'Falsch',
+  },
   'en-orig': {
     right: 'Right',
     wrong: 'Wrong',

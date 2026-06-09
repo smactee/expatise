@@ -7,6 +7,7 @@ const PRODUCTION_TRANSLATION_URLS: Record<string, string> = {
   fr: '/qbank/2023-test1/translations.fr.json',
   ru: '/qbank/2023-test1/translations.ru.json',
   es: '/qbank/2023-test1/translations.es.json',
+  de: '/qbank/2023-test1/translations.de.json',
 };
 
 const TRANSLATION_NOTICE_LABELS: Record<string, string> = {
@@ -16,6 +17,7 @@ const TRANSLATION_NOTICE_LABELS: Record<string, string> = {
   fr: 'French',
   ru: 'Russian',
   es: 'Spanish',
+  de: 'German',
 };
 
 export const showLanguageDebugCounts =
@@ -35,7 +37,7 @@ export function isTranslatedOnlyQuestionLocale(locale: string | null | undefined
   // ja (partial translation) and en-orig (only the 969 questions that exist in the
   // source PDF) intentionally show ONLY their translated questions, in every build —
   // so British Chinglish drops the 35 master questions that aren't in the PDF.
-  if (normalized === 'ja' || normalized === 'en-orig') return true;
+  if (normalized === 'ja' || normalized === 'en-orig' || normalized === 'de') return true;
   return isDevelopmentVisibilityEnabled() && hasProductionQuestionTranslations(normalized);
 }
 

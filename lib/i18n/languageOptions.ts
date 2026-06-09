@@ -47,7 +47,6 @@ const IMPLEMENTED_LANGUAGE_OPTIONS: LanguageOption[] = (
 const PENDING_LANGUAGE_OPTIONS: readonly LanguageOption[] = [
   { code: 'zh', label: '中文', enabled: isLanguageAvailable('zh'), productionReady: false },
   { code: 'ru', label: 'Русский', enabled: isLanguageAvailable('ru'), productionReady: false },
-  { code: 'de', label: 'Deutsch', enabled: isLanguageAvailable('de'), productionReady: false },
   { code: 'ar', label: 'العربية', enabled: isLanguageAvailable('ar'), productionReady: false },
 ];
 
