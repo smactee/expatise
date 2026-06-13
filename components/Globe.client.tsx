@@ -99,12 +99,22 @@ const TAP_TIME_THRESHOLD_MS = 300;
 const DOUBLE_TAP_MS = 300;
 const DOUBLE_TAP_DIST_PX = 40;
 const DOUBLE_TAP_ZOOM_FACTOR = 2;
+const TRIPLE_TAP_ZOOM_OUT_FACTOR = 2; // empty-space triple-tap zooms out, symmetric to the double-tap zoom-in
 
 const FRAME_PADDING = 0.75;
 const MIN_ALTITUDE = 0.2;
 const MAX_ALTITUDE = 2.5;
-const FLY_DURATION_MS = 1000;
-const MIN_ZOOM_ALTITUDE = 0.05;
+// Fly-in / camera-animation duration: 2.5× the original 1000ms for a slower, more
+// cinematic glide. Single source of truth for every pointOfView() call (country
+// framing, province framing, flyTo); the zoom in/out derive from it (/2).
+const FLY_DURATION_MS = 2500;
+// Closest manual-zoom floor (pointOfView altitude units), per loaded day-map width.
+// This CLAMP is the guarantee against visible pixel breaks: 4K can't be zoomed as
+// close as 8K. NOTE: unlimited crisp zoom would need tiled/LOD textures — we
+// intentionally don't, because Kakao owns ground-level detail and province glow is
+// vector. The clamp prevents pixelation; the 8K day map only raises the ceiling.
+const MIN_ZOOM_ALTITUDE_4K = 0.12;
+const MIN_ZOOM_ALTITUDE_8K = 0.05;
 const MAX_ZOOM_ALTITUDE = 5.0;
 
 type GeoFeature = {
@@ -206,6 +216,13 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
       bumpMap.anisotropy = maxAniso;
       waterMap.anisotropy = maxAniso;
 
+      // Crisp-zoom floor keyed on the ACTUAL loaded day-map width (not just the GPU
+      // gate): while DAY_TEXTURE_8K_URL still aliases the 4K file we keep the safer 4K
+      // floor; once a real 8K asset is dropped in, this auto-switches to the 8K floor.
+      const dayWidth = (dayMap.image as { width?: number }).width ?? 0;
+      const is8k = dayWidth >= 8192;
+      const minZoomAltitude = is8k ? MIN_ZOOM_ALTITUDE_8K : MIN_ZOOM_ALTITUDE_4K;
+
       // --- Material (built from OUR three so material + textures match) ---
       const globeMaterial = new THREE.MeshPhongMaterial({
         map: dayMap,
@@ -222,7 +239,8 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
       controls.autoRotate = true;
       controls.autoRotateSpeed = AUTO_ROTATE_SPEED;
       const R = world.getGlobeRadius();
-      controls.minDistance = R * 1.05;
+      // Clamp the closest manual (pinch) zoom to the crisp floor → no pixel breaks.
+      controls.minDistance = R * (1 + minZoomAltitude);
       controls.maxDistance = R * 6;
 
       // --- Size to the PARENT (component fills its container, not the window) ---
@@ -303,7 +321,9 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
         const alpha = ((angDeg * Math.PI) / 180) / 2;
         const beta = (FRAME_PADDING * fovV) / 2;
         const DoverR = Math.cos(alpha) + Math.sin(alpha) / Math.tan(beta);
-        return clamp(DoverR - 1, MIN_ALTITUDE, MAX_ALTITUDE);
+        // Never frame a tiny country/province closer than the crisp floor: prefer a
+        // slightly-less screen-fill over a pixelated fill.
+        return clamp(DoverR - 1, Math.max(MIN_ALTITUDE, minZoomAltitude), MAX_ALTITUDE);
       };
       const computeFraming = (feat: GeoFeature) => {
         const ring = largestRing(feat);
@@ -383,18 +403,26 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
       // --- Zoom helpers ---
       const zoomInToward = (coords: { lat: number; lng: number }) => {
         const pov = world.pointOfView();
-        const altitude = clamp(pov.altitude / DOUBLE_TAP_ZOOM_FACTOR, MIN_ZOOM_ALTITUDE, MAX_ZOOM_ALTITUDE);
+        const altitude = clamp(pov.altitude / DOUBLE_TAP_ZOOM_FACTOR, minZoomAltitude, MAX_ZOOM_ALTITUDE);
+        world.pointOfView({ lat: coords.lat, lng: coords.lng, altitude }, FLY_DURATION_MS / 2);
+      };
+      // Empty-space triple-tap: zoom OUT toward the tapped point (symmetric to zoomInToward).
+      const zoomOutToward = (coords: { lat: number; lng: number }) => {
+        const pov = world.pointOfView();
+        const altitude = clamp(pov.altitude * TRIPLE_TAP_ZOOM_OUT_FACTOR, minZoomAltitude, MAX_ZOOM_ALTITUDE);
         world.pointOfView({ lat: coords.lat, lng: coords.lng, altitude }, FLY_DURATION_MS / 2);
       };
       const zoomOut = () => {
         const pov = world.pointOfView();
-        const altitude = clamp(pov.altitude * DOUBLE_TAP_ZOOM_FACTOR, MIN_ZOOM_ALTITUDE, MAX_ZOOM_ALTITUDE);
+        const altitude = clamp(pov.altitude * DOUBLE_TAP_ZOOM_FACTOR, minZoomAltitude, MAX_ZOOM_ALTITUDE);
         world.pointOfView({ altitude }, FLY_DURATION_MS / 2);
       };
 
-      // --- Click routing (poly tap selects; double-tap empty space zooms in) ---
+      // --- Click routing ---
+      // A polygon (country/province) tap is ALWAYS instant: it selects immediately and
+      // never waits on tap-count disambiguation. The single/double/triple logic below
+      // is EMPTY-SPACE only, where a single tap does nothing — so waiting is free.
       let lastPolyTapTime = -1e9;
-      let lastOceanTap: { x: number; y: number; time: number } | null = null;
       const onPolyClick = (poly: object) => {
         if (wasDrag) return;
         lastPolyTapTime = performance.now();
@@ -402,23 +430,32 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
         if (mode === 'provinces') applyProvinceSelection(poly as GeoFeature);
         else selectCountry(poly as GeoFeature);
       };
+      // Empty-space tap counting: taps that land near each other within DOUBLE_TAP_MS
+      // accumulate; after a quiet window we decide — 2 = zoom in, 3+ = zoom out. The one
+      // accepted cost: double-tap zoom-in now resolves ~DOUBLE_TAP_MS after the 2nd tap.
+      let emptyTapCount = 0;
+      let emptyTapPos = { x: 0, y: 0 };
+      let emptyTapCoords = { lat: 0, lng: 0 };
+      let emptyTapTimer: ReturnType<typeof setTimeout> | null = null;
       const onGlobeClick = (coords: { lat: number; lng: number }, ev: MouseEvent) => {
         if (wasDrag) return;
         const x = ev.clientX;
         const y = ev.clientY;
         const now = performance.now();
         setTimeout(() => {
-          if (now - lastPolyTapTime < 80) return; // this tap hit a country → ignore
-          if (
-            lastOceanTap &&
-            now - lastOceanTap.time < DOUBLE_TAP_MS &&
-            Math.hypot(x - lastOceanTap.x, y - lastOceanTap.y) < DOUBLE_TAP_DIST_PX
-          ) {
-            zoomInToward(coords);
-            lastOceanTap = null;
-          } else {
-            lastOceanTap = { x, y, time: now };
-          }
+          if (now - lastPolyTapTime < 80) return; // this tap hit a country → instant select already ran
+          const near = emptyTapCount > 0 && Math.hypot(x - emptyTapPos.x, y - emptyTapPos.y) < DOUBLE_TAP_DIST_PX;
+          emptyTapCount = near ? emptyTapCount + 1 : 1;
+          emptyTapPos = { x, y };
+          emptyTapCoords = coords;
+          if (emptyTapTimer) clearTimeout(emptyTapTimer);
+          emptyTapTimer = setTimeout(() => {
+            if (emptyTapCount === 2) zoomInToward(emptyTapCoords);
+            else if (emptyTapCount >= 3) zoomOutToward(emptyTapCoords);
+            // emptyTapCount === 1 → a lone empty-space tap does nothing
+            emptyTapCount = 0;
+            emptyTapTimer = null;
+          }, DOUBLE_TAP_MS);
         }, 0);
       };
 
@@ -511,6 +548,7 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
         resizeObserver.disconnect();
         dom.removeEventListener('pointerdown', onPointerDown);
         dom.removeEventListener('pointerup', onPointerUp);
+        if (emptyTapTimer) clearTimeout(emptyTapTimer); // drop a pending tap-decision callback
         world.pauseAnimation(); // stop the internal rAF render loop
         // Free every geometry/material/texture in the scene.
         world.scene().traverse((obj) => {
