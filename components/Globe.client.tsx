@@ -59,10 +59,16 @@ export type GlobeProps = {
 };
 
 /* ----------------------------- Tunables (from the prototype) ----------------------------- */
-// Day map gated on GPU maxTextureSize (see effect). 8K aliases the 4K blue-marble
-// until a true 8K day map is dropped at /globe/earth-day-8k.jpg and pointed here.
+// Day map gated on GPU maxTextureSize (see effect). Still aliasing the 4K blue-marble:
+// a genuine public-domain 8192×4096 day map could not be reliably fetched in-script.
+// TODO(8K): drop a real 8192×4096 day map at public/globe/earth-day-8k.jpg, then change
+// DAY_TEXTURE_8K_URL below to '/globe/earth-day-8k.jpg'. Source options:
+//   • NASA Blue Marble (public domain): downscale the 21600×10800 master to 8192×4096.
+//   • Solar System Scope "8k_earth_daymap" (CC-BY 4.0 — attribution, not strictly PD).
+// The zoom clamp below auto-detects the loaded width and switches to the 8K floor once
+// the real file is in place — no further code change needed.
 const DAY_TEXTURE_4K_URL = '//cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg';
-const DAY_TEXTURE_8K_URL = DAY_TEXTURE_4K_URL; // TODO: replace with an actual 8K asset
+const DAY_TEXTURE_8K_URL = DAY_TEXTURE_4K_URL; // ← flip to '/globe/earth-day-8k.jpg' once vendored
 const BUMP_TEXTURE_URL = '//cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png';
 const WATER_TEXTURE_URL = '//cdn.jsdelivr.net/npm/three-globe/example/img/earth-water.png';
 const COUNTRIES_GEOJSON_URL = '/globe/countries-50m.geojson'; // vendored Natural Earth 50m admin-0
@@ -107,6 +113,26 @@ type GeoFeature = {
 };
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+
+// The countries GeoJSON (~2.9MB) is fetched + parsed once per page load and
+// memoized at module scope, so a Globe unmount→remount (leaving onboarding and
+// returning, or React StrictMode's dev double-mount) reuses the parse instead of
+// re-downloading and re-parsing. Each caller gets FRESH top-level feature objects
+// (shallow copies) so globe.gl's per-datum bookkeeping (__threeObj, …) lands on
+// the copies and never collides across instances; the heavy geometry/coordinate
+// arrays are shared by reference (read-only to globe.gl), where the real cost is.
+let countriesGeojsonPromise: Promise<{ features: GeoFeature[] }> | null = null;
+function loadCountryFeatures(): Promise<GeoFeature[]> {
+  if (!countriesGeojsonPromise) {
+    countriesGeojsonPromise = fetch(COUNTRIES_GEOJSON_URL)
+      .then((r) => r.json())
+      .catch((err) => {
+        countriesGeojsonPromise = null; // allow a retry on the next mount
+        throw err;
+      });
+  }
+  return countriesGeojsonPromise.then((geo) => geo.features.map((f) => ({ ...f })));
+}
 
 const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySelect, onProvinceSelect, className }, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -397,14 +423,15 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
       };
 
       // --- Load borders + wire the polygon layer ---
-      const geo = await fetch(COUNTRIES_GEOJSON_URL).then((r) => r.json());
+      // Module-memoized parse; fresh top-level feature objects per mount (see
+      // loadCountryFeatures) so globe.gl bookkeeping never collides across mounts.
+      const features: GeoFeature[] = await loadCountryFeatures();
       if (disposed) {
         [dayMap, bumpMap, waterMap].forEach((t) => t.dispose());
         globeMaterial.dispose();
         resizeObserver.disconnect();
         return;
       }
-      const features: GeoFeature[] = geo.features;
       world
         .polygonsData(features)
         .polygonsTransitionDuration(POLYGON_TRANSITION_MS)
