@@ -1,9 +1,9 @@
 {
   "lang": "de",
-  "count": 8,
+  "count": 11,
   "purpose": "Deferred de items (keepUnresolved/createNew) to RE-RUN as the final de batch. Reviewer notes are authoritative. Sourced from reviewed workbench-decisions exports in qbank-tools/history/decisions/.",
   "sourceOfTruth": "reviewed workbench-decisions exports (qbank-tools/history/decisions/)",
-  "updatedAt": "2026-06-12",
+  "updatedAt": "2026-06-14",
   "items": [
     {
       "batch": "batch-001",
@@ -140,6 +140,58 @@
       "optionsRaw": [
         "A) Yes",
         "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-004",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.07.13 1.png",
+      "screenshotPath": "imports/de/batch-004/screenshots/Screenshot 2026-05-24 at 12.07.13 1.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0341",
+      "reviewerNotes": "[DUP-SUSPECT: top global match was already-localized q0225 (score 29.0) — approved to closest UNCLAIMED qid instead; owner verify it is NOT a re-capture of q0225] Claude high-risk approveExistingQid: matcher top-1 q0341 (score 28.3)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "The traffic police may legally retain the vehicle registration document if the driver has not affixed an insurance mark.",
+      "promptRaw": "Die Verkehrspolizei kann den Fahrzeugschein legal einbehalten, wenn der Fahrer kein Versicherungszeichen angebracht hat.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-004",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.07.14.png",
+      "screenshotPath": "imports/de/batch-004/screenshots/Screenshot 2026-05-24 at 12.07.14.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0970",
+      "reviewerNotes": "[DUP-SUSPECT: top global match was already-localized q0989 (score 40.8) — approved to closest UNCLAIMED qid instead; owner verify it is NOT a re-capture of q0989] Claude medium-risk approveExistingQid: matcher top-1 q0970 (score 36.3)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "What should one do when the vehicle behind wants to overtake?",
+      "promptRaw": "Was soll man machen, wenn das hintere Fahrzeug überholen will?",
+      "optionsRaw": [
+        "A) weiter schnell fahren",
+        "B) das Tempo drosseln und möglichst rechts fahren",
+        "C) in der Straßenmitte fahren",
+        "D) beschleunigen"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-004",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.07.50.png",
+      "screenshotPath": "imports/de/batch-004/screenshots/Screenshot 2026-05-24 at 12.07.50.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0996",
+      "reviewerNotes": "Claude medium-risk approveExistingQid: matcher top-1 q0996 (score 38.5)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "What can you do when you meet another vehicle at an unsuitable spot?",
+      "promptRaw": "Was kann man tun, wenn man einem anderen Fahrzeug an einer ungeeigneten Stelle begegnet?",
+      "optionsRaw": [
+        "A) beschleunigen und eine bessere Stelle suchen",
+        "B) langsam aneinander vorbeifahren oder anhalten, um das andere Fahrzeug durchfahren zu lassen",
+        "C) die linke Straßenseite benutzen und so das andere Fahrzeug zum Bremsen oder Anhalten bringen",
+        "D) die Lichthupe benutzen und dem anderen Auto signalisieren, dass es einen vobeilassen soll"
       ],
       "correctKeyRaw": null
     }
