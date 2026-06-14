@@ -62,7 +62,9 @@ export function isNumericOptionSet(options) {
 export function extractNumbers(options) {
   const set = new Set();
   for (const t of optionTexts(options)) {
-    const cleaned = t.replace(/(\d)[,\s](\d{3})\b/g, "$1$2"); // 12,000 / 12 000 -> 12000
+    const cleaned = t
+      .replace(/(\d)[,\s](\d{3})\b/g, "$1$2") // thousands: 12,000 / 12 000 -> 12000
+      .replace(/(\d),(\d{1,2})\b/g, "$1.$2"); // decimal comma (de/es/fr): 3,5 -> 3.5
     const matches = cleaned.match(/\d+(?:\.\d+)?/g);
     if (matches) matches.forEach((m) => set.add(parseFloat(m)));
   }
