@@ -1,9 +1,9 @@
 {
   "lang": "de",
-  "count": 11,
+  "count": 15,
   "purpose": "Deferred de items (keepUnresolved/createNew) to RE-RUN as the final de batch. Reviewer notes are authoritative. Sourced from reviewed workbench-decisions exports in qbank-tools/history/decisions/.",
   "sourceOfTruth": "reviewed workbench-decisions exports (qbank-tools/history/decisions/)",
-  "updatedAt": "2026-06-14",
+  "updatedAt": "2026-06-17",
   "items": [
     {
       "batch": "batch-001",
@@ -192,6 +192,76 @@
         "B) langsam aneinander vorbeifahren oder anhalten, um das andere Fahrzeug durchfahren zu lassen",
         "C) die linke Straßenseite benutzen und so das andere Fahrzeug zum Bremsen oder Anhalten bringen",
         "D) die Lichthupe benutzen und dem anderen Auto signalisieren, dass es einen vobeilassen soll"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-005",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.11.46.png",
+      "screenshotPath": "imports/de/batch-005/screenshots/Screenshot 2026-05-24 at 12.11.46.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0996",
+      "reviewerNotes": "Claude medium-risk approveExistingQid (collision-resolved): collision-split off q0996: mountain-road oncoming, slow/stop+yield=D",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "How should one overtake a vehicle in mountainous terrain?",
+      "promptRaw": "Wie soll man auf dem Gebirgsland ein Fahrzeug überholen?",
+      "optionsRaw": [
+        "A) sich nicht verlangsamen",
+        "B) sich an die Mitte der Straße annahren",
+        "C) sich beschleunigen",
+        "D) sich verlangsamen oder anhalten und durchlassen"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-005",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.11.32.png",
+      "screenshotPath": "imports/de/batch-005/screenshots/Screenshot 2026-05-24 at 12.11.32.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0996",
+      "reviewerNotes": "[DUP-SUSPECT: top global match was already-localized q0989 (score 40.9) — approved to closest UNCLAIMED qid; owner verify not a re-capture of q0989] Claude medium-risk approveExistingQid: matcher top-1 q0996 (score 40.5)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "What can you do if an oncoming vehicle in an emergency situation has to use your lane?",
+      "promptRaw": "Was kann man tun, wenn ein entgegenkommendes Fahrzeug in einer Notsituation die eigene Fahrbahn nutzen muss?",
+      "optionsRaw": [
+        "A) die Fahrbahn der anderen Seite nicht benutzen und normal weiterfahren",
+        "B) das Fahrzeug warnen, damit es ausweicht",
+        "C) auf der rechten Seite der Straße beschleunigen",
+        "D) das Fahrzeug durchfahren lassen"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-005",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.11.34 1.png",
+      "screenshotPath": "imports/de/batch-005/screenshots/Screenshot 2026-05-24 at 12.11.34 1.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0161",
+      "reviewerNotes": "[DUP-SUSPECT: top global match was already-localized q1003 (score 34.2) — approved to closest UNCLAIMED qid; owner verify not a re-capture of q1003] Claude medium-risk approveExistingQid: matcher top-1 q0161 (score 34)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "What is the purpose of the mandatory line?",
+      "promptRaw": "Wozu dient die Gebotslinie?",
+      "optionsRaw": [
+        "A) zum Verbot der Durchfahrt",
+        "B) als Hinweis auf Durchfahrt",
+        "C) zur Begrenzung der Durchfahrt",
+        "D) zur Warnung"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-005",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.11.38.png",
+      "screenshotPath": "imports/de/batch-005/screenshots/Screenshot 2026-05-24 at 12.11.38.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0332",
+      "reviewerNotes": "Claude high-risk approveExistingQid: matcher top-1 q0332 (score 32.2)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "Driving a motor vehicle against the traffic law provisions is unlawful.",
+      "promptRaw": "Das Fahren eines Kraftfahrzeugs gegen die Verkehrsgesetzbestimmungen ist rechtswidrig.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
       ],
       "correctKeyRaw": null
     }
