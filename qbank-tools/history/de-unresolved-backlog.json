@@ -1,9 +1,9 @@
 {
   "lang": "de",
-  "count": 15,
+  "count": 19,
   "purpose": "Deferred de items (keepUnresolved/createNew) to RE-RUN as the final de batch. Reviewer notes are authoritative. Sourced from reviewed workbench-decisions exports in qbank-tools/history/decisions/.",
   "sourceOfTruth": "reviewed workbench-decisions exports (qbank-tools/history/decisions/)",
-  "updatedAt": "2026-06-17",
+  "updatedAt": "2026-06-18",
   "items": [
     {
       "batch": "batch-001",
@@ -259,6 +259,74 @@
       "newQuestionProvisionalTopic": null,
       "promptEn": "Driving a motor vehicle against the traffic law provisions is unlawful.",
       "promptRaw": "Das Fahren eines Kraftfahrzeugs gegen die Verkehrsgesetzbestimmungen ist rechtswidrig.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-006",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.12.34.png",
+      "screenshotPath": "imports/de/batch-006/screenshots/Screenshot 2026-05-24 at 12.12.34.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0341",
+      "reviewerNotes": "Claude high-risk approveExistingQid: matcher top-1 q0341 (score 30.5)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "Under the law the traffic police may impound motor vehicles that do not carry a certificate for quality or environmental protection.",
+      "promptRaw": "Die Verkehrspolizei kann nach dem Gesetz Kraftfahrzeuge einbehalten, die kein Zertifikat für Qualität bzw. Umweltschutz tragen.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-006",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.12.44.png",
+      "screenshotPath": "imports/de/batch-006/screenshots/Screenshot 2026-05-24 at 12.12.44.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0999",
+      "reviewerNotes": "Claude medium-risk approveExistingQid: matcher top-1 q0999 (score 37.9)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "How should you behave when the vehicles ahead are backed up or driving slowly?",
+      "promptRaw": "Was soll man sich verhalten, wenn die Fahrzeuge vorne sich rückstauen oder langsam fahren?",
+      "optionsRaw": [
+        "A) auf einem freien Stück überholen",
+        "B) die Gegenfahrbahnbenutzen",
+        "C) sich vor die wartenden Fahrzeuge drängeln",
+        "D) der wartenden Reihe folgen"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-006",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.12.51 1.png",
+      "screenshotPath": "imports/de/batch-006/screenshots/Screenshot 2026-05-24 at 12.12.51 1.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0474",
+      "reviewerNotes": "[DUP-SUSPECT: top global match was already-localized q0422 (score 30.3) — approved to closest UNCLAIMED qid; verify not a re-capture of q0422] Claude medium-risk approveExistingQid: matcher top-1 q0474 (score 26.5)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "For which of the following offenses are 6 points registered in the system?",
+      "promptRaw": "Für welches der folgenden Delikte werden 6 Punkte im System registriert?",
+      "optionsRaw": [
+        "A) Fahren eines Kraftfahrzeuges mit absichtlich beschmutztem oder beschädigtem Kraftfahrzeugkennzeichen (Nummernschild)",
+        "B) Fahren trotz vorläufig eingezogenem Führerschein",
+        "C) betrügerische Erneuerung des Führerscheins",
+        "D) dem Schulbus nicht gemäß den Verkehrsregeln ausweichen"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-006",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.13.11.png",
+      "screenshotPath": "imports/de/batch-006/screenshots/Screenshot 2026-05-24 at 12.13.11.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0234",
+      "reviewerNotes": "Claude high-risk approveExistingQid: matcher top-1 q0234 (score 32.1)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "Only the vehicles indicated on the driver's license may be driven.",
+      "promptRaw": "Es dürfen nur die im Führerschein ausgewiesenen Fahrzeuge gefahren werden.",
       "optionsRaw": [
         "A) Yes",
         "B) No"
