@@ -1,6 +1,6 @@
 {
   "lang": "de",
-  "count": 19,
+  "count": 21,
   "purpose": "Deferred de items (keepUnresolved/createNew) to RE-RUN as the final de batch. Reviewer notes are authoritative. Sourced from reviewed workbench-decisions exports in qbank-tools/history/decisions/.",
   "sourceOfTruth": "reviewed workbench-decisions exports (qbank-tools/history/decisions/)",
   "updatedAt": "2026-06-18",
@@ -327,6 +327,38 @@
       "newQuestionProvisionalTopic": null,
       "promptEn": "Only the vehicles indicated on the driver's license may be driven.",
       "promptRaw": "Es dürfen nur die im Führerschein ausgewiesenen Fahrzeuge gefahren werden.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-007",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.14.18.png",
+      "screenshotPath": "imports/de/batch-007/screenshots/Screenshot 2026-05-24 at 12.14.18.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0300",
+      "reviewerNotes": "[DUP-SUSPECT: top global match was already-localized q0271 (score 34.9) — approved to closest UNCLAIMED qid; verify not a re-capture of q0271] Claude high-risk approveExistingQid: matcher top-1 q0300 (score 29.9)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "Whoever illegally drives a motor vehicle and causes a serious accident does not bear any criminal responsibility.",
+      "promptRaw": "Wer illegal ein Kraftfahrzeug fährt und einen schweren Unfall verursacht, übernimmt keine strafrechtliche Verantwortung.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-007",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.14.31.png",
+      "screenshotPath": "imports/de/batch-007/screenshots/Screenshot 2026-05-24 at 12.14.31.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0293",
+      "reviewerNotes": "[DUP-SUSPECT: top global match was already-localized q0216 (score 32.5) — approved to closest UNCLAIMED qid; verify not a re-capture of q0216] Claude high-risk approveExistingQid: matcher top-1 q0293 (score 31.3)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "Forgery or alteration, as well as the use of a forged or altered driving license, is an offense for which the respective driver bears criminal responsibility.",
+      "promptRaw": "Fälschung oder Veränderung sowie die Verwendung eines gefälschten oder veränderten Führerscheins ist ein Delikt, für das der jeweilige Fahrer die strafrechtliche Verantwortung trägt.",
       "optionsRaw": [
         "A) Yes",
         "B) No"
