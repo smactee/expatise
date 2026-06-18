@@ -28,7 +28,9 @@ const opt = (name, def) => { const i = args.indexOf(`--${name}`); return i >= 0 
 const lang = opt("lang");
 const batch = opt("batch");
 const dataset = opt("dataset", "2023-test1");
-const topk = parseInt(opt("topk", "8"), 10);
+// topK raised 8 -> 14 after de batch-006: owner's correct qid was at NN rank 5 (12.12.27/q0777)
+// and beyond rank 8 (12.12.31/q0782), so a shallow list under-served the merge step.
+const topk = parseInt(opt("topk", "14"), 10);
 if (!lang || !batch) { console.error("need --lang and --batch"); process.exit(1); }
 
 const ROOT = process.cwd();
