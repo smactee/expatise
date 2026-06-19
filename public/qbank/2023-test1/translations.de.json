@@ -1,8 +1,8 @@
 {
   "meta": {
     "locale": "de",
-    "translatedQuestions": 839,
-    "generatedAt": "2026-06-19T05:44:33.623Z",
+    "translatedQuestions": 852,
+    "generatedAt": "2026-06-19T09:51:48.201Z",
     "mergedBatches": [
       "batch-001",
       "batch-002",
@@ -12,7 +12,8 @@
       "batch-006",
       "batch-007",
       "batch-008",
-      "batch-009"
+      "batch-009",
+      "batch-010"
     ],
     "localeAnswerKeySupport": true
   },
@@ -55967,6 +55968,685 @@
       "sourceMode": "direct",
       "confidence": "high",
       "reviewStatus": "ready"
+    },
+    "q0021": {
+      "prompt": "Bei einer Verkehrskontrolle auf der Autobahn darf man nicht von der Autobahn ausfahren und soll an Ort und Stelle daneben anhalten und nach der Verkehrskontrolle weiter fahren.",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0170": {
+      "prompt": "Was kann man tun, wenn man einem anderen Fahrzeug an einer ungeeigneten Stelle begegnet?",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready",
+      "options": {
+        "q0170_o4": "beschleunigen und eine bessere Stelle suchen",
+        "q0170_o1": "langsam aneinander vorbeifahren oder anhalten, um das andere Fahrzeug durchfahren zu lassen",
+        "q0170_o2": "die linke Straßenseite benutzen und so das andere Fahrzeug zum Bremsen oder Anhalten bringen",
+        "q0170_o3": "ie Lichthupe benutzen und dem anderen Auto signalisieren, dass es einen vobeilassen soll"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) beschleunigen und eine bessere Stelle suchen",
+          "sourceTextBody": "beschleunigen und eine bessere Stelle suchen",
+          "canonicalOptionId": "q0170_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Speed up and select a better place",
+          "alignmentScore": 0.41692307692307695,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) langsam aneinander vorbeifahren oder anhalten, um das andere Fahrzeug durchfahren zu lassen",
+          "sourceTextBody": "langsam aneinander vorbeifahren oder anhalten, um das andere Fahrzeug durchfahren zu lassen",
+          "canonicalOptionId": "q0170_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and cross each other slowly, or stop to yield",
+          "alignmentScore": 0.3762803234501348,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) die linke Straßenseite benutzen und so das andere Fahrzeug zum Bremsen oder Anhalten bringen",
+          "sourceTextBody": "die linke Straßenseite benutzen und so das andere Fahrzeug zum Bremsen oder Anhalten bringen",
+          "canonicalOptionId": "q0170_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Occupy the left lane to force the opposite party to reduce speed and yield",
+          "alignmentScore": 0.21529711375212224,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) die Lichthupe benutzen und dem anderen Auto signalisieren, dass es einen vobeilassen soll",
+          "sourceTextBody": "ie Lichthupe benutzen und dem anderen Auto signalisieren, dass es einen vobeilassen soll",
+          "canonicalOptionId": "q0170_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Turn the head light to indicate the opposite party to stop and yield",
+          "alignmentScore": 0.07315454545454546,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) beschleunigen und eine bessere Stelle suchen",
+          "sourceTextBody": "beschleunigen und eine bessere Stelle suchen",
+          "canonicalOptionId": "q0170_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Speed up and select a better place",
+          "alignmentScore": 0.41692307692307695,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) langsam aneinander vorbeifahren oder anhalten, um das andere Fahrzeug durchfahren zu lassen",
+          "sourceTextBody": "langsam aneinander vorbeifahren oder anhalten, um das andere Fahrzeug durchfahren zu lassen",
+          "canonicalOptionId": "q0170_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "reduce speed and cross each other slowly, or stop to yield",
+          "alignmentScore": 0.3762803234501348,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) die linke Straßenseite benutzen und so das andere Fahrzeug zum Bremsen oder Anhalten bringen",
+          "sourceTextBody": "die linke Straßenseite benutzen und so das andere Fahrzeug zum Bremsen oder Anhalten bringen",
+          "canonicalOptionId": "q0170_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Occupy the left lane to force the opposite party to reduce speed and yield",
+          "alignmentScore": 0.21529711375212224,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) die Lichthupe benutzen und dem anderen Auto signalisieren, dass es einen vobeilassen soll",
+          "sourceTextBody": "die Lichthupe benutzen und dem anderen Auto signalisieren, dass es einen vobeilassen soll",
+          "canonicalOptionId": "q0170_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Turn the head light to indicate the opposite party to stop and yield",
+          "alignmentScore": 0.07315454545454546,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B"
+    },
+    "q0177": {
+      "prompt": "Was soll man machen, wenn das hintere Fahrzeug überholen will?",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready",
+      "options": {
+        "q0177_o3": "weiter schnell fahren",
+        "q0177_o4": "das Tempo drosseln und möglichst rechts fahren",
+        "q0177_o1": "in der Straßenmitte fahren",
+        "q0177_o2": "beschleunigen"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) weiter schnell fahren",
+          "sourceTextBody": "weiter schnell fahren",
+          "canonicalOptionId": "q0177_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Continue to speed up and run",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) das Tempo drosseln und möglichst rechts fahren",
+          "sourceTextBody": "das Tempo drosseln und möglichst rechts fahren",
+          "canonicalOptionId": "q0177_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce speed and run on the right side",
+          "alignmentScore": 0.31868852459016395,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) in der Straßenmitte fahren",
+          "sourceTextBody": "in der Straßenmitte fahren",
+          "canonicalOptionId": "q0177_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Run by the central line of the road",
+          "alignmentScore": 0.20461956521739133,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) beschleunigen",
+          "sourceTextBody": "beschleunigen",
+          "canonicalOptionId": "q0177_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Speed up and yield",
+          "alignmentScore": 0.38974358974358975,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) weiter schnell fahren",
+          "sourceTextBody": "weiter schnell fahren",
+          "canonicalOptionId": "q0177_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "Continue to speed up and run",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) das Tempo drosseln und möglichst rechts fahren",
+          "sourceTextBody": "das Tempo drosseln und möglichst rechts fahren",
+          "canonicalOptionId": "q0177_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "reduce speed and run on the right side",
+          "alignmentScore": 0.31868852459016395,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) in der Straßenmitte fahren",
+          "sourceTextBody": "in der Straßenmitte fahren",
+          "canonicalOptionId": "q0177_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Run by the central line of the road",
+          "alignmentScore": 0.20461956521739133,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) beschleunigen",
+          "sourceTextBody": "beschleunigen",
+          "canonicalOptionId": "q0177_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Speed up and yield",
+          "alignmentScore": 0.38974358974358975,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B"
+    },
+    "q0186": {
+      "prompt": "Was kann man machen, wenn trotz eigenem Vorfahrtsrecht jemand versucht, einen Kreuzung zuerst zu überqueren?",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready",
+      "options": {
+        "q0186_o1": "sich vorbeidrängeln",
+        "q0186_o2": "vorab beschleunigen und die Kreuzung schnell überqueren",
+        "q0186_o4": "dem eigenen Vorfahrtsrecht folgen, normal weiterfahren und nicht ausweichen",
+        "q0186_o3": "sofort ausweichen und falls erforderlich anhalten, um das andere Fahrzeug vorzulassen"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) sich vorbeidrängeln",
+          "sourceTextBody": "sich vorbeidrängeln",
+          "canonicalOptionId": "q0186_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Rush to pass",
+          "alignmentScore": 0.044444444444444446,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) vorab beschleunigen und die Kreuzung schnell überqueren",
+          "sourceTextBody": "vorab beschleunigen und die Kreuzung schnell überqueren",
+          "canonicalOptionId": "q0186_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Speed up in advance and pass",
+          "alignmentScore": 0.25416666666666665,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) dem eigenen Vorfahrtsrecht folgen, normal weiterfahren und nicht ausweichen",
+          "sourceTextBody": "dem eigenen Vorfahrtsrecht folgen, normal weiterfahren und nicht ausweichen",
+          "canonicalOptionId": "q0186_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Go forward at the normal speed according to the right of way and refuses to evade",
+          "alignmentScore": 0.24663023679417123,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) sofort ausweichen und falls erforderlich anhalten, um das andere Fahrzeug vorzulassen",
+          "sourceTextBody": "sofort ausweichen und falls erforderlich anhalten, um das andere Fahrzeug vorzulassen",
+          "canonicalOptionId": "q0186_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and evade, or stop to yield when necessary",
+          "alignmentScore": 0.12549019607843137,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) sich vorbeidrängeln",
+          "sourceTextBody": "sich vorbeidrängeln",
+          "canonicalOptionId": "q0186_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "Rush to pass",
+          "alignmentScore": 0.044444444444444446,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) vorab beschleunigen und die Kreuzung schnell überqueren",
+          "sourceTextBody": "vorab beschleunigen und die Kreuzung schnell überqueren",
+          "canonicalOptionId": "q0186_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "Speed up in advance and pass",
+          "alignmentScore": 0.25416666666666665,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) dem eigenen Vorfahrtsrecht folgen, normal weiterfahren und nicht ausweichen",
+          "sourceTextBody": "dem eigenen Vorfahrtsrecht folgen, normal weiterfahren und nicht ausweichen",
+          "canonicalOptionId": "q0186_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "Go forward at the normal speed according to the right of way and refuses to evade",
+          "alignmentScore": 0.24663023679417123,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) sofort ausweichen und falls erforderlich anhalten, um das andere Fahrzeug vorzulassen",
+          "sourceTextBody": "sofort ausweichen und falls erforderlich anhalten, um das andere Fahrzeug vorzulassen",
+          "canonicalOptionId": "q0186_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "reduce speed and evade, or stop to yield when necessary",
+          "alignmentScore": 0.12549019607843137,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
+    },
+    "q0207": {
+      "prompt": "Es dürfen nur die im Führerschein ausgewiesenen Fahrzeuge gefahren werden.",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0276": {
+      "prompt": "Die Verkehrspolizei kann den Fahrzeugschein legal einbehalten, wenn der Fahrer kein Versicherungszeichen angebracht hat.",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0299": {
+      "prompt": "Fahren ohne Führerschein ist rechtlich sträflich.",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0300": {
+      "prompt": "Wer illegal ein Kraftfahrzeug fährt und einen schweren Unfall verursacht, übernimmt keine strafrechtliche Verantwortung.",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0347": {
+      "prompt": "Fälschung oder Veränderung sowie die Verwendung eines gefälschten oder veränderten Führerscheins ist ein Delikt, für das der jeweilige Fahrer die strafrechtliche Verantwortung trägt.",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0486": {
+      "prompt": "Wenn man ein steiles Gefälle hinunterfährt, welche der folgenden Verhaltensweisen ist gefährlich?",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready",
+      "options": {
+        "q0486_o4": "vorher in einen kleinen Gang schalten",
+        "q0486_o1": "im Leerlauf fahren",
+        "q0486_o2": "in einen kleinen Gang schalten",
+        "q0486_o3": "bremsen, um langsamer zu werden"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) vorher in einen kleinen Gang schalten",
+          "sourceTextBody": "vorher in einen kleinen Gang schalten",
+          "canonicalOptionId": "q0486_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "changing to the lower gear in advance",
+          "alignmentScore": 0.14779661016949153,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) im Leerlauf fahren",
+          "sourceTextBody": "im Leerlauf fahren",
+          "canonicalOptionId": "q0486_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving in neutral gear",
+          "alignmentScore": 0.31657142857142856,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) in einen kleinen Gang schalten",
+          "sourceTextBody": "in einen kleinen Gang schalten",
+          "canonicalOptionId": "q0486_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving in lower gear",
+          "alignmentScore": 0.18095238095238092,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) bremsen, um langsamer zu werden",
+          "sourceTextBody": "bremsen, um langsamer zu werden",
+          "canonicalOptionId": "q0486_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "braking to reduce speed",
+          "alignmentScore": 0.5333333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) vorher in einen kleinen Gang schalten",
+          "sourceTextBody": "vorher in einen kleinen Gang schalten",
+          "canonicalOptionId": "q0486_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "changing to the lower gear in advance",
+          "alignmentScore": 0.14779661016949153,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) im Leerlauf fahren",
+          "sourceTextBody": "im Leerlauf fahren",
+          "canonicalOptionId": "q0486_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "driving in neutral gear",
+          "alignmentScore": 0.31657142857142856,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) in einen kleinen Gang schalten",
+          "sourceTextBody": "in einen kleinen Gang schalten",
+          "canonicalOptionId": "q0486_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "driving in lower gear",
+          "alignmentScore": 0.18095238095238092,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) bremsen, um langsamer zu werden",
+          "sourceTextBody": "bremsen, um langsamer zu werden",
+          "canonicalOptionId": "q0486_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "braking to reduce speed",
+          "alignmentScore": 0.5333333333333333,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "B"
+    },
+    "q0492": {
+      "prompt": "Was soll man sich verhalten, wenn die Fahrzeuge vorne sich rückstauen oder langsam fahren?",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready",
+      "options": {
+        "q0492_o1": "uf einem freien Stück überholen",
+        "q0492_o2": "die Gegenfahrbahnbenutzen",
+        "q0492_o4": "sich vor die wartenden Fahrzeuge drängeln",
+        "q0492_o3": "er wartenden Reihe folgen"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) auf einem freien Stück überholen",
+          "sourceTextBody": "uf einem freien Stück überholen",
+          "canonicalOptionId": "q0492_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "borrow road to overtake",
+          "alignmentScore": 0.14547619047619045,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) die Gegenfahrbahnbenutzen",
+          "sourceTextBody": "die Gegenfahrbahnbenutzen",
+          "canonicalOptionId": "q0492_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "occupy the opposite lane",
+          "alignmentScore": 0.19636363636363635,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) sich vor die wartenden Fahrzeuge drängeln",
+          "sourceTextBody": "sich vor die wartenden Fahrzeuge drängeln",
+          "canonicalOptionId": "q0492_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "cut in the waiting vehicles",
+          "alignmentScore": 0.47085714285714286,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) der wartenden Reihe folgen",
+          "sourceTextBody": "er wartenden Reihe folgen",
+          "canonicalOptionId": "q0492_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "follow the vehicles in front",
+          "alignmentScore": 0.18596491228070175,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) auf einem freien Stück überholen",
+          "sourceTextBody": "auf einem freien Stück überholen",
+          "canonicalOptionId": "q0492_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "borrow road to overtake",
+          "alignmentScore": 0.14547619047619045,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) die Gegenfahrbahnbenutzen",
+          "sourceTextBody": "die Gegenfahrbahnbenutzen",
+          "canonicalOptionId": "q0492_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "occupy the opposite lane",
+          "alignmentScore": 0.19636363636363635,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) sich vor die wartenden Fahrzeuge drängeln",
+          "sourceTextBody": "sich vor die wartenden Fahrzeuge drängeln",
+          "canonicalOptionId": "q0492_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "cut in the waiting vehicles",
+          "alignmentScore": 0.47085714285714286,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) der wartenden Reihe folgen",
+          "sourceTextBody": "der wartenden Reihe folgen",
+          "canonicalOptionId": "q0492_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "follow the vehicles in front",
+          "alignmentScore": 0.18596491228070175,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
+    },
+    "q0976": {
+      "prompt": "Wenn man sich aus einer anderen Straße in fließenden Verkehr einordnen möchte, soll man die Situation hinter dem Fahrzeug im Blick haben.",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0993": {
+      "prompt": "Wie soll man fahren, wenn es auf der Straße größere Pfützen gibt?",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready",
+      "options": {
+        "q0993_o1": "besonders achtsam fahren und das Tempo drosseln",
+        "q0993_o2": "schnell durchfahren",
+        "q0993_o3": "normal fahren",
+        "q0993_o4": "in einen kleinen Gang schalten und beschleunigend durchfahren"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) besonders achtsam fahren und das Tempo drosseln",
+          "sourceTextBody": "besonders achtsam fahren und das Tempo drosseln",
+          "canonicalOptionId": "q0993_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slow down and pass slowly",
+          "alignmentScore": 0.2756302521008403,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) schnell durchfahren",
+          "sourceTextBody": "schnell durchfahren",
+          "canonicalOptionId": "q0993_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerate and pass",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) normal fahren",
+          "sourceTextBody": "normal fahren",
+          "canonicalOptionId": "q0993_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "keep the speed",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) in einen kleinen Gang schalten und beschleunigend durchfahren",
+          "sourceTextBody": "in einen kleinen Gang schalten und beschleunigend durchfahren",
+          "canonicalOptionId": "q0993_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "downshift and accelerate",
+          "alignmentScore": 0.3096774193548387,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) besonders achtsam fahren und das Tempo drosseln",
+          "sourceTextBody": "besonders achtsam fahren und das Tempo drosseln",
+          "canonicalOptionId": "q0993_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "slow down and pass slowly",
+          "alignmentScore": 0.2756302521008403,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) schnell durchfahren",
+          "sourceTextBody": "schnell durchfahren",
+          "canonicalOptionId": "q0993_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "accelerate and pass",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) normal fahren",
+          "sourceTextBody": "normal fahren",
+          "canonicalOptionId": "q0993_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "keep the speed",
+          "alignmentScore": 0,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) in einen kleinen Gang schalten und beschleunigend durchfahren",
+          "sourceTextBody": "in einen kleinen Gang schalten und beschleunigend durchfahren",
+          "canonicalOptionId": "q0993_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "downshift and accelerate",
+          "alignmentScore": 0.3096774193548387,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A"
     }
   }
 }
