@@ -1,9 +1,9 @@
 {
   "lang": "de",
-  "count": 21,
+  "count": 26,
   "purpose": "Deferred de items (keepUnresolved/createNew) to RE-RUN as the final de batch. Reviewer notes are authoritative. Sourced from reviewed workbench-decisions exports in qbank-tools/history/decisions/.",
   "sourceOfTruth": "reviewed workbench-decisions exports (qbank-tools/history/decisions/)",
-  "updatedAt": "2026-06-18",
+  "updatedAt": "2026-06-19",
   "items": [
     {
       "batch": "batch-001",
@@ -359,6 +359,94 @@
       "newQuestionProvisionalTopic": null,
       "promptEn": "Forgery or alteration, as well as the use of a forged or altered driving license, is an offense for which the respective driver bears criminal responsibility.",
       "promptRaw": "Fälschung oder Veränderung sowie die Verwendung eines gefälschten oder veränderten Führerscheins ist ein Delikt, für das der jeweilige Fahrer die strafrechtliche Verantwortung trägt.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-008",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.16.00.png",
+      "screenshotPath": "imports/de/batch-008/screenshots/Screenshot 2026-05-24 at 12.16.00.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0999",
+      "reviewerNotes": "[DUP-SUSPECT vs already-localized q0989 (score 39.1); approved closest UNCLAIMED qid - verify not a re-capture] Claude medium-risk approveExistingQid (text-verified): Exact 4-way option-set match: honk+prevent (A/A), accelerate-follow-to-prevent (B/B), let them merge keeping safe distance (C/C), force the merging vehicle to leave (D/D). Master correct C 'politely let them merge' = German C 'das Fahrzeug vorlassen'. q0163 is similar topic but its option set (squeeze/yield) is a weaker fingerprint.",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "What can you do if another vehicle tries to push in ahead in a traffic jam?",
+      "promptRaw": "Was kann man tun, wenn sich ein anderes Fahrzeug in einem Stau vordrängeln will?",
+      "optionsRaw": [
+        "A) hupen, um davor zu warnen, sich vor einem einzufädeln",
+        "B) dem vorderen Fahrzeug eng folgen, um das Einfädeln des drängelnden Fahrzeugs zu verhindern",
+        "C) das Fahrzeug vorlassen, um die Sicherheit der Verkehrssituation zu gewährleisten",
+        "D) das drängelnde Fahrzeug zum Wegfahren drängen"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-008",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.16.09.png",
+      "screenshotPath": "imports/de/batch-008/screenshots/Screenshot 2026-05-24 at 12.16.09.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0999",
+      "reviewerNotes": "[DUP-SUSPECT vs already-localized q1011 (score 34.5); approved closest UNCLAIMED qid - verify not a re-capture] Claude high-risk approveExistingQid (collision-split from q0999): 'how to park at road edge' (against-direction/next-to-parked-car/neither/any-way). NO unclaimed parking master in candidates or prompt-NN (all parking masters are CLAIMED). q0994 is a wrong-topic PLACEHOLDER. OWNER: likely a DUPLICATE of an already-localized parking question OR a new question - verify, probably delete-as-dup or keepUnresolved. Source correct = C (neither).",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "How may you park the car when stopping at the edge of the road?",
+      "promptRaw": "Wie kann man das Auto abstellen, wenn man am Rand der Straße anhält?",
+      "optionsRaw": [
+        "A) entgegen der Fahrtrichtung",
+        "B) neben einem anderen parkenden Auto",
+        "C) weder entgegen der Fahrtrichtung noch neben einem anderen parkenden Auto",
+        "D) beliebig"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-008",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.16.12.png",
+      "screenshotPath": "imports/de/batch-008/screenshots/Screenshot 2026-05-24 at 12.16.12.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0124",
+      "reviewerNotes": "Claude medium-risk approveExistingQid: matcher top-1 q0124 (score 39.1)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "How should you react to an oncoming vehicle in mountainous terrain?",
+      "promptRaw": "Wie soll man auf ein entgegenkommendes Fahrzeug auf dem Gebirgsland reagieren?",
+      "optionsRaw": [
+        "A) im Leergang fahren",
+        "B) Motorbremse benutzen",
+        "C) das Kupplungspedal treten",
+        "D) den Motor abschalten und im Leergang fahren"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-008",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.16.34.png",
+      "screenshotPath": "imports/de/batch-008/screenshots/Screenshot 2026-05-24 at 12.16.34.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0994",
+      "reviewerNotes": "[DUP-SUSPECT vs already-localized q0989 (score 47.0); approved closest UNCLAIMED qid - verify not a re-capture] Claude medium-risk approveExistingQid (text-verified, top-1 corrected): q0120 is about non-motorized vehicles (bicycles) cutting in/bypassing, matching the German 'non-motorized vehicles push ahead'. Option set aligns: {honk to yield, yield to them, speed up and bypass, follow closely and honk} maps to deOptions {hupen, langsamer werden und durchfahren lassen, beschleunigend durchfahren, sofort beschleunigen}. masterKey=B 'yield to them' = German C 'langsamer werden und durchfahren lassen' (slow down and let them pass). First text candidate q0994 is about a vehicle waiting for green to turn right - wrong subject; chose q0120 over it.",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "What should you do when non-motorized vehicles push ahead/cut in?",
+      "promptRaw": "Was soll man machen, wenn nicht-motorisierte Fahrzeuge sich vordrängeln?",
+      "optionsRaw": [
+        "A) hupen",
+        "B) beschleunigend durchfahren",
+        "C) langsamer werden und durchfahren lassen",
+        "D) sofort rapide beschleunigen"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-008",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.16.48.png",
+      "screenshotPath": "imports/de/batch-008/screenshots/Screenshot 2026-05-24 at 12.16.48.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0907",
+      "reviewerNotes": "[DUP-SUSPECT vs already-localized q0234 (score 34.0); approved closest UNCLAIMED qid - verify not a re-capture] Claude high-risk approveExistingQid: matcher top-1 q0907 (score 27.3)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "Driving without a license is legally punishable.",
+      "promptRaw": "Fahren ohne Führerschein ist rechtlich sträflich.",
       "optionsRaw": [
         "A) Yes",
         "B) No"
