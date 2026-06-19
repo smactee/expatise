@@ -1,6 +1,6 @@
 {
   "lang": "de",
-  "count": 26,
+  "count": 28,
   "purpose": "Deferred de items (keepUnresolved/createNew) to RE-RUN as the final de batch. Reviewer notes are authoritative. Sourced from reviewed workbench-decisions exports in qbank-tools/history/decisions/.",
   "sourceOfTruth": "reviewed workbench-decisions exports (qbank-tools/history/decisions/)",
   "updatedAt": "2026-06-19",
@@ -447,6 +447,38 @@
       "newQuestionProvisionalTopic": null,
       "promptEn": "Driving without a license is legally punishable.",
       "promptRaw": "Fahren ohne Führerschein ist rechtlich sträflich.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-009",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.17.40.png",
+      "screenshotPath": "imports/de/batch-009/screenshots/Screenshot 2026-05-24 at 12.17.40.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q1001",
+      "reviewerNotes": "Claude medium-risk approveExistingQid: matcher top-1 q1001 (score 45.6)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "During a traffic check on the motorway, you may not exit the motorway and should stop on the spot beside it and continue driving after the traffic check.",
+      "promptRaw": "Bei einer Verkehrskontrolle auf der Autobahn darf man nicht von der Autobahn ausfahren und soll an Ort und Stelle daneben anhalten und nach der Verkehrskontrolle weiter fahren.",
+      "optionsRaw": [
+        "A) Yes",
+        "B) No"
+      ],
+      "correctKeyRaw": null
+    },
+    {
+      "batch": "batch-009",
+      "sourceImage": "screenshots/Screenshot 2026-05-24 at 12.17.57.png",
+      "screenshotPath": "imports/de/batch-009/screenshots/Screenshot 2026-05-24 at 12.17.57.png",
+      "disposition": "keepUnresolved",
+      "initialSuggestedQid": "q0544",
+      "reviewerNotes": "Claude high-risk approveExistingQid: matcher top-1 q0544 (score 39.3)",
+      "newQuestionProvisionalTopic": null,
+      "promptEn": "The dual protection of the seatbelt and airbag only works in the event of a frontal collision of motor vehicles.",
+      "promptRaw": "Der doppelte Schutz des Sicherheitsgurts am Airbag funktioniert erst dann im Fall eines Frontalaufpralls der Kraftfahrzeuge.",
       "optionsRaw": [
         "A) Yes",
         "B) No"
