@@ -1,6 +1,6 @@
 {
   "lang": "ar",
-  "count": 3,
+  "count": 6,
   "purpose": "keepUnresolved/createNew items deferred during review; source for ar batch-final",
   "items": [
     {
@@ -23,6 +23,27 @@
       "batch": "batch-002",
       "reviewerNotes": "Claude med-risk deleteQuestion: Same statement as claimed q0007 (mountain-road landslide caution, avoid stopping) — target-language duplicate of an already-localized batch-1 item.",
       "initialSuggestedQid": "q0351"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 10.55.24.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 10.55.24.png",
+      "batch": "batch-003",
+      "reviewerNotes": "Claude high-risk approveExistingQid: No master covers 'license not matching car type'; closest by matcher is q0981 (12 points) = Arabic A; weak overlap.",
+      "initialSuggestedQid": "q0981"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 10.56.18.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 10.56.18.png",
+      "batch": "batch-003",
+      "reviewerNotes": "Claude med-risk approveExistingQid: Fuel-pump warning symbol (low fuel). ROW statement claims it means refill engine OIL = false. Image exact match q0542 (matcher #1, imageNN 0.889; same img as q1008 fuel/q0621). q0542 'add lubricating oil' correct=Wrong -> No=B.",
+      "initialSuggestedQid": "q0542"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 10.55.56 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 10.55.56 1.png",
+      "batch": "batch-003",
+      "reviewerNotes": "Claude low-risk approveExistingQid: Claude low-risk approveExistingQid: Arabic specifies 'insurance label of another vehicle' (علامة التأمين) which matches q0248 (promptNN #1, cos 0.854) exactly over matcherTop's q0294 (license-plate variant); ROW correct=Right → Yes=A.",
+      "initialSuggestedQid": "q0294"
     }
   ]
 }
