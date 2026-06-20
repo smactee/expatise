@@ -1,6 +1,6 @@
 {
   "lang": "ar",
-  "count": 6,
+  "count": 7,
   "purpose": "keepUnresolved/createNew items deferred during review; source for ar batch-final",
   "items": [
     {
@@ -44,6 +44,13 @@
       "batch": "batch-003",
       "reviewerNotes": "Claude low-risk approveExistingQid: Claude low-risk approveExistingQid: Arabic specifies 'insurance label of another vehicle' (علامة التأمين) which matches q0248 (promptNN #1, cos 0.854) exactly over matcherTop's q0294 (license-plate variant); ROW correct=Right → Yes=A.",
       "initialSuggestedQid": "q0294"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 10.56.42.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 10.56.42.png",
+      "batch": "batch-004",
+      "reviewerNotes": "Claude med-risk approveExistingQid: Image: red triangle indicator = hazard-warning light. q0572 (matcher 70.3, imageNN 0.885) 'It flashes when turning on the hazard lights'. Arabic claims it lights 'when the car is in an accident' = false (it is manually-activated hazard light) -> No (B).",
+      "initialSuggestedQid": "q0572"
     }
   ]
 }
