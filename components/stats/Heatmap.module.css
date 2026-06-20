@@ -125,8 +125,8 @@
   /* ✅ critical for preventing text overlap */
   min-width: 0;
   justify-content: start;
-  margin-left: 0;
-  margin-right: auto;
+  margin-inline-start: 0;
+  margin-inline-end: auto;
 }
 
 
@@ -156,8 +156,8 @@
 }
 
 .rowLabel {
-  padding-right: 0px;
-  text-align: right;
+  padding-inline-end: 0px;
+  text-align: end;
 
   font-size: 15px;
   color: rgba(17, 24, 39, 0.44);
@@ -292,7 +292,7 @@ padding: clamp(4px, 1vw, 8px);
 /* Confidence “• count” bottom-right */
 .conf {
   position: absolute;
-  right: 10px;
+  inset-inline-end: 10px;
   bottom: 8px;
 
   display: inline-flex;
@@ -442,12 +442,12 @@ padding: clamp(4px, 1vw, 8px);
 
 .legendLabel{
   width: auto;                   
-  text-align: right;
+  text-align: end;
   color: rgba(17, 24, 39, 0.46);
 }
 
 .legendText{
-  margin-left: 0;                 /* gap already handles spacing */
+  margin-inline-start: 0;                 /* gap already handles spacing */
   color: rgba(17, 24, 39, 0.45);
 }
 

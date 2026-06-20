@@ -4,7 +4,7 @@ import { LOCALE_REGISTRY, type Locale } from '@/messages';
 
 type FutureLanguageCode = 'zh' | 'es' | 'ru' | 'de' | 'ar';
 type PendingLanguageCode = Exclude<FutureLanguageCode, Locale>;
-type DevLanguageCode = 'ru' | 'es';
+type DevLanguageCode = 'ar' | 'zh';
 
 type LanguageOptionBase = {
   code: Locale | PendingLanguageCode;
@@ -16,7 +16,11 @@ type LanguageOptionBase = {
 export type LanguageOption = LanguageOptionBase;
 export type LanguageOptionCode = LanguageOption['code'];
 
-const DEV_LANGUAGE_CODES = new Set<DevLanguageCode>(['ru']);
+// ar + zh have full UI message bundles but their QUESTION banks are still being
+// built, so they stay dev-only (selectable/testable in dev, "Not ready" in
+// production). ru was promoted to production once its bundle landed (its 1004-q
+// bank is complete), so it is intentionally absent here.
+const DEV_LANGUAGE_CODES = new Set<DevLanguageCode>(['ar', 'zh']);
 
 export function areDevLanguagesEnabled(): boolean {
   return process.env.NODE_ENV !== 'production';
@@ -44,11 +48,10 @@ const IMPLEMENTED_LANGUAGE_OPTIONS: LanguageOption[] = (
   };
 });
 
-const PENDING_LANGUAGE_OPTIONS: readonly LanguageOption[] = [
-  { code: 'zh', label: '中文', enabled: isLanguageAvailable('zh'), productionReady: false },
-  { code: 'ru', label: 'Русский', enabled: isLanguageAvailable('ru'), productionReady: false },
-  { code: 'ar', label: 'العربية', enabled: isLanguageAvailable('ar'), productionReady: false },
-];
+// zh, ru, ar all have registered UI message bundles now, so they are sourced from
+// LOCALE_REGISTRY (IMPLEMENTED_LANGUAGE_OPTIONS) rather than listed as pending. ru
+// is production-ready; ar + zh remain dev-only via DEV_LANGUAGE_CODES above.
+const PENDING_LANGUAGE_OPTIONS: readonly LanguageOption[] = [];
 
 // To enable a future language:
 // 1. Add/register its messages in messages/index.ts

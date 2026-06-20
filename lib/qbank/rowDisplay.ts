@@ -25,6 +25,18 @@ const ROW_DISPLAY_LABELS: Record<Locale, { right: string; wrong: string }> = {
     right: 'Richtig',
     wrong: 'Falsch',
   },
+  ru: {
+    right: 'Верно',
+    wrong: 'Неверно',
+  },
+  zh: {
+    right: '正确',
+    wrong: '错误',
+  },
+  ar: {
+    right: 'صحيح',
+    wrong: 'خطأ',
+  },
   'en-orig': {
     right: 'Right',
     wrong: 'Wrong',

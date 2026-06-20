@@ -37,7 +37,7 @@
 /* Back row placement (Frame 2801 starts at top 44; but we can place it at top visually) */
 .backRow {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   top: 44px;
   width: 390px;
   height: 40px;
@@ -45,7 +45,7 @@
 
 .backBtn {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   top: 0px;
 
   width: 86px;
@@ -54,7 +54,9 @@
   align-items: center;
   gap: 4px;
 
-  padding: 10px 0px 10px 16px;
+  padding-block: 10px;
+  padding-inline-start: 16px;
+  padding-inline-end: 0px;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -201,7 +203,7 @@
 .lineTop,
 .lineBottom {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   width: 100%;       /* ✅ instead of 330px */
   height: 0px;
   border: 1px solid #2b7caf;
@@ -214,9 +216,9 @@
 .lineMid {
   position: absolute;
   top: 0;
-  left: 50%;
+  inset-inline-start: 50%;
   height: 83px;
-  border-left: 1px solid #2b7caf;
+  border-inline-start: 1px solid #2b7caf;
 }
 
 
@@ -232,8 +234,8 @@
   gap: 11px;
 }
 
-.scoreLeft { left: 0; }
-.scoreRight { left: 50%; }
+.scoreLeft { inset-inline-start: 0; }
+.scoreRight { inset-inline-start: 50%; }
 
 
 .scoreRight .scoreValue {
@@ -266,7 +268,7 @@
 /* Test Results title */
 .testResultsTitle {
   position: absolute;
-  left: 30px;
+  inset-inline-start: 30px;
   top: 400px;
 
   /* ✅ make the title span the usable screen width (390 - 30 - 30) */
@@ -284,15 +286,15 @@
   color: #000;
 
   /* Figma looks left-aligned */
-  text-align: left;
+  text-align: start;
 }
 
 
 /* Incorrect row */
 .incorrectRow {
   position: absolute;
-  left: 43px;
-  right: 30px; /* ✅ gives it room to push a button to the far right */
+  inset-inline-start: 43px;
+  inset-inline-end: 30px; /* ✅ gives it room to push a button to the far right */
   top: 440px;
 
   height: 24px;
@@ -322,14 +324,14 @@
 /* A scrollable area for wrong-question details */
 .reviewArea {
   position: absolute;
-  left: 30px;
+  inset-inline-start: 30px;
   width: calc(100% - 60px);
   top: 470px;
 
   bottom: -30; /* ✅ fill to bottom */
   overflow-y: auto;
 
-  padding-right: 6px;
+  padding-inline-end: 6px;
 
   /* ✅ this creates "extra space" so the last question can scroll past the button */
   padding-bottom: calc(41px + 16px + env(safe-area-inset-bottom) + 12px);
@@ -593,7 +595,7 @@
 /* When in carousel mode, reviewArea should not be vertically scrollable itself */
 .reviewAreaCarousel {
   overflow: hidden;
-  padding-right: 0;
+  padding-inline-end: 0;
 }
 
 /* Horizontal swipe carousel */
@@ -620,7 +622,7 @@
   scroll-snap-align: start;
   scroll-snap-stop: always; /* helps “one swipe = one card” where supported */
 
-  padding-right: 6px; /* keeps your old “scrollbar breathing room” feel */
+  padding-inline-end: 6px; /* keeps your old “scrollbar breathing room” feel */
   overflow-y: auto;   /* ✅ content can still scroll vertically inside each slide */
   -webkit-overflow-scrolling: touch;
 }

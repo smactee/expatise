@@ -15,8 +15,8 @@
   width: 100%;
   max-width: 560px;
   box-sizing: border-box; /* ✅ add */
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-inline-start: 16px;
+  padding-inline-end: 16px;
   padding-bottom: calc(var(--bottom-nav-clearance) + 24px); /* ✅ add */
 }
 
@@ -47,7 +47,7 @@
 .cardBackButton {
   position: absolute;
   top: 3px;
-  left: 4px;
+  inset-inline-start: 4px;
   z-index: 5;
 }
 /* ===== Profile card ===== */
@@ -105,8 +105,8 @@
   justify-content: center;
   margin-bottom: 4px;
   width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
 }
 
 .usernameEditable {
@@ -286,7 +286,7 @@
 .emailDisplayText{
   display: inline;   /* ✅ lets it sit next to the icon */
   width: auto;       /* ✅ don't force full width */
-  text-align: left;  /* optional; row is already centered */
+  text-align: start;  /* optional; row is already centered */
 }
 
 
@@ -311,7 +311,7 @@
 .emailValidIcon {
   font-size: 14px;
   color: #3b82f6;
-  margin-right: 5px;
+  margin-inline-end: 5px;
 }
 
 .providerIcon {
@@ -493,7 +493,7 @@
   border-radius: 14px;
   background: rgba(248, 250, 252, 0.88);
   cursor: pointer;
-  text-align: left;
+  text-align: start;
 }
 
 .languageOptionSelected {
@@ -522,7 +522,7 @@
   font-weight: 700;
   color: #2B7CAF;
   max-width: 62%;
-  text-align: right;
+  text-align: end;
   line-height: 1.3;
 }
 

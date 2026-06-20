@@ -31,8 +31,8 @@
 
   /* ✅ Minimal top gap (but still safe on notched devices in PWA/Capacitor) */
   padding-top: max(12px, env(safe-area-inset-top));
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-inline-start: 16px;
+  padding-inline-end: 16px;
 
   /* ✅ Leave space for BottomNav */
   padding-bottom: calc(var(--bottom-nav-clearance) + 6px);
@@ -78,7 +78,7 @@
 /* Right side: blue car area */
 .carHero {
   position: absolute;
-  right: -24px;      /* push slightly out so it feels bigger */
+  inset-inline-end: -24px;      /* push slightly out so it feels bigger */
   bottom: -10px;
 
   /* ✅ THIS is the size control (big!) */
@@ -137,7 +137,7 @@
   z-index: 2;
 
   /* ✅ reserve room on the right so car never covers text */
-  padding-right: clamp(160px, 45vw, 300px);
+  padding-inline-end: clamp(160px, 45vw, 300px);
 }
 
 
@@ -301,7 +301,7 @@
 .cardTopRow {
   position: absolute;
   top: 40px;        /* distance from top of card (match Figma) */
-  left: 22px;       /* 22px from left, as measured in Figma */
+  inset-inline-start: 22px;       /* 22px from left, as measured in Figma */
   display: flex;
   align-items: center;
   gap: 8px;         /* space between icon and text */
@@ -337,7 +337,7 @@
 /* === BOTTOM TITLE === */
 .cardContent {
   position: absolute;
-  left: 22px;      /* same left padding as top row */
+  inset-inline-start: 22px;      /* same left padding as top row */
   top: 110px;    /* distance from bottom of card – tweak to match Figma */
   z-index: 1;
 }

@@ -204,7 +204,7 @@
 }
 .cellTL,
 .cellBL {
-  border-right: 1px solid rgba(148, 163, 184, 0.22);
+  border-inline-end: 1px solid rgba(148, 163, 184, 0.22);
 }
 
 .planList {
@@ -281,7 +281,7 @@
 .planLeft {
   display: flex;
   align-items: center;
-  text-align: left;
+  text-align: start;
   min-width: 0;
 }
 
@@ -301,7 +301,7 @@
   color: #4b4b4b;
   letter-spacing: 0;
   line-height: 1.05;
-  text-align: right;
+  text-align: end;
   white-space: nowrap;
 }
 
@@ -632,7 +632,7 @@
 
 :root[data-theme='dark'] .cellTL,
 :root[data-theme='dark'] .cellBL {
-  border-right-color: rgba(145, 170, 196, 0.18);
+  border-inline-end-color: rgba(145, 170, 196, 0.18);
 }
 
 :root[data-theme='dark'] .planPill {

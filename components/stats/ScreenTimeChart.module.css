@@ -3,7 +3,7 @@
 /* ================================= */
 
 .statsLegend {
-  margin-left: auto;
+  margin-inline-start: auto;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -187,7 +187,7 @@
 
 .avgLabel {
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   font-size: 10px;
   opacity: 0.65;
   pointer-events: none;
@@ -256,7 +256,7 @@
 
 .yTick{
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   transform: translateY(-50%);
   white-space: nowrap;
   line-height: 1;

@@ -5,6 +5,7 @@ import { createContext, useCallback, useEffect, useMemo, useState, type ReactNod
 import { DEFAULT_LOCALE, type Locale } from '@/messages';
 
 import { detectDeviceLocale } from './detectDeviceLocale';
+import { getLocaleDirection } from './direction';
 import { AVAILABLE_LOCALES, getLocaleLabel, getMessage, getNextLocale as getRegisteredNextLocale, LOCALE_STORAGE_KEY, resolveLocale, type LocaleOption, type MessageKey } from './messages';
 import { type MessageParams } from './types';
 
@@ -76,6 +77,9 @@ export function I18nProvider({
 
   useEffect(() => {
     document.documentElement.lang = locale;
+    // Mirror the layout for RTL locales (Arabic). CSS logical properties +
+    // [dir="rtl"] overrides key off this; LTR locales resolve to 'ltr' unchanged.
+    document.documentElement.dir = getLocaleDirection(locale);
   }, [locale]);
 
   useEffect(() => {

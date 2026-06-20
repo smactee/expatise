@@ -2,12 +2,15 @@
 
 import type { MessageSchema } from '@/lib/i18n/types';
 
+import { ar } from './ar';
 import { de } from './de';
 import { en } from './en';
 import { es } from './es';
 import { fr } from './fr';
 import { ja } from './ja';
 import { ko } from './ko';
+import { ru } from './ru';
+import { zh } from './zh';
 
 export type AppMessages = MessageSchema<typeof en>;
 
@@ -39,8 +42,20 @@ export const LOCALE_REGISTRY = {
     messages: es,
   },
   de: {
-    label: 'Deutsch (Beta)',
+    label: 'Deutsch',
     messages: de,
+  },
+  ru: {
+    label: 'Русский',
+    messages: ru,
+  },
+  zh: {
+    label: '中文',
+    messages: zh,
+  },
+  ar: {
+    label: 'العربية',
+    messages: ar,
   },
   // British Chinglish: the verbatim pre-correction PDF extract, surfaced as a
   // selectable question language. UI chrome stays English (reuses `en` messages);
