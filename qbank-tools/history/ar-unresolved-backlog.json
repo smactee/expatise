@@ -1,6 +1,6 @@
 {
   "lang": "ar",
-  "count": 7,
+  "count": 10,
   "purpose": "keepUnresolved/createNew items deferred during review; source for ar batch-final",
   "items": [
     {
@@ -51,6 +51,27 @@
       "batch": "batch-004",
       "reviewerNotes": "Claude med-risk approveExistingQid: Image: red triangle indicator = hazard-warning light. q0572 (matcher 70.3, imageNN 0.885) 'It flashes when turning on the hazard lights'. Arabic claims it lights 'when the car is in an accident' = false (it is manually-activated hazard light) -> No (B).",
       "initialSuggestedQid": "q0572"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 10.58.20.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 10.58.20.png",
+      "batch": "batch-005",
+      "reviewerNotes": "Claude high-risk approveExistingQid: Text ROW. Closest master q0323 (matcher 58.8, promptNN 0.739) = violating law/traffic-safety rules is a traffic violation (Right) -> Yes=A. AMBIGUOUS: Arabic adds 'merely... regulations ONLY' (فقط) qualifier that could flip intended answer to No; no master matches the restrictive framing. Picked closest = q0323.",
+      "initialSuggestedQid": "q0323"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 10.58.28.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 10.58.28.png",
+      "batch": "batch-005",
+      "reviewerNotes": "Claude high-risk approveExistingQid: hasImage MCQ. Screenshot pixel-matches q0690 image (img_c95fe35): two white broken lines in red circles flanking central island. Series resolved by image (matcher's q0598 dashboard-symbol was wrong). AMBIGUOUS KEY: q0690 master correct='left-turn waiting areas' is NOT present in the Arabic option set; Arabic options appear to be q0690 distractors. Best-fit Arabic option = A (turning lines for small vehicles, = q0690 distractor 'small vehicles turning lines'). qid is certain by image; answer key flagged uncertain.",
+      "initialSuggestedQid": "q0598"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 10.58.44.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 10.58.44.png",
+      "batch": "batch-005",
+      "reviewerNotes": "Claude high-risk approveExistingQid: AR 'on which type of road is overtaking not allowed' best matches q0407 (promptNN cos 0.924) 'On which kind of city road is a vehicle not allowed to overtake'. Master option set (main streets/one-way/heavy-traffic-flow/two one-way) does not cleanly align with AR (main roads/elevated/pedestrian-crossing roads/expressway around city) — localized option drift. Closest no-overtake AR answer is C 'طرق عبور المشاة' (pedestrian crossing roads). seriesCluster [q0406,q0386,q0417] are vehicle-type questions, not road-type; not applicable. Verify option mapping.",
+      "initialSuggestedQid": "q0501"
     }
   ]
 }
