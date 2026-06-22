@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-06-22T14:38:55.939Z",
+  "generatedAt": "2026-06-22T14:54:54.041Z",
   "sourceHistoryPath": "qbank-tools/history/match-history.jsonl",
-  "historyRecordCount": 4644,
+  "historyRecordCount": 4661,
   "ruleCounts": {
     "candidateConfusionPair": 38,
     "approvedQidAnswerKeyOverride": 143,
     "topCandidateRequiresReview": 27,
-    "topCandidateHighPrecision": 316,
-    "total": 524
+    "topCandidateHighPrecision": 318,
+    "total": 526
   },
   "rules": [
     {
@@ -7934,6 +7934,48 @@
         "screenshots/Screenshot 2026-05-25 at 11.04.36.png",
         "screenshots/Screenshot 2026-05-24 at 12.17.31.png",
         "Screenshot 2026-04-19 at 18.47.31.png"
+      ],
+      "stats": {
+        "precision": 1,
+        "correctCount": 3
+      },
+      "action": {
+        "lowerAutoMatchThresholdBy": 2
+      },
+      "notes": "This top candidate has been consistently confirmed by reviewers."
+    },
+    {
+      "id": "top_candidate_high_precision:q0314",
+      "type": "top_candidate_high_precision",
+      "when": {
+        "topCandidate": "q0314"
+      },
+      "evidenceCount": 3,
+      "evidenceSampleItemIds": [
+        "screenshots/Screenshot 2026-05-25 at 10.59.22.png",
+        "screenshots/Screenshot 2026-05-24 at 12.17.49.png",
+        "screenshots/Screenshot 2026-05-24 at 13.06.27.png"
+      ],
+      "stats": {
+        "precision": 1,
+        "correctCount": 3
+      },
+      "action": {
+        "lowerAutoMatchThresholdBy": 2
+      },
+      "notes": "This top candidate has been consistently confirmed by reviewers."
+    },
+    {
+      "id": "top_candidate_high_precision:q0039",
+      "type": "top_candidate_high_precision",
+      "when": {
+        "topCandidate": "q0039"
+      },
+      "evidenceCount": 3,
+      "evidenceSampleItemIds": [
+        "screenshots/Screenshot 2026-05-25 at 11.00.52.png",
+        "screenshots/Screenshot 2026-05-24 at 12.12.11.png",
+        "screenshots/Screenshot 2026-05-24 at 13.15.52.png"
       ],
       "stats": {
         "precision": 1,

@@ -1,8 +1,8 @@
 {
   "meta": {
     "locale": "ar",
-    "translatedQuestions": 857,
-    "generatedAt": "2026-06-22T14:38:50.740Z",
+    "translatedQuestions": 862,
+    "generatedAt": "2026-06-22T14:54:49.011Z",
     "mergedBatches": [
       "batch-001",
       "batch-002",
@@ -12,7 +12,8 @@
       "batch-006",
       "batch-007",
       "batch-008",
-      "batch-009"
+      "batch-009",
+      "batch-final"
     ],
     "localeAnswerKeySupport": true
   },
@@ -57073,6 +57074,237 @@
       "sourceMode": "direct",
       "confidence": "high",
       "reviewStatus": "ready"
+    },
+    "q0039": {
+      "prompt": "يجوز للسيارات ذات الأولوية في المرور ألا تفسح الطريق للسيارات الأخرى التي تستغل الطريق بالقوة على الطريق الدائري .",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0248": {
+      "prompt": "يجوز لشرطة المرور أن تحجز السيارة التي سائقها يستخدم علامة التأمين لسيارة أخرى وفقا للقوانين .",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0314": {
+      "prompt": "يجب على سائق التدريب تعليق علامة التدريب خلف السيارة عند قيادة المركبة خلال مدة تدريبه.",
+      "explanation": "",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready"
+    },
+    "q0494": {
+      "prompt": "كم درجة تسجل للمرة في حال عدم مطابقة رخصة القيادة على نوع السيارة؟",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready",
+      "options": {
+        "q0494_o4": "12 درجة",
+        "q0494_o1": "6 درجات",
+        "q0494_o3": "3 درجات",
+        "q0494_o2": "درجتان"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) 12 درجة",
+          "sourceTextBody": "12 درجة",
+          "canonicalOptionId": "q0494_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "12 point penalty",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) 6 درجات",
+          "sourceTextBody": "6 درجات",
+          "canonicalOptionId": "q0494_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "2-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) 3 درجات",
+          "sourceTextBody": "3 درجات",
+          "canonicalOptionId": "q0494_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "6-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) درجتان",
+          "sourceTextBody": "درجتان",
+          "canonicalOptionId": "q0494_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "3-point penalty 42",
+          "alignmentScore": 0.052173913043478265,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) 12 درجة",
+          "sourceTextBody": "12 درجة",
+          "canonicalOptionId": "q0494_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "12 point penalty",
+          "alignmentScore": 0.06,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) 6 درجات",
+          "sourceTextBody": "6 درجات",
+          "canonicalOptionId": "q0494_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "2-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) 3 درجات",
+          "sourceTextBody": "3 درجات",
+          "canonicalOptionId": "q0494_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "6-point penalty",
+          "alignmentScore": 0.06666666666666667,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) درجتان",
+          "sourceTextBody": "درجتان",
+          "canonicalOptionId": "q0494_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "3-point penalty 42",
+          "alignmentScore": 0.052173913043478265,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        }
+      ],
+      "localeCorrectOptionKey": "A"
+    },
+    "q0704": {
+      "prompt": "ما معنى الخطوط المتقطعة باللون الأبيض داخل الدائرة في الصورة؟",
+      "sourceMode": "direct",
+      "confidence": "high",
+      "reviewStatus": "ready",
+      "options": {
+        "q0704_o1": "خطوط الإنعطاف للمركبات الصغيرة",
+        "q0704_o2": "خطوط تلاقي المسارات",
+        "q0704_o3": "خطوط توجيهية للمركبات غير الآلية",
+        "q0704_o4": "خطوط إرشادية لمقاطع الطريق"
+      },
+      "localeOptionOrder": [
+        {
+          "sourceIndex": 0,
+          "sourceKey": "A",
+          "sourceText": "A) خطوط الإنعطاف للمركبات الصغيرة",
+          "sourceTextBody": "خطوط الإنعطاف للمركبات الصغيرة",
+          "canonicalOptionId": "q0704_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "small vehicles turning lines",
+          "alignmentScore": 0.8015384615384615,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 1,
+          "sourceKey": "B",
+          "sourceText": "B) خطوط تلاقي المسارات",
+          "sourceTextBody": "خطوط تلاقي المسارات",
+          "canonicalOptionId": "q0704_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "lane connection lines",
+          "alignmentScore": 0.2606060606060606,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 2,
+          "sourceKey": "C",
+          "sourceText": "C) خطوط توجيهية للمركبات غير الآلية",
+          "sourceTextBody": "خطوط توجيهية للمركبات غير الآلية",
+          "canonicalOptionId": "q0704_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "non-motorized vehicles guide lines",
+          "alignmentScore": 0.7545454545454545,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceIndex": 3,
+          "sourceKey": "D",
+          "sourceText": "D) خطوط إرشادية لمقاطع الطريق",
+          "sourceTextBody": "خطوط إرشادية لمقاطع الطريق",
+          "canonicalOptionId": "q0704_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "intersection guide line",
+          "alignmentScore": 0.1982857142857143,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "optionMeaningMap": [
+        {
+          "sourceKey": "A",
+          "sourceText": "A) خطوط الإنعطاف للمركبات الصغيرة",
+          "sourceTextBody": "خطوط الإنعطاف للمركبات الصغيرة",
+          "canonicalOptionId": "q0704_o1",
+          "canonicalOptionKey": "A",
+          "canonicalOptionText": "small vehicles turning lines",
+          "alignmentScore": 0.8015384615384615,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "B",
+          "sourceText": "B) خطوط تلاقي المسارات",
+          "sourceTextBody": "خطوط تلاقي المسارات",
+          "canonicalOptionId": "q0704_o2",
+          "canonicalOptionKey": "B",
+          "canonicalOptionText": "lane connection lines",
+          "alignmentScore": 0.2606060606060606,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "C",
+          "sourceText": "C) خطوط توجيهية للمركبات غير الآلية",
+          "sourceTextBody": "خطوط توجيهية للمركبات غير الآلية",
+          "canonicalOptionId": "q0704_o3",
+          "canonicalOptionKey": "C",
+          "canonicalOptionText": "non-motorized vehicles guide lines",
+          "alignmentScore": 0.7545454545454545,
+          "alignmentMethod": "reviewed-gloss-meaning"
+        },
+        {
+          "sourceKey": "D",
+          "sourceText": "D) خطوط إرشادية لمقاطع الطريق",
+          "sourceTextBody": "خطوط إرشادية لمقاطع الطريق",
+          "canonicalOptionId": "q0704_o4",
+          "canonicalOptionKey": "D",
+          "canonicalOptionText": "intersection guide line",
+          "alignmentScore": 0.1982857142857143,
+          "alignmentMethod": "manual-answer-key-confirmed",
+          "manualAnswerKeyConfirmed": true,
+          "confirmedAsCorrectKey": true
+        }
+      ],
+      "localeCorrectOptionKey": "D"
     }
   }
 }
