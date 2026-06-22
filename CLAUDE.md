@@ -59,6 +59,38 @@ triage/dedup pass): build them ONCE to `qbank-tools/generated/` and `grep` them 
 them to `/tmp` and re-Read the whole 200KB+ blob each step (a `/tmp/triage/master-ref.jsonl` got
 re-opened 15× in one session).
 
+## public/qbank/2023-test1/image-color-tags.json (~21.5k lines / 510 KB — query, don't read)
+
+Per-question image analysis for `2023-test1`. Shape `{ meta, questions }`, **keyed by qid
+object** (unlike questions.json's array — `questions["q0189"]`, not `.find()`).
+- `meta`: `dataset`, `generatedAt`, `questionCount` (985), `imageQuestionCount` /
+  `analyzedAssets` (498), `missingAssets`, the controlled-vocab lists
+  (`colorVocabulary` ~12, `objectVocabulary` ~343, `pinyinVocabulary` ~69,
+  `chineseTextVocabulary`), and `thresholds` / `imageHandling` tuning.
+- `questions[qid]`: `{ assetSrcs[], colorTags[], objectTags[], … }` — tags constrained to
+  the `meta.*Vocabulary` lists.
+
+Inspect one record with node instead of opening the file:
+`node -e 'console.log(JSON.stringify(require("./public/qbank/2023-test1/image-color-tags.json").questions["q0189"],null,1))'`.
+**Additive, human-curated** — same firm operating agreement as questions.json: never
+auto-edit or auto-revert, and constrain inferred tags to `meta.*Vocabulary` (don't invent tags).
+
+## app/**/results.module.css + app/profile/profile.module.css (grep the class, don't read whole)
+
+Large CSS-module files for the results and profile screens — repeatedly re-read in full when
+only one class was needed. Grep `\.<className>` to jump straight to a rule.
+- `app/test/[mode]/results/results.module.css` (~696 lines) and
+  `app/(premium)/all-test/results/results.module.css` (~641 lines) are **near-identical
+  siblings** (free vs premium results — keep them in sync). Class groups: score ring
+  (`scoreBox`/`ring`/`ringWrap`/`ringCenterText`/`scoreValue`), question-review carousel
+  (`carousel`/`slide`/`viewport`/`viewToggle`/`reviewArea[Carousel]`/`slideCounter`),
+  answer options (`option`/`optionCorrect`/`optionWrong`/`optionNeutral`), and the
+  back/bookmark/continue chrome.
+- `app/profile/profile.module.css` (~839 lines): avatar (`avatar*`), settings list
+  (`settingsRow`/`settingsList`/`settingsMenuBlock[Open]`/`toggle`/`toggleKnob[On]`),
+  email edit (`email*`), language dropdown (`language*`), premium card (`premium*`/`crown*`),
+  toast (`toast*`).
+
 ## components/Globe.client.tsx (~605 lines — interactive 3D globe)
 
 A `globe.gl` + `three` (WebGL) interactive globe, `forwardRef` exposing a
