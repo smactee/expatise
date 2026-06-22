@@ -1,6 +1,6 @@
 {
   "lang": "ar",
-  "count": 10,
+  "count": 11,
   "purpose": "keepUnresolved/createNew items deferred during review; source for ar batch-final",
   "items": [
     {
@@ -72,6 +72,13 @@
       "batch": "batch-005",
       "reviewerNotes": "Claude high-risk approveExistingQid: AR 'on which type of road is overtaking not allowed' best matches q0407 (promptNN cos 0.924) 'On which kind of city road is a vehicle not allowed to overtake'. Master option set (main streets/one-way/heavy-traffic-flow/two one-way) does not cleanly align with AR (main roads/elevated/pedestrian-crossing roads/expressway around city) — localized option drift. Closest no-overtake AR answer is C 'طرق عبور المشاة' (pedestrian crossing roads). seriesCluster [q0406,q0386,q0417] are vehicle-type questions, not road-type; not applicable. Verify option mapping.",
       "initialSuggestedQid": "q0501"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 10.59.22.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 10.59.22.png",
+      "batch": "batch-006",
+      "reviewerNotes": "Claude low-risk approveExistingQid: prompt about learner hanging a training/probation mark on the back of the car maps to q0314 (promptCos 0.80, only plausible candidate); row=R -> Arabic Yes = A.",
+      "initialSuggestedQid": "q0314"
     }
   ]
 }

@@ -1,25 +1,25 @@
 # Decision Memory
 
-Generated: 2026-06-21T12:15:15.025Z
+Generated: 2026-06-22T05:34:21.450Z
 
 ## Summary
 
-- Total records: 50418
+- Total records: 51238
 - High-risk qids: q0018, q0025, q0053, q0062, q0064, q0069, q0070, q0084, q0162, q0176, q0187, q0208, q0210, q0223, q0226, q0234, q0237, q0245, q0260, q0261, q0262, q0275, q0285, q0293, q0302, q0316, q0325, q0336, q0345, q0347, q0352, q0358, q0359, q0462, q0488, q0514, q0575, q0640, q0647, q0649, q0801, q0904, q0908, q0913, q0918, q0921, q0945, q0947, q0950, q0973, q0983, q0984, q0991, q1005, q1008, q1011, q1012
-- Master-data issue qids: q0431, q0450, q0518, q0906, q0974, q0975, q0976, q0977, q0978, q0979, q0980, q0981, q0982, q0983, q0984, q0985, q0986, q0987, q0988, q0989, q0991, q0992, q0993, q0994, q0995, q0996, q0998, q0999, q1001, q1002, q1003, q1004, q1005, q1006, q1007, q1008, q1009, q1011, q1012
+- Master-data issue qids: q0431, q0450, q0518, q0730, q0906, q0974, q0975, q0976, q0977, q0978, q0979, q0980, q0981, q0982, q0983, q0984, q0985, q0986, q0987, q0988, q0989, q0991, q0992, q0993, q0994, q0995, q0996, q0998, q0999, q1001, q1002, q1003, q1004, q1005, q1006, q1007, q1008, q1009, q1011, q1012
 - Rejected/needs-fix qids: q0018, q0025, q0062, q0064, q0069, q0070, q0084, q0162, q0187, q0204, q0208, q0210, q0223, q0226, q0234, q0237, q0248, q0260, q0261, q0262, q0274, q0275, q0285, q0293, q0302, q0316, q0323, q0325, q0336, q0345, q0347, q0352, q0358, q0359, q0367, q0383, q0420, q0442, q0446, q0462, q0471, q0474, q0488, q0489, q0514, q0517, q0522, q0525, q0534, q0575, q0577, q0599, q0623, q0635, q0640, q0647, q0649, q0720, q0726, q0802, q0863, q0904, q0908, q0913, q0918, q0921, q0929, q0941, q0945, q0947, q0948, q0950, q0957, q0973, q0981, q0983, q0984, q0991, q0994, q0995, q1005, q1008, q1011, q1012
 
 ## Records By Decision Type
 
 | key | count |
 | --- | --- |
-| answer-key | 20285 |
+| answer-key | 20717 |
 | backfill-generation | 2135 |
 | duplicate | 4 |
 | master-data-fix | 42 |
-| match | 9052 |
-| merge | 14307 |
-| new-question | 3989 |
+| match | 9072 |
+| merge | 14598 |
+| new-question | 4066 |
 | quality-review | 334 |
 | reject | 135 |
 | skip | 135 |
@@ -30,8 +30,8 @@ Generated: 2026-06-21T12:15:15.025Z
 | --- | --- |
 | ai-review | 334 |
 | integrity-audit | 46 |
-| manual | 27788 |
-| production-merge | 14498 |
+| manual | 28317 |
+| production-merge | 14789 |
 | script | 7752 |
 
 ## Reusable Matching Lessons
