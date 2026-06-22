@@ -1,6 +1,6 @@
 {
   "lang": "ar",
-  "count": 13,
+  "count": 15,
   "purpose": "keepUnresolved/createNew items deferred during review; source for ar batch-final",
   "items": [
     {
@@ -93,6 +93,20 @@
       "batch": "batch-007",
       "reviewerNotes": "Claude medium-risk approveExistingQid: ignition switch with key inserted (shaft+grip visible) matches q0538 master image (img_0d7bf0, key present) vs q0550 (no key); q0538 masterCorrectRow=R so answer Yes = key A — Arabic prompt mentions ON but image decides.",
       "initialSuggestedQid": "q0538"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 11.02.57.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 11.02.57.png",
+      "batch": "batch-008",
+      "reviewerNotes": "Claude low-risk approve: MCQ matches q0107 (driving through slightly flooded road with bicycles/pedestrians on both sides). matcher 60.6, best unclaimed. Correct 'reduce speed and go slowly' = Arabic C (تخفيض السرعة والقيادة ببطء).\nmaybe it's 153 or 107 but the wording in the local language is not clear for definitiveness.",
+      "initialSuggestedQid": "q0107"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 11.02.14 1.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 11.02.14 1.png",
+      "batch": "batch-008",
+      "reviewerNotes": "Claude medium-risk approve: text item, car behind wants to overtake = q0970 (matcher 36.8, prompt 0.7838, unclaimed, best candidate). Master answer 'turn slightly to the right side, keep a safe horizontal distance' maps to Arabic A (تخفيض السرعة والسير على الجانب الأيمن لإفساح الطريق بعد مراقبة الأحوال). Medium-risk: q0162/q0136/q0177 are semantically very close yield-to-overtaker variants; A still best fits the move-right answer.",
+      "initialSuggestedQid": "q0970"
     }
   ]
 }
