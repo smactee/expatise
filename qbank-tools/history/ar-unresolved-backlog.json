@@ -1,6 +1,6 @@
 {
   "lang": "ar",
-  "count": 11,
+  "count": 13,
   "purpose": "keepUnresolved/createNew items deferred during review; source for ar batch-final",
   "items": [
     {
@@ -79,6 +79,20 @@
       "batch": "batch-006",
       "reviewerNotes": "Claude low-risk approveExistingQid: prompt about learner hanging a training/probation mark on the back of the car maps to q0314 (promptCos 0.80, only plausible candidate); row=R -> Arabic Yes = A.",
       "initialSuggestedQid": "q0314"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 11.00.52.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 11.00.52.png",
+      "batch": "batch-007",
+      "reviewerNotes": "Claude medium-risk approveExistingQid: closest concept is q0018 (may refuse to yield to a vehicle forcing its way) vs unrelated matcherTop1 q0003; ROW W → No = B.",
+      "initialSuggestedQid": "q0003"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 11.01.10.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 11.01.10.png",
+      "batch": "batch-007",
+      "reviewerNotes": "Claude medium-risk approveExistingQid: ignition switch with key inserted (shaft+grip visible) matches q0538 master image (img_0d7bf0, key present) vs q0550 (no key); q0538 masterCorrectRow=R so answer Yes = key A — Arabic prompt mentions ON but image decides.",
+      "initialSuggestedQid": "q0538"
     }
   ]
 }
