@@ -1,6 +1,6 @@
 {
   "lang": "ar",
-  "count": 15,
+  "count": 17,
   "purpose": "keepUnresolved/createNew items deferred during review; source for ar batch-final",
   "items": [
     {
@@ -107,6 +107,20 @@
       "batch": "batch-008",
       "reviewerNotes": "Claude medium-risk approve: text item, car behind wants to overtake = q0970 (matcher 36.8, prompt 0.7838, unclaimed, best candidate). Master answer 'turn slightly to the right side, keep a safe horizontal distance' maps to Arabic A (تخفيض السرعة والسير على الجانب الأيمن لإفساح الطريق بعد مراقبة الأحوال). Medium-risk: q0162/q0136/q0177 are semantically very close yield-to-overtaker variants; A still best fits the move-right answer.",
       "initialSuggestedQid": "q0970"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 11.04.09.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 11.04.09.png",
+      "batch": "batch-009",
+      "reviewerNotes": "Ship-time collision-fix (Claude medium-risk createNewQuestion): re-pointed off q0517 (kept by exact match 11.03.57 'documents to carry'). This is a DISTINCT question — 'which card, if not carried, lets police IMPOUND the car' (answer D=driving license). No clean master analog; stage as new.",
+      "initialSuggestedQid": "q0517"
+    },
+    {
+      "itemId": "screenshots/Screenshot 2026-05-25 at 11.03.56.png",
+      "sourceImage": "screenshots/Screenshot 2026-05-25 at 11.03.56.png",
+      "batch": "batch-009",
+      "reviewerNotes": "Claude medium-risk approve: AR prompt = driver must keep right and avoid occupying the opposite-direction lane. matcherTop1 q1001 is about U-turns on highway (wrong meaning). q0047 'when a vehicle turns it should do so on the right side and refrain from occupying the lane of the other party' is the true semantic match (keep-right + don't occupy other lane). ROW R -> A. q0047 unclaimed.",
+      "initialSuggestedQid": "q1001"
     }
   ]
 }
