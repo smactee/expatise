@@ -84,8 +84,11 @@ for (const rawItem of workbenchItems) {
   const newQuestionLocalAnswerKey = resolveNewQuestionLocalAnswerKey(item);
 
   if (item.createNewQuestion === true && !newQuestionLocalAnswerKey) {
+    // Potential-new questions are HELD ASIDE for the end-of-run joint review (they are
+    // never merged into production here), so a confirmed local answer key is NOT required
+    // per batch — it is decided when the item is adjudicated/promoted at the joint review.
     const itemLabel = item.itemId ?? item.sourceImage ?? item.id ?? "unknown-item";
-    throw new Error(`Apply blocked: create-new item ${itemLabel} is missing newQuestionLocalAnswerKey.`);
+    console.warn(`  ⚠ potential-new item ${itemLabel} has no newQuestionLocalAnswerKey yet — held for end-of-run review (key decided then).`);
   }
 
   if (item.section === "auto-matched") {

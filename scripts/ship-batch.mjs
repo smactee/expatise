@@ -121,8 +121,8 @@ if (dupClaimed.size > 0) {
   );
 }
 if (counts.keepUnresolved > 0) console.log(`  ⚠ ${counts.keepUnresolved} item(s) kept unresolved — they will NOT be merged.`);
-if (counts.createNew > 0) console.log(`  ⚠ ${counts.createNew} new-question candidate(s) — staged separately, not merged into production.`);
-if (counts.delete > 0) console.log(`  ⚠ ${counts.delete} item(s) marked delete.`);
+if (counts.createNew > 0) console.log(`  ⚠ ${counts.createNew} potential-new question(s) — held aside for the end-of-run joint review, not merged into production.`);
+if (counts.delete > 0) console.log(`  ⚠ ${counts.delete} item(s) marked delete — held out of production.`);
 ok(`pre-flight clean: ${counts.approve} approve, no duplicates, no missing decisions`);
 
 // 2b. Type / numeric-option consistency gate (calibrated on es batch-007).
@@ -196,6 +196,25 @@ step("build-decision-memory");
 runNpm("build-decision-memory");
 step("refresh-correction-rules");
 runNpm("refresh-correction-rules");
+
+// 7.5 Persist potential-new questions for the end-of-run joint review.
+//     apply-batch-workbench-decisions already wrote the per-batch candidates file into
+//     staging; copy it into history/decisions/ (durable — survives staging cleanup) so that
+//     at the end `review-new-question-promotions --lang <lang>` (no --batch) globs+aggregates
+//     EVERY batch's potential-new items for one joint review.
+if (counts.createNew > 0) {
+  step("persist potential-new candidates for end-of-run joint review");
+  const candidatesName = `new-question-candidates.${lang}.${batchId}.json`;
+  const stagedCandidates = path.join(STAGING_DIR, candidatesName);
+  if (fs.existsSync(stagedCandidates)) {
+    const durableDir = path.join(ROOT, "qbank-tools", "history", "decisions");
+    fs.mkdirSync(durableDir, { recursive: true });
+    fs.copyFileSync(stagedCandidates, path.join(durableDir, candidatesName));
+    ok(`${counts.createNew} potential-new question(s) persisted → review jointly later with: npm run review-new-question-promotions -- --lang ${lang}`);
+  } else {
+    console.warn(`  ⚠ expected candidates file ${candidatesName} not found in staging — joint review may miss this batch.`);
+  }
+}
 
 // 8. Summary.
 console.log(`\n=== ✓ shipped ${lang} ${batchId} ===`);

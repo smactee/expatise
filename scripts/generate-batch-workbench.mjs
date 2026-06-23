@@ -203,6 +203,7 @@ function buildDefaultDecision(item) {
     createNewQuestion: item.defaultCreateNewQuestion === true,
     keepUnresolved: item.defaultCreateNewQuestion === true ? false : item.section === "unresolved",
     deleteQuestion: false,
+    potentialDelete: false,
     confirmedCorrectOptionKey: null,
     newQuestionLocalAnswerKey: normalizeChoiceKey(item?.newQuestionLocalAnswerKey) ?? null,
     answerKeyUnknown: false,
@@ -241,39 +242,27 @@ function displayLabelFromSlug(slug) {
     .join(" ");
 }
 
-function buildTopicCatalog(questions) {
-  const topics = new Set();
-  const subtopics = new Set();
-
-  for (const question of questions) {
-    const tags = question?.tags ?? {};
-    for (const topic of [tags.truthTopic, tags.weightedTopic].filter(Boolean)) {
-      topics.add(topic);
-    }
-
-    for (const subtopic of [
-      ...(Array.isArray(tags.truthSubtopics) ? tags.truthSubtopics : []),
-      ...(Array.isArray(tags.weightedSubtopics) ? tags.weightedSubtopics : []),
-    ].filter(Boolean)) {
-      subtopics.add(subtopic);
-      const [topic] = String(subtopic).split(":");
-      if (topic) {
-        topics.add(topic);
-      }
+function buildTopicCatalog(_questions) {
+  // Authoritative taxonomy — MUST mirror lib/qbank/tagTaxonomy.ts (TAG_TAXONOMY). Owner directive
+  // (2026-06-23): potential-new questions use ONLY these categories; never invent new ones. We do
+  // NOT derive the catalog from question tags anymore — that leaked off-taxonomy junk (topics
+  // "images"/"no-image", subtopics like proper-driving:license, road-safety:road-markings).
+  const CANONICAL_TAXONOMY = {
+    "road-safety": ["license", "registration", "accidents", "road-conditions"],
+    "traffic-signals": ["signal-lights", "road-signs", "road-markings", "police-signals"],
+    "proper-driving": ["safe-driving", "traffic-laws"],
+    "driving-operations": ["indicators", "gears"],
+  };
+  const topics = [];
+  const subtopics = [];
+  for (const [topic, subs] of Object.entries(CANONICAL_TAXONOMY)) {
+    topics.push({ slug: topic, label: displayLabelFromSlug(topic) });
+    for (const sub of subs) {
+      const slug = `${topic}:${sub}`;
+      subtopics.push({ slug, topic, label: displayLabelFromSlug(slug) });
     }
   }
-
-  return {
-    topics: [...topics].sort().map((slug) => ({
-      slug,
-      label: displayLabelFromSlug(slug),
-    })),
-    subtopics: [...subtopics].sort().map((slug) => ({
-      slug,
-      topic: String(slug).includes(":") ? String(slug).split(":")[0] : null,
-      label: displayLabelFromSlug(slug),
-    })),
-  };
+  return { topics, subtopics };
 }
 
 function enrichSourceItemsWithNotebookLm(items, { notebookSuggestionsDoc, combinedRecommendationsDoc }) {
@@ -383,6 +372,8 @@ function mergeExistingDecisions(defaultDoc, existingDoc) {
       }
 
       const deleteQuestion = previous.deleteQuestion === true;
+      // potential-delete flow removed 2026-06-23 (owner directive: redundant with delete).
+      // A delete is a delete — it nulls its proposed qid like any other delete.
       const createNewQuestion = deleteQuestion ? false : previous.createNewQuestion === true;
       const useCurrentStagedAnswerKey = createNewQuestion ? false : previous.useCurrentStagedAnswerKey === true;
       const explicitApprovedQid =
@@ -400,6 +391,7 @@ function mergeExistingDecisions(defaultDoc, existingDoc) {
         createNewQuestion,
         keepUnresolved,
         deleteQuestion,
+        potentialDelete: false,
         confirmedCorrectOptionKey:
           createNewQuestion
             ? null
@@ -1951,7 +1943,9 @@ function buildHtml({
       }
 
       const key = normalizeTopicLabelKey(text);
-      return TOPIC_ALIAS_TO_SLUG.get(key) || (TOPIC_SLUGS.has(slugFromDisplayLabel(text)) ? slugFromDisplayLabel(text) : text);
+      // Enforce the canonical taxonomy (lib/qbank/tagTaxonomy.ts): unknown topics are DROPPED,
+      // never passed through as free text. Only the 4 canonical topics are allowed.
+      return TOPIC_ALIAS_TO_SLUG.get(key) || (TOPIC_SLUGS.has(slugFromDisplayLabel(text)) ? slugFromDisplayLabel(text) : null);
     }
 
     function normalizeSubtopicInputValue(value, topicValue) {
@@ -1981,7 +1975,9 @@ function buildHtml({
         return matches[0].slug;
       }
 
-      return text;
+      // Enforce the canonical taxonomy: a subtopic that is not one of the 12 canonical
+      // subtopics (lib/qbank/tagTaxonomy.ts) is DROPPED rather than invented as free text.
+      return null;
     }
 
     function normalizeSubtopicInputList(value, topicValue) {
@@ -2012,6 +2008,7 @@ function buildHtml({
         : normalizeDecisionChoiceKey(decision.newQuestionLocalAnswerKey);
 
       decision.deleteQuestion = deleteQuestion;
+      decision.potentialDelete = false; // potential-delete flow removed 2026-06-23 (redundant with delete)
       decision.approvedQid = deleteQuestion ? null : normalizeStoredApprovedQid(decision.approvedQid);
       decision.createNewQuestion = deleteQuestion ? false : decision.createNewQuestion === true;
       decision.keepUnresolved = deleteQuestion ? false : decision.keepUnresolved === true;
@@ -2264,6 +2261,7 @@ function buildHtml({
           return {
             ...item,
             ...normalizedTopicFields,
+            // A delete clears its proposed qid. (potential-delete flow removed 2026-06-23.)
             approvedQid: item.deleteQuestion === true ? null : normalizeDecisionQid(item.approvedQid),
           };
         }),
@@ -2462,7 +2460,7 @@ function buildHtml({
 
     function setDecisionMode(id, mode) {
       if (mode === "approve") {
-        updateDecision(id, { createNewQuestion: false, keepUnresolved: false, deleteQuestion: false });
+        updateDecision(id, { createNewQuestion: false, keepUnresolved: false, deleteQuestion: false, potentialDelete: false });
         return;
       }
       if (mode === "new") {
@@ -2471,6 +2469,7 @@ function buildHtml({
           createNewQuestion: true,
           keepUnresolved: false,
           deleteQuestion: false,
+          potentialDelete: false,
           useCurrentStagedAnswerKey: false,
           answerKeyUnknown: false,
         });
@@ -2478,10 +2477,12 @@ function buildHtml({
       }
       if (mode === "delete") {
         // Delete question intentionally resolves the item without promotion or follow-up.
-        updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: false, deleteQuestion: true });
+        // (The former "potential delete" radio was removed 2026-06-23 — owner directive:
+        // it was redundant with delete; judge delete directly during matching.)
+        updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: false, deleteQuestion: true, potentialDelete: false });
         return;
       }
-      updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: true, deleteQuestion: false });
+      updateDecision(id, { approvedQid: null, createNewQuestion: false, keepUnresolved: true, deleteQuestion: false, potentialDelete: false });
     }
 
     function itemNeedsStructuredAnswerKey(item, decision) {
@@ -2615,7 +2616,7 @@ function buildHtml({
       }
 
       if (decision?.createNewQuestion === true) {
-        return 'Local Answer Key (required for new question)';
+        return 'Local Answer Key (optional — decided at end-of-run review)';
       }
 
       if (itemNeedsStructuredAnswerKey(item, decision)) {
@@ -2634,8 +2635,8 @@ function buildHtml({
         const choiceText = getVisibleChoiceKeys(item, decision).join('/');
         const hasAnswerKey = hasStructuredAnswerKeyDecision(item, decision);
         return hasAnswerKey
-          ? 'Structured local answer key recorded for the new question.'
-          : 'Required because Create new question is selected. Select ' + choiceText + '.';
+          ? 'Structured local answer key recorded for the potential new question.'
+          : 'Optional — this potential new question is held aside for the end-of-run joint review; record ' + choiceText + ' now only if known.';
       }
 
       if (itemNeedsStructuredAnswerKey(item, decision)) {
@@ -3364,8 +3365,8 @@ function buildHtml({
         '<div class="decision-row">' +
           '<span class="label">Decision</span>' +
           '<div class="decision-actions">' +
-            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="approve"' + (decision.approvedQid && decision.deleteQuestion !== true ? ' checked' : '') + '><span>' + escapeHtml(item.section === 'auto-matched' ? 'Confirm auto-match / existing qid' : 'Approve existing qid') + '</span></label>' +
-            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="new"' + (decision.createNewQuestion && decision.deleteQuestion !== true ? ' checked' : '') + '><span>Create new question</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="approve"' + (!decision.createNewQuestion && !decision.keepUnresolved && decision.deleteQuestion !== true ? ' checked' : '') + '><span>' + escapeHtml(item.section === 'auto-matched' ? 'Confirm auto-match / existing qid' : 'Approve existing qid') + '</span></label>' +
+            '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="new"' + (decision.createNewQuestion && decision.deleteQuestion !== true ? ' checked' : '') + '><span>Potential new question</span></label>' +
             '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="unresolved"' + (!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved && decision.deleteQuestion !== true ? ' checked' : '') + '><span>Keep unresolved</span></label>' +
             '<label><input type="radio" name="mode-' + escapeHtml(item.id) + '" value="delete"' + (decision.deleteQuestion === true ? ' checked' : '') + '><span>Delete question</span></label>' +
         '</div>' +
@@ -3378,8 +3379,12 @@ function buildHtml({
                 : '') +
             '</div><div data-answer-key-note-for="' + escapeHtml(item.id) + '">' + renderStructuredAnswerKeyNote(item, decision) + '</div>'
           : '') +
-        '<div class="decision-row"><span class="label">New-Question Topic (optional)</span><input type="text" value="' + escapeHtml(decision.newQuestionProvisionalTopic || '') + '" data-new-topic-for="' + escapeHtml(item.id) + '" placeholder="road-safety"></div>' +
-        '<div class="decision-row"><span class="label">New-Question Subtopics (comma or newline separated)</span><textarea data-new-subtopics-for="' + escapeHtml(item.id) + '" placeholder="traffic-signals:road-signs">' + escapeHtml((decision.newQuestionProvisionalSubtopics || []).join(', ')) + '</textarea></div>' +
+        '<div class="decision-row"><span class="label">New-Question Topic</span><select data-new-topic-for="' + escapeHtml(item.id) + '"><option value="">(none)</option>' +
+          (TOPIC_CATALOG.topics || []).map((t) => '<option value="' + escapeHtml(t.slug) + '"' + (decision.newQuestionProvisionalTopic === t.slug ? ' selected' : '') + '>' + escapeHtml(t.label || t.slug) + '</option>').join('') +
+        '</select></div>' +
+        '<div class="decision-row"><span class="label">New-Question Subtopics (ctrl/cmd-click to multi-select)</span><select multiple size="' + Math.min(8, Math.max(4, (TOPIC_CATALOG.subtopics || []).length)) + '" data-new-subtopics-for="' + escapeHtml(item.id) + '">' +
+          (TOPIC_CATALOG.subtopics || []).map((s) => '<option value="' + escapeHtml(s.slug) + '"' + ((decision.newQuestionProvisionalSubtopics || []).includes(s.slug) ? ' selected' : '') + '>' + escapeHtml(s.label ? (s.label + ' (' + s.slug + ')') : s.slug) + '</option>').join('') +
+        '</select></div>' +
         '<label class="label" for="notes-' + escapeHtml(item.id) + '">Reviewer Notes</label>' +
         '<textarea id="notes-' + escapeHtml(item.id) + '" data-notes-for="' + escapeHtml(item.id) + '">' + escapeHtml(decision.reviewerNotes || '') + '</textarea>' +
         '<label class="label" for="explanation-' + escapeHtml(item.id) + '">Explanation</label>' +
@@ -3527,7 +3532,9 @@ function buildHtml({
       const deleteRadio = document.querySelector('input[name=' + JSON.stringify(modeName) + '][value="delete"]');
 
       if (approveRadio) {
-        approveRadio.checked = Boolean(decision.approvedQid && decision.deleteQuestion !== true);
+        // Approve is the default mode whenever no other mode is active — independent of whether a
+        // qid has been typed yet, so the user can freely click back to Approve with an empty field.
+        approveRadio.checked = Boolean(!decision.createNewQuestion && !decision.keepUnresolved && decision.deleteQuestion !== true);
       }
       if (newRadio) {
         newRadio.checked = Boolean(!decision.approvedQid && decision.createNewQuestion && decision.deleteQuestion !== true);
@@ -3536,7 +3543,7 @@ function buildHtml({
         unresolvedRadio.checked = Boolean(!decision.approvedQid && !decision.createNewQuestion && decision.keepUnresolved && decision.deleteQuestion !== true);
       }
       if (deleteRadio) {
-        deleteRadio.checked = decision.deleteQuestion === true;
+        deleteRadio.checked = Boolean(decision.deleteQuestion === true);
       }
 
       const answerKeyLabel = document.querySelector('[data-answer-key-label-for=' + JSON.stringify(id) + ']');
@@ -3852,23 +3859,21 @@ function buildHtml({
           input.value = normalizedTopic || '';
           const subtopicsInput = document.querySelector('[data-new-subtopics-for=' + JSON.stringify(id) + ']');
           if (subtopicsInput) {
-            subtopicsInput.value = normalizedSubtopics.join(', ');
+            Array.from(subtopicsInput.options).forEach((opt) => { opt.selected = normalizedSubtopics.includes(opt.value); });
           }
         });
       });
 
-      document.querySelectorAll('[data-new-subtopics-for]').forEach((textarea) => {
-        textarea.addEventListener('input', () => updateDecision(textarea.dataset.newSubtopicsFor, {
-          newQuestionProvisionalSubtopics: textarea.value
-            .split(/[,\\n]/)
-            .map((entry) => entry.replace(/\s+/g, ' ').trim())
-            .filter(Boolean),
+      const readSelectedSubtopics = (el) => Array.from(el.selectedOptions || []).map((o) => o.value).filter(Boolean);
+      document.querySelectorAll('[data-new-subtopics-for]').forEach((select) => {
+        select.addEventListener('change', () => updateDecision(select.dataset.newSubtopicsFor, {
+          newQuestionProvisionalSubtopics: readSelectedSubtopics(select),
         }, { rerender: false }));
-        textarea.addEventListener('blur', () => {
-          const id = textarea.dataset.newSubtopicsFor;
+        select.addEventListener('blur', () => {
+          const id = select.dataset.newSubtopicsFor;
           const decision = getDecision(id) || {};
           const normalizedTopic = normalizeTopicInputValue(decision.newQuestionProvisionalTopic);
-          const normalizedSubtopics = normalizeSubtopicInputList(textarea.value, normalizedTopic);
+          const normalizedSubtopics = normalizeSubtopicInputList(readSelectedSubtopics(select), normalizedTopic);
           updateDecision(
             id,
             {
@@ -3877,7 +3882,7 @@ function buildHtml({
             },
             { rerender: false },
           );
-          textarea.value = normalizedSubtopics.join(', ');
+          Array.from(select.options).forEach((opt) => { opt.selected = normalizedSubtopics.includes(opt.value); });
           const topicInput = document.querySelector('[data-new-topic-for=' + JSON.stringify(id) + ']');
           if (topicInput) {
             topicInput.value = normalizedTopic || '';

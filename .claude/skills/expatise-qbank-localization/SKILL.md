@@ -135,6 +135,31 @@ To prevent it:
   `itemId`/`file`/`sourceImage`/`lang`), then re-run `process-screenshot-batch` for the
   affected items and refresh the workbench — do not just edit the qid in the decisions file.
 
+##### MANDATORY automated gate: `verify-intake-binding.mjs` (do NOT rely on the manual glance)
+
+The manual self-verify above is **not reliable** — it failed for zh batch-004 (2026-06-23):
+files `14.32.17`↔`14.32.18` had their whole records swapped (a post-extraction bulk re-copy
+changed name↔content bindings *after* extraction ran), and Step-2.5 pre-fill *noticed* the
+mismatch on one side but only flagged-for-review instead of fixing the binding. Run the gate
+on **every** batch, right after `process-screenshot-batch` and **before** the workbench:
+
+```
+node scripts/verify-intake-binding.mjs --lang <lang> --batch <batch>
+```
+
+It re-reads each screenshot with a minimal vision call and reports two independent signals:
+- **promptMismatch** — intake `promptRaw` does not match the actual pixels (a real binding
+  swap; `imageDescription` usually corroborates). Fix with `scripts/fix-intake-binding.mjs
+  --lang <lang> --batch <batch> --swap "<fileA>::<fileB>"` (swaps content, pins identity),
+  then re-run `process-screenshot-batch` + workbench. **Blocker — never ship a batch with a
+  promptMismatch.**
+- **orderingBreak** — the in-app question number drops vs filename order. The common cause is
+  the harmless `" 1.png"` same-second sibling sort quirk (space `0x20` < `.` `0x2E`); if
+  `promptMismatch:0` it is cosmetic-only. A break *with* a nearby promptMismatch is a real swap.
+
+Report: `qbank-tools/generated/reports/verify-intake-binding-<lang>-<batch>.json`.
+Shipped zh batches 1–3 were swept clean this way (0 promptMismatch across 300 items).
+
 #### Image-dependent items: MANDATORY tag-agreement checklist
 
 Validated on a 20-screenshot French sample (2026-05-31): every wrong match on an
@@ -321,14 +346,16 @@ For each of the 50 items in
 set the corresponding fields. **Default to `approveExistingQid` for every item** — the
 owner directive above forbids leaving anything unresolved, so `approveExistingQid` (closest
 qid + best-effort answer key) is the expected verdict unless the item is a genuine
-duplicate (`deleteQuestion`) or a genuinely novel question with no plausible analog
-(`createNewQuestion`, rare):
+duplicate (`deleteQuestion`) or a question with no plausible master analog
+(**"Potential new question"** — stored as `createNewQuestion: true`; rare for subset langs
+es/de/ar, but COMMON for zh which is a ~1300-question superset of the 1004 master):
 
 | Action | Fields to set |
 |---|---|
 | **approveExistingQid** *(default — use for essentially every item)* | `approvedQid: "qXXXX"` (closest available qid), `confirmedCorrectOptionKey: "A/B/C/D"` (locale letter — see mapping below, **always derive it**), or `useCurrentStagedAnswerKey: true` if matcher's `currentStagedLocaleCorrectOptionKey` is already right; `reviewerNotes` with honest risk level |
 | **deleteQuestion** | `deleteQuestion: true`, `reviewerNotes` — **only** for a genuine app-side duplicate (`claimed-qid-duplicate-suspect` whose closest qid is already localized this language) |
-| **createNewQuestion** *(rare)* | `createNewQuestion: true`, `newQuestionLocalAnswerKey`, `newQuestionProvisionalTopic` (one of the 4 topics), `newQuestionProvisionalSubtopics` (e.g. `["traffic-signals:road-signs"]`), `reviewerNotes` — only when no master question is even plausibly close |
+| **deleteQuestion (image/text discrepancy)** *(the "potential delete" flow was REMOVED 2026-06-23 — owner directive: it was redundant; a delete is a delete)* | Set `deleteQuestion: true` + `reviewerNotes` directly when your judgment during matching is that the item should be deleted. Use for an **image/text discrepancy**: the screenshot's embedded image does not match the question text (the zh source app fails to render the sign, attaches a stale/decorative image, or SHIFTS the image onto the next item). **★ Owner-learned, batch-1: 27/28 = 96% of image/text mismatches were deleted** — applies to both image-identification questions AND text/behavioral questions that merely carry a spurious decorative image. **Detection = a VISION pass** (the matcher can't see images the extractor dropped — `hasImage:false`): the per-batch pre-fill agent reads every screenshot and judges image-vs-text match. **Salvage caveat (owner, 2026-06-23):** only an **image-reference question with no extant correct image** ("这个标志/路面标记是何含义?" whose image is missing/wrong) is truly non-salvageable → delete. A *self-contained text* question that merely carries a spurious image, or an aligned image with a clean master match, is **salvageable → approve (or potential-new)**, not delete. After each reviewed batch, run `node scripts/learn-from-deletes.mjs --lang <lang> --batch <batch>` to refresh `qbank-tools/history/<lang>-delete-learning.md`. |
+| **Potential new question** *(stored as `createNewQuestion: true`)* | `createNewQuestion: true`, `newQuestionLocalAnswerKey` (**determine the CORRECT answer with evidence — see below**), `newQuestionProvisionalTopic` (one of the 4 topics), `newQuestionProvisionalSubtopics` (canonical slugs only, e.g. `["traffic-signals:road-signs"]`), `reviewerNotes` — use when no master question shares the option set / core meaning. **For zh this is COMMON, not rare** (zh ≈1300 questions is a superset of the 1004 master). Workbench label = **"Potential new question"**; held aside (never merged), accumulated across batches, reviewed **together once at the end of the final batch** via `npm run review-new-question-promotions -- --lang <lang>` (no `--batch` = aggregates all). For es/de/ar (≤1004 subset langs) it stays rare. |
 | ~~**keepUnresolved**~~ *(forbidden in pre-fill)* | Do **not** pre-fill this. The owner directive bans handing the human a blank/unresolved verdict. The field still exists for the human to choose during review, but you must always propose a closest-qid pick instead. |
 
 **Answer-key locale mapping** (the trickiest part — do NOT just copy the master letter).
@@ -569,6 +596,60 @@ good reason.
 
 ## Hard-won lessons (the gotchas)
 
+- **★ AUTO-DELETE (omit from workbench, UNREVIEWED) — sign-meaning + no-image (owner directive 2026-06-23).**
+  A question whose prompt is an image-IDENTIFICATION question ("这个标志是何含义" / "what does this sign/marking
+  mean?") AND has NO image asset is unanswerable garbage (the sign failed to render). The owner will NOT review
+  these — they are OMITTED from the workbench entirely. Run `node scripts/auto-delete-sign-no-image.mjs --lang <lang>
+  --batch <batch>` after extraction (needs intake promptRaw + imageTextStatus); it writes
+  `qbank-tools/history/auto-deleted.<lang>.<batch>.json` (audit log) and the briefing build EXCLUDES those itemIds.
+  Calibrated on batches 1–3: 100% of sign-meaning items were deleted (sign+no-image 4/4, +mismatch 15/15, +aligned
+  3/3); the detector hit 13/13 in b3 with 0 false positives. ONLY the no-image case is auto-deleted (owner's explicit
+  scope) — sign+mismatch (wrong image present) still goes to the workbench as a normal delete candidate (shown). **Be precise**
+  (it's unreviewed): require BOTH a tight sign/marking-meaning prompt regex AND imageTextStatus=="no-image". Report
+  the auto-deleted count to the owner each batch for transparency. (Open recommendation to owner: extend auto-delete
+  to sign+mismatch too, since those are also 100%-deleted — pending their OK.)
+- **★ zh image/text corruption → DELETE (detected by VISION, not the matcher).** *(The separate
+  "potential delete" flow was REMOVED 2026-06-23 — owner directive: redundant with delete. When
+  your matching judgment is delete, set `deleteQuestion: true` directly.)*
+  The zh source app frequently renders a **corrupted capture**: an image-identification
+  question ("这个标志是何含义?" / "what does this sign/marking mean?") whose embedded image is
+  blank, stale/decorative (a steering-wheel or dashboard photo), or **shifted** (question N's
+  sign image appears on item N+1). This — not genuine new content — is a big share of zh's
+  ~1300-vs-1004 "extra". The matcher CANNOT detect this: the extractor usually records
+  `hasImage:false` for these (it missed the embedded image), so there are no tags to compare.
+  **Detection is a VISION pass**: the per-batch extraction/pre-fill agent reads every
+  screenshot and judges "does the embedded image match the question text?".
+  **★ Salvage filter (owner, 2026-06-23) — do NOT blanket-delete every mismatch.** Only an
+  **image-reference question with no extant correct image** (the question needs the sign/marking
+  image and it's missing or wrong) is truly non-salvageable → `deleteQuestion: true`. A
+  **self-contained text** question that merely carries a spurious image (its answer is derivable
+  from the prompt/options), or an aligned image with a clean master match, is **salvageable →
+  approve or potential-new**, not delete. (Owner deleted 27/28 of batch-1's mismatches when the
+  flow was aggressive, but later flagged that some good questions were being lost — hence this
+  filter.) **The deletion-learning loop** (`scripts/learn-from-deletes.mjs` →
+  `qbank-tools/history/<lang>-delete-learning.md`) re-derives delete confidence from each
+  reviewed batch's confirmed deletes vs the persisted `image-text-audit.<lang>.<batch>.json`;
+  read it before pre-filling the next batch.
+- **★ Potential-new questions need a VERIFIED, JUSTIFIED answer key (owner feedback, batch-2 2026-06-23).** A
+  bare guessed `newQuestionLocalAnswerKey` is "not very good" — the screenshot rarely shows the correct option and
+  there is no master to map from, so the owner can't trust it. These are STANDARD 科目一 questions with publicly
+  documented answers: **WebSearch-verify** each new question's correct answer (search the Chinese prompt; sites like
+  jsyks.com / jiakaobaodian.com), then write the rationale + "[web-verified]" into `reviewerNotes`. **Map by MEANING,
+  never by the reference site's letter** — option ORDER differs per source, so a site saying "answer C" may be your
+  local option D (e.g. 缺少冷却液 = lack of coolant). Watch the 1-vs-3-year license rule: cheating DURING the
+  exam/application = 1 year; obtaining the license by deception (already issued, then revoked) = 3 years. Also: if an
+  "approve" item trips the **numeric-option-mismatch consistency gate** at ship (option overlap < 0.5 vs master),
+  it's usually a DIFFERENT question in year/number format → re-map to potential-new, don't force the qid (localizing
+  would give that qid divergent content across languages). batch-2: all 10 potential-new answers verified this way.
+- **★ Potential-new TOPIC/SUBTOPIC = canonical taxonomy ONLY (owner directive 2026-06-23).** Use
+  only `lib/qbank/tagTaxonomy.ts`: road-safety{license,registration,accidents,road-conditions},
+  traffic-signals{signal-lights,road-signs,road-markings,police-signals},
+  proper-driving{safe-driving,traffic-laws}, driving-operations{indicators,gears}. NEVER invent
+  subtopics (e.g. not "licensing"/"penalty-points"/"yielding"). The workbench now renders topic
+  as a `<select>` and subtopics as a constrained multi-`<select>` from this taxonomy, and
+  `generate-batch-workbench.mjs` DROPS any off-taxonomy value on normalize (buildTopicCatalog
+  returns the hardcoded canonical set, no longer derived from question tags which leaked junk
+  like `images`/`no-image`/`proper-driving:license`).
 - **Image/sign questions are the matcher's weak spot.** Questions with generic
   prompts like "What's the meaning of this sign?" or "What does this symbol
   indicate?" can't be told apart by text — the image disambiguates. The matcher
