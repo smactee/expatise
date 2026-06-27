@@ -361,6 +361,10 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 <div className={styles.nameRow}>
   <span
     ref={nameSpanRef }
+    // Isolate the handle's direction: "@Expatise" must render LTR even in an RTL
+    // (Arabic) layout, where the neutral "@" would otherwise jump to the wrong
+    // side ("Expatise@"). dir="auto" keeps an Arabic display name RTL too.
+    dir="auto"
     className={`${styles.usernameEditable} ${!authed ? styles.lockedClickable : ""}`}
     contentEditable={authed}
     suppressContentEditableWarning
@@ -402,7 +406,7 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 ) : null}
 
 
-<span className={styles.emailDisplayText}>
+<span className={styles.emailDisplayText} dir="auto">
   {showProviderEmail ? (
     <>
       {signInDisplay.label} @

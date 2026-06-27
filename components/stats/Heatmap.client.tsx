@@ -308,7 +308,26 @@ useEffect(() => {
         <div className={styles.calloutText}>
           {data.best ? (
             <>
-              {t('charts.heatmap.bestWindow')} <b>{data.best.weekdayLabel} {data.best.dayPartLabel}</b> —{' '}
+              {t('charts.heatmap.bestWindow')}{' '}
+              <b>
+                {data.best.weekdayLabel}{' '}
+                {(() => {
+                  // Reuse the existing translated short label (the column headers do
+                  // the same) instead of the raw English dayPart name from the data
+                  // layer — otherwise "Evening" leaks into the Arabic (and other) UI.
+                  const k = data.dayParts.find((p) => p.label === data.best!.dayPartLabel)?.key;
+                  return k === 'morning'
+                    ? t('charts.heatmap.dayParts.morningShort')
+                    : k === 'midday'
+                    ? t('charts.heatmap.dayParts.middayShort')
+                    : k === 'evening'
+                    ? t('charts.heatmap.dayParts.eveningShort')
+                    : k === 'late'
+                    ? t('charts.heatmap.dayParts.lateShort')
+                    : data.best!.dayPartLabel;
+                })()}
+              </b>{' '}
+              —{' '}
               <b>{data.best.avgScore}%</b>{' '}
               <span className={styles.calloutMuted}>{t('charts.heatmap.bestWindowMeta', { count: data.best.attemptsCount })}</span>
             </>
