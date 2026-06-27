@@ -291,6 +291,13 @@
   color: var(--aq-muted);
 }
 
+/* Question number ("105.") stays LTR so the trailing period doesn't reorder to
+   the left (".105") in RTL/Arabic. (.qType is the Arabic category — leave RTL.) */
+.qNo {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
 .imageWrap {
   position: relative;
   width: 100%;
@@ -402,6 +409,10 @@
   font-weight: 800;
   min-width: 22px;
   flex: 0 0 22px;
+  /* Latin enumeration key ("A.") stays LTR so the trailing period doesn't
+     reorder to the left (".A") in RTL/Arabic. */
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 .optionText {

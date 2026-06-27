@@ -422,6 +422,10 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
 
 .optionKey {
   font-weight: 700;
+  /* Latin enumeration key ("A.") stays LTR so the trailing period doesn't
+     reorder to the left (".A") in RTL/Arabic. */
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 .optionText {
