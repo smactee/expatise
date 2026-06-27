@@ -19,6 +19,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { GlobeInstance } from 'globe.gl';
 
 import styles from './Globe.module.css';
+import { useT } from '@/lib/i18n/useT';
 
 export type CountrySelection = { name: string; iso: string; lat: number; lng: number };
 export type ProvinceSelection = { name: string; code: string; lat: number; lng: number };
@@ -56,19 +57,22 @@ export type GlobeProps = {
   /** Fires when a province polygon is tapped in drill-in mode. */
   onProvinceSelect?: (province: ProvinceSelection) => void;
   className?: string;
+  /**
+   * DEV/QA ONLY. Force a specific day-map URL, bypassing the GPU maxTextureSize
+   * gate. Used by the /dev/globe-test-4k comparison route to render the old 4K
+   * map side-by-side with the vendored 8K. Leave undefined in production.
+   */
+  forceDayTextureUrl?: string;
 };
 
 /* ----------------------------- Tunables (from the prototype) ----------------------------- */
-// Day map gated on GPU maxTextureSize (see effect). Still aliasing the 4K blue-marble:
-// a genuine public-domain 8192×4096 day map could not be reliably fetched in-script.
-// TODO(8K): drop a real 8192×4096 day map at public/globe/earth-day-8k.jpg, then change
-// DAY_TEXTURE_8K_URL below to '/globe/earth-day-8k.jpg'. Source options:
-//   • NASA Blue Marble (public domain): downscale the 21600×10800 master to 8192×4096.
-//   • Solar System Scope "8k_earth_daymap" (CC-BY 4.0 — attribution, not strictly PD).
-// The zoom clamp below auto-detects the loaded width and switches to the 8K floor once
-// the real file is in place — no further code change needed.
+// Day map gated on GPU maxTextureSize (see effect). On capable GPUs we serve a real
+// 8192×4096 equirectangular day map vendored at public/globe/earth-day-8k.jpg.
+// Source: Solar System Scope "8k_earth_daymap" (CC-BY 4.0 — attribution required; see
+// public/globe/CREDITS.txt). Built from NASA elevation/imagery data, saturation-enhanced.
+// The zoom clamp below auto-detects the loaded width and switches to the 8K floor.
 const DAY_TEXTURE_4K_URL = '//cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg';
-const DAY_TEXTURE_8K_URL = DAY_TEXTURE_4K_URL; // ← flip to '/globe/earth-day-8k.jpg' once vendored
+const DAY_TEXTURE_8K_URL = '/globe/earth-day-8k.jpg';
 const BUMP_TEXTURE_URL = '//cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png';
 const WATER_TEXTURE_URL = '//cdn.jsdelivr.net/npm/three-globe/example/img/earth-water.png';
 const COUNTRIES_GEOJSON_URL = '/globe/countries-50m.geojson'; // vendored Natural Earth 50m admin-0
@@ -144,13 +148,16 @@ function loadCountryFeatures(): Promise<GeoFeature[]> {
   return countriesGeojsonPromise.then((geo) => geo.features.map((f) => ({ ...f })));
 }
 
-const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySelect, onProvinceSelect, className }, ref) {
+const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySelect, onProvinceSelect, className, forceDayTextureUrl }, ref) {
+  const { t } = useT();
   const containerRef = useRef<HTMLDivElement>(null);
   // Latest callbacks without re-running the heavy mount effect on identity change.
   const onSelectRef = useRef<GlobeProps['onCountrySelect']>(onCountrySelect);
   onSelectRef.current = onCountrySelect;
   const onProvinceSelectRef = useRef<GlobeProps['onProvinceSelect']>(onProvinceSelect);
   onProvinceSelectRef.current = onProvinceSelect;
+  const forceDayTextureUrlRef = useRef<string | undefined>(forceDayTextureUrl);
+  forceDayTextureUrlRef.current = forceDayTextureUrl;
 
   // Imperative funcs are assigned once the async setup completes; calls before
   // then are safe no-ops.
@@ -196,7 +203,9 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
       const caps = renderer.capabilities;
       const maxAniso = caps.getMaxAnisotropy();
       // Only request the 8K day map if the GPU can actually sample it; else 4K.
-      const dayUrl = caps.maxTextureSize >= 8192 ? DAY_TEXTURE_8K_URL : DAY_TEXTURE_4K_URL;
+      // A dev-only override (forceDayTextureUrl) bypasses the gate for A/B comparison.
+      const dayUrl =
+        forceDayTextureUrlRef.current ?? (caps.maxTextureSize >= 8192 ? DAY_TEXTURE_8K_URL : DAY_TEXTURE_4K_URL);
 
       // --- Textures (loaded manually so we control quality) ---
       const texLoader = new THREE.TextureLoader();
@@ -589,7 +598,7 @@ const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe({ onCountrySele
       <button
         type="button"
         className={styles.zoomOut}
-        aria-label="Zoom out"
+        aria-label={t('onboarding.location.zoomOut')}
         onClick={() => apiRef.current?.zoomOut()}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -475,6 +475,12 @@
   transform: translateY(1px);
 }
 
+/* RTL: the › CTA chevron points left in Arabic (keeps the optical translateY). */
+:global([dir="rtl"]) .ctaChevron {
+  display: inline-block;
+  transform: translateY(1px) scaleX(-1);
+}
+
 .promoFooter {
   width: 100%;
   max-width: 327px;

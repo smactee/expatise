@@ -147,3 +147,25 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont,
     'SF Pro Text', 'Segoe UI', sans-serif;
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Arabic (RTL) presentation — scoped to the Arabic locale ONLY.
+   html[dir="rtl"] / [lang="ar"] are set exclusively for 'ar' (locale bootstrap
+   + I18nProvider + direction.ts RTL_LOCALES = {'ar'}), so none of these rules
+   can affect English or any other language.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Prepend an Arabic-capable webfont to the sans stack for the whole Arabic
+   subtree. Everything renders text via var(--font-sans), so this reaches all
+   components; Latin letters/digits fall through to the existing stack, keeping
+   western numerals (123, not ١٢٣). */
+[lang="ar"],
+[dir="rtl"] {
+  --font-sans: var(--font-arabic), var(--font-geist-sans);
+}
+
+/* Arabic script is cursive: letter-spacing breaks the connected letterforms.
+   Kill it across the Arabic UI (only affects inline text). */
+[dir="rtl"] * {
+  letter-spacing: normal !important;
+}

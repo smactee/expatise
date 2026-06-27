@@ -63,6 +63,7 @@ export const es = {
     },
   },
   onboarding: {
+    ...en.onboarding,
     heroAlt: 'Imagen de bienvenida',
     title: {
       before: 'Estudia para el examen del',
@@ -474,6 +475,7 @@ export const es = {
     answerLabel: 'Respuesta',
   },
   qbank: {
+    ...en.qbank,
     taxonomy: {
       topics: {
         roadSafety: 'Seguridad vial',

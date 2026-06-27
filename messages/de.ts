@@ -63,6 +63,7 @@ export const de = {
     },
   },
   onboarding: {
+    ...en.onboarding,
     heroAlt: 'Onboarding-Hero',
     title: {
       before: 'Lerne für die',
@@ -474,6 +475,7 @@ export const de = {
     answerLabel: 'Antwort',
   },
   qbank: {
+    ...en.qbank,
     taxonomy: {
       topics: {
         roadSafety: 'Verkehrssicherheit',

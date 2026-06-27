@@ -7,6 +7,7 @@ import { useBootSweepOnce } from '@/components/stats/useBootSweepOnce.client';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import { createPortal } from 'react-dom';
 import { useT } from '@/lib/i18n/useT';
+import { dateLocale } from "@/lib/i18n/dateLocale";
 
 
 export function ScoreLegend({
@@ -45,7 +46,7 @@ function clamp(n: number, a: number, b: number) {
 
 function fmtDayTime(t: number) {
   const d = new Date(t);
-  return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleString(dateLocale(), { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 function easeOutCubic(t: number) {

@@ -996,3 +996,9 @@
 .reseedBtn:active {
   transform: translateY(1px);
 }
+
+/* RTL: the ▸ "take a test" arrow points left in Arabic. */
+:global([dir="rtl"]) .takeTestArrow {
+  display: inline-block;
+  transform: scaleX(-1);
+}

@@ -18,6 +18,7 @@ import TimeframeChips, { type Timeframe } from '@/components/stats/TimeframeChip
 import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
 import ScoreChart, { ScoreLegend } from '@/components/stats/ScoreChart.client';
+import { dateLocale } from "@/lib/i18n/dateLocale";
 import DailyProgressChart, { DailyProgressLegend } from '@/components/stats/DailyProgressChart';
 import Heatmap from '@/components/stats/Heatmap.client';
 import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
@@ -109,7 +110,7 @@ function startOfDayKey(t: number) {
 function formatStamp(ms: number) {
   try {
     const d = new Date(ms);
-    return d.toLocaleString(undefined, {
+    return d.toLocaleString(dateLocale(), {
       month: "short",
       day: "2-digit",
       hour: "2-digit",
@@ -1074,7 +1075,7 @@ try {
         className={styles.statsTestButton}
         onClick={() => router.push('/test/real')}
       >
-        {t('stats.readiness.takeTest')} ▸
+        {t('stats.readiness.takeTest')} <span className={styles.takeTestArrow} aria-hidden="true">▸</span>
       </button>
 
       <TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />

@@ -62,6 +62,7 @@ export const ko = {
     },
   },
   onboarding: {
+    ...en.onboarding,
     heroAlt: '온보딩 이미지',
     title: {
       before: '어디서든',
@@ -469,6 +470,7 @@ export const ko = {
     answerLabel: '정답',
   },
   qbank: {
+    ...en.qbank,
     taxonomy: {
       topics: {
         roadSafety: '도로 안전',

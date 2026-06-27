@@ -7,3 +7,9 @@
 :global(:root[data-theme='dark']) .backBtn :global(img) {
   filter: invert(1);
 }
+
+/* RTL: the back-arrow PNG points right in Arabic (composes with the dark
+   invert above — different properties). */
+:global([dir="rtl"]) .backBtn :global(img) {
+  transform: scaleX(-1);
+}

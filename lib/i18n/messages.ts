@@ -53,7 +53,96 @@ function readMessage(messages: Messages, key: MessageKey): string | undefined {
   return typeof resolved === 'string' ? resolved : undefined;
 }
 
-function formatMessage(locale: Locale | string, key: MessageKey, template: string, params?: MessageParams): string {
+// Pick the CLDR plural category ('zero'|'one'|'two'|'few'|'many'|'other') for a
+// count in the given locale. Arabic uses all six; English uses one/other.
+function pluralCategory(locale: Locale | string, n: number): string {
+  try {
+    return new Intl.PluralRules(String(locale)).select(n);
+  } catch {
+    return 'other';
+  }
+}
+
+// Parse the body of an ICU plural block into { category -> form }, supporting
+// exact matches like "=0" and the CLDR categories. Brace-balanced so forms may
+// contain other {tokens}.
+function parsePluralForms(body: string): Record<string, string> {
+  const forms: Record<string, string> = {};
+  let i = 0;
+  while (i < body.length) {
+    while (i < body.length && /\s/.test(body[i])) i += 1;
+    if (i >= body.length) break;
+    let k = i;
+    while (k < body.length && body[k] !== '{' && !/\s/.test(body[k])) k += 1;
+    const category = body.slice(i, k).trim();
+    while (k < body.length && /\s/.test(body[k])) k += 1;
+    if (body[k] !== '{') break;
+    let depth = 0;
+    let end = -1;
+    for (let j = k; j < body.length; j += 1) {
+      if (body[j] === '{') depth += 1;
+      else if (body[j] === '}') {
+        depth -= 1;
+        if (depth === 0) {
+          end = j;
+          break;
+        }
+      }
+    }
+    if (end === -1) break;
+    forms[category] = body.slice(k + 1, end);
+    i = end + 1;
+  }
+  return forms;
+}
+
+// Resolve ICU plural blocks: {count, plural, one {…} other {# …}}. '#' becomes
+// the count. Non-plural {token} blocks are left untouched for the simple pass.
+function resolvePlurals(template: string, params: MessageParams, locale: Locale | string): string {
+  if (!template.includes(', plural,')) return template;
+  let out = '';
+  let i = 0;
+  while (i < template.length) {
+    const open = template.indexOf('{', i);
+    if (open === -1) {
+      out += template.slice(i);
+      break;
+    }
+    out += template.slice(i, open);
+    let depth = 0;
+    let close = -1;
+    for (let j = open; j < template.length; j += 1) {
+      if (template[j] === '{') depth += 1;
+      else if (template[j] === '}') {
+        depth -= 1;
+        if (depth === 0) {
+          close = j;
+          break;
+        }
+      }
+    }
+    if (close === -1) {
+      out += template.slice(open);
+      break;
+    }
+    const block = template.slice(open + 1, close);
+    const match = block.match(/^\s*(\w+)\s*,\s*plural\s*,\s*([\s\S]*)$/);
+    if (match) {
+      const token = match[1];
+      const count = Number(params[token] ?? 0);
+      const forms = parsePluralForms(match[2]);
+      const chosen = forms[`=${count}`] ?? forms[pluralCategory(locale, count)] ?? forms.other ?? '';
+      out += chosen.replace(/#/g, String(count));
+    } else {
+      out += template.slice(open, close + 1);
+    }
+    i = close + 1;
+  }
+  return out;
+}
+
+function formatMessage(locale: Locale | string, key: MessageKey, rawTemplate: string, params?: MessageParams): string {
+  const template = params ? resolvePlurals(rawTemplate, params, locale) : rawTemplate;
   if (!params) {
     const unresolvedTokens = template.match(/\{(\w+)\}/g);
     if (unresolvedTokens) {

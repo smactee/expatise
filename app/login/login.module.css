@@ -131,6 +131,12 @@
   font-size: 22px;
 }
 
+/* RTL: the → arrow points left in Arabic. */
+:global([dir="rtl"]) .arrow {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
 .links {
   margin-top: clamp(8px, 1.5svh, 12px);
   display: flex;

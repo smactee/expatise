@@ -6,6 +6,7 @@ import { useOnceInView } from './useOnceInView.client';
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 import styles from './ScreenTimeChart.module.css';
 import { useT } from '@/lib/i18n/useT';
+import { dateLocale } from "@/lib/i18n/dateLocale";
 
 // ✅ Legend for Screen Time card header (moved out of StatsPage)
 export function ScreenTimeLegend({
@@ -516,7 +517,7 @@ const areaClipW = useMemo(() => {
 
   const bestPoint = model.bestIdx >= 0 ? model.points[model.bestIdx] : null;
   const bestLabel = bestPoint
-    ? bestPoint.date.toLocaleDateString(undefined, { weekday: 'short' })
+    ? bestPoint.date.toLocaleDateString(dateLocale(), { weekday: 'short' })
     : '—';
 
   // Confidence triggers
@@ -640,7 +641,7 @@ const areaClipW = useMemo(() => {
                         : 0;
 
                     const isToday = idx === model.todayIdx;
-                    const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
+                    const dayLabel = p.date.toLocaleDateString(dateLocale(), { weekday: 'short' });
                     const pctOfWeek = Math.round((p.total / model.weekTotalSafe) * 100);
 
                     const colClass = [
@@ -733,7 +734,7 @@ const areaClipW = useMemo(() => {
             <div className={styles.xLabels}>
               {model.points.map((p, idx) => {
                 const isToday = idx === model.todayIdx;
-                const dayLabel = p.date.toLocaleDateString(undefined, { weekday: 'short' });
+                const dayLabel = p.date.toLocaleDateString(dateLocale(), { weekday: 'short' });
 
                 return (
                   <div

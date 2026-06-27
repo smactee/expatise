@@ -41,6 +41,7 @@ export default function SwipeBack() {
   const touchStartRef = useRef({
     active: false,
     triggered: false,
+    rtl: false,
     x: 0,
     y: 0,
     t: 0,
@@ -49,6 +50,7 @@ export default function SwipeBack() {
   const mouseStartRef = useRef({
     active: false,
     triggered: false,
+    rtl: false,
     x: 0,
     y: 0,
     t: 0,
@@ -76,9 +78,15 @@ export default function SwipeBack() {
       const x = touch.clientX;
       const y = touch.clientY;
 
+      // In RTL (Arabic) the back gesture mirrors: start from the RIGHT edge and
+      // drag LEFT. LTR keeps the original left-edge / drag-right behavior.
+      const rtl = document.documentElement.dir === "rtl";
+      const atEdge = rtl ? x >= window.innerWidth - EDGE_PX : x <= EDGE_PX;
+
       touchStartRef.current = {
-        active: x <= EDGE_PX,
+        active: atEdge,
         triggered: false,
+        rtl,
         x,
         y,
         t: Date.now(),
@@ -94,7 +102,9 @@ export default function SwipeBack() {
       const dx = touch.clientX - s.x;
       const dy = touch.clientY - s.y;
 
-      if (dx <= 0) return;
+      // Progress toward "back": rightward in LTR, leftward in RTL.
+      const progress = s.rtl ? -dx : dx;
+      if (progress <= 0) return;
 
       if (Math.abs(dy) > MAX_DY) {
         s.active = false;
@@ -106,7 +116,7 @@ export default function SwipeBack() {
         return;
       }
 
-      if (dx >= MIN_DX) {
+      if (progress >= MIN_DX) {
         s.triggered = true;
         goBack();
       }
@@ -128,9 +138,14 @@ export default function SwipeBack() {
       const x = e.clientX;
       const y = e.clientY;
 
+      // Mirror for RTL (see onTouchStart): right edge + drag left.
+      const rtl = document.documentElement.dir === "rtl";
+      const atEdge = rtl ? x >= window.innerWidth - MOUSE_EDGE_PX : x <= MOUSE_EDGE_PX;
+
       mouseStartRef.current = {
-        active: x <= MOUSE_EDGE_PX,
+        active: atEdge,
         triggered: false,
+        rtl,
         x,
         y,
         t: Date.now(),
@@ -146,7 +161,8 @@ export default function SwipeBack() {
       const dx = e.clientX - s.x;
       const dy = e.clientY - s.y;
 
-      if (dx <= 0) return;
+      const progress = s.rtl ? -dx : dx;
+      if (progress <= 0) return;
 
       if (Math.abs(dy) > MAX_DY) {
         s.active = false;
@@ -158,7 +174,7 @@ export default function SwipeBack() {
         return;
       }
 
-      if (dx >= MIN_DX) {
+      if (progress >= MIN_DX) {
         s.triggered = true;
         s.active = false;
         goBack();

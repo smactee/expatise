@@ -2,6 +2,16 @@
 import type { Question } from "@/lib/qbank/types";
 import { deriveTopicSubtags } from "@/lib/qbank/deriveTopicSubtags";
 import { timeKey } from "@/lib/stats/timeKeys";
+import { dateLocale } from "@/lib/i18n/dateLocale";
+
+// Short weekday names in the active locale, Mon→Sun (2024-01-01 was a Monday).
+// Localized so the heatmap shows Arabic weekdays; these labels also serve as the
+// internal match keys, so both display and matching stay consistent.
+function localizedWeekdaysMonFirst(): string[] {
+  return Array.from({ length: 7 }, (_, i) =>
+    new Date(2024, 0, 1 + i).toLocaleDateString(dateLocale(), { weekday: "short" }),
+  );
+}
 
 type AnswerRecordLike = { choice: string; answeredAt?: number };
 
@@ -317,7 +327,7 @@ const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ
     count: 0,
   }));
 
-  const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
+  const WEEKDAYS = localizedWeekdaysMonFirst();
 
 const heat = Array.from({ length: DAY_PARTS.length }, () =>
   Array.from({ length: WEEKDAYS.length }, () => ({

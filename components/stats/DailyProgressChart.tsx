@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState, useId, type CSSProperties } from 
 import { useBootSweepOnce } from './useBootSweepOnce.client';
 import { createPortal } from 'react-dom';
 import { useT } from '@/lib/i18n/useT';
+import { dateLocale } from "@/lib/i18n/dateLocale";
 
 export function DailyProgressLegend({
   animate = true,
@@ -40,7 +41,7 @@ type DayRow = {
 };
 
 function fmtDay(ms: number) {
-  return new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  return new Date(ms).toLocaleDateString(dateLocale(), { month: 'short', day: 'numeric' });
 }
 
 function clamp(n: number, a: number, b: number) {

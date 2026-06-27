@@ -19,6 +19,7 @@ import { City, Country, State, type ICity, type ICountry, type IState } from 'co
 import Globe, { type CountrySelection, type GlobeHandle, type ProvinceSelection } from '@/components/Globe.client';
 import KakaoMap from '@/components/KakaoMap.client';
 import { reverseGeocode, searchPlaces } from '@/lib/kakao/limitedCall';
+import { useT } from '@/lib/i18n/useT';
 
 import styles from './LocationOnboarding.module.css';
 
@@ -53,6 +54,7 @@ const num = (v: string | number | null | undefined): number | null => {
 const isProvinceCountry = (iso?: string | null): boolean => iso === 'KR' || iso === 'CN';
 
 export default function LocationOnboarding({ onComplete, className }: LocationOnboardingProps) {
+  const { t } = useT();
   const globeRef = useRef<GlobeHandle>(null);
 
   const [step, setStep] = useState<StepKey>('home');
@@ -79,7 +81,6 @@ export default function LocationOnboarding({ onComplete, className }: LocationOn
     [sel.country?.iso, sel.province?.iso],
   );
 
-  const stateLabel = sel.country?.iso === 'US' ? 'State' : 'Province';
   const isKoreaCurrent = step === 'current' && current.country?.iso === 'KR';
 
   // Keep the typeahead inputs in sync with whichever step is active.
@@ -166,7 +167,7 @@ export default function LocationOnboarding({ onComplete, className }: LocationOn
 
   // Korea precise pin → store as the "city" level with the detected address label.
   function setPreciseLocation(coords: Coords, label: string) {
-    setCurrent((prev) => ({ ...prev, city: { name: label || 'Pinned location', lat: coords.lat, lng: coords.lng } }));
+    setCurrent((prev) => ({ ...prev, city: { name: label || t('onboarding.location.pinnedLocation'), lat: coords.lat, lng: coords.lng } }));
     globeRef.current?.flyTo({ lat: coords.lat, lng: coords.lng, altitude: CITY_ALTITUDE });
   }
 
@@ -260,10 +261,10 @@ export default function LocationOnboarding({ onComplete, className }: LocationOn
         <Globe ref={globeRef} onCountrySelect={onGlobeTap} onProvinceSelect={onProvinceTap} />
       </div>
 
-      <section className={styles.sheet} aria-label="Location selection">
+      <section className={styles.sheet} aria-label={t('onboarding.location.sheetAria')}>
         <div className={styles.grabber} />
         <header className={styles.header}>
-          <h2 className={styles.title}>{step === 'home' ? 'Where are you from?' : 'Where do you live now?'}</h2>
+          <h2 className={styles.title}>{step === 'home' ? t('onboarding.location.whereFrom') : t('onboarding.location.whereLive')}</h2>
           <div className={styles.dots}>
             <span className={[styles.dot, step === 'home' ? styles.dotActive : ''].join(' ')} />
             <span className={[styles.dot, step === 'current' ? styles.dotActive : ''].join(' ')} />
@@ -272,13 +273,13 @@ export default function LocationOnboarding({ onComplete, className }: LocationOn
 
         <div className={styles.field}>
           <label className={styles.label} htmlFor="lo-country">
-            Country
+            {t('onboarding.location.country')}
           </label>
           <input
             id="lo-country"
             className={[styles.input, warn && !sel.country ? styles.warn : ''].join(' ')}
             list="lo-country-list"
-            placeholder="Search country…"
+            placeholder={t('onboarding.location.searchCountry')}
             autoComplete="off"
             value={countryQ}
             onChange={(e) => onCountryInput(e.target.value)}
@@ -292,14 +293,18 @@ export default function LocationOnboarding({ onComplete, className }: LocationOn
 
         <div className={styles.field}>
           <label className={styles.label} htmlFor="lo-province">
-            {stateLabel}
+            {t('onboarding.location.province')}
           </label>
           <input
             id="lo-province"
             className={styles.input}
             list="lo-province-list"
             placeholder={
-              !sel.country ? 'Choose a country first' : provinces.length ? `Search ${stateLabel.toLowerCase()}…` : 'No subdivisions in dataset'
+              !sel.country
+                ? t('onboarding.location.chooseCountryFirst')
+                : provinces.length
+                  ? t('onboarding.location.searchProvince')
+                  : t('onboarding.location.noSubdivisions')
             }
             autoComplete="off"
             disabled={!sel.country || provinces.length === 0}
@@ -320,14 +325,18 @@ export default function LocationOnboarding({ onComplete, className }: LocationOn
         ) : (
           <div className={styles.field}>
             <label className={styles.label} htmlFor="lo-city">
-              City
+              {t('onboarding.location.city')}
             </label>
             <input
               id="lo-city"
               className={styles.input}
               list="lo-city-list"
               placeholder={
-                !sel.province ? 'Choose a province first' : cities.length ? 'Search city…' : 'No cities in dataset'
+                !sel.province
+                  ? t('onboarding.location.chooseProvinceFirst')
+                  : cities.length
+                    ? t('onboarding.location.searchCity')
+                    : t('onboarding.location.noCities')
               }
               autoComplete="off"
               disabled={!sel.province || cities.length === 0}
@@ -345,11 +354,11 @@ export default function LocationOnboarding({ onComplete, className }: LocationOn
         <footer className={styles.footer}>
           {step === 'current' && (
             <button type="button" className={styles.ghost} onClick={() => setStep('home')}>
-              Back
+              {t('onboarding.location.back')}
             </button>
           )}
           <button type="button" className={styles.primary} onClick={onNext} disabled={done}>
-            {done ? 'Saved ✓' : step === 'current' ? 'Done' : 'Next'}
+            {done ? t('onboarding.location.saved') : step === 'current' ? t('onboarding.location.done') : t('onboarding.location.next')}
           </button>
         </footer>
       </section>
@@ -372,6 +381,7 @@ function KoreaPinStep({
   onConfirm: (coords: Coords, label: string) => void;
   confirmedLabel: string | null;
 }) {
+  const { t } = useT();
   const [phase, setPhase] = useState<PinPhase>('intro');
   const [coords, setCoords] = useState<Coords | null>(null);
   const [label, setLabel] = useState('');
@@ -450,17 +460,17 @@ function KoreaPinStep({
 
   return (
     <div className={styles.field}>
-      <label className={styles.label}>Precise location (South Korea)</label>
+      <label className={styles.label}>{t('onboarding.location.preciseKr')}</label>
 
       {phase === 'intro' && (
         <button type="button" className={styles.secondary} onClick={useMyLocation}>
-          📍 Use my current location
+          {t('onboarding.location.useMyLocation')}
         </button>
       )}
-      {phase === 'locating' && <p className={styles.hint}>Locating you…</p>}
+      {phase === 'locating' && <p className={styles.hint}>{t('onboarding.location.locating')}</p>}
 
       {phase === 'denied' && (
-        <p className={styles.hint}>Location permission is off — search your address instead.</p>
+        <p className={styles.hint}>{t('onboarding.location.permissionOff')}</p>
       )}
 
       {(phase === 'map' || phase === 'denied') && (
@@ -468,7 +478,7 @@ function KoreaPinStep({
           <div className={styles.searchRow}>
             <input
               className={styles.input}
-              placeholder="Search address or place…"
+              placeholder={t('onboarding.location.searchAddress')}
               value={searchQ}
               autoComplete="off"
               onChange={(e) => setSearchQ(e.target.value)}
@@ -480,7 +490,7 @@ function KoreaPinStep({
               }}
             />
             <button type="button" className={styles.secondary} onClick={() => void runSearch()}>
-              Search
+              {t('onboarding.location.search')}
             </button>
           </div>
 
@@ -490,21 +500,21 @@ function KoreaPinStep({
                 className={styles.kakaoMap}
                 center={coords}
                 level={3}
-                markers={[{ lat: coords.lat, lng: coords.lng, title: label || 'Your location' }]}
-                ariaLabel="Precise location map"
+                markers={[{ lat: coords.lat, lng: coords.lng, title: label || t('onboarding.location.yourLocation') }]}
+                ariaLabel={t('onboarding.location.mapAria')}
                 onPick={onMapPick}
               />
               <p className={styles.hint}>
                 {limitedNotice
-                  ? 'Address lookup unavailable right now — tap the map to set your spot.'
-                  : label || 'Tap the map to adjust your exact spot.'}
+                  ? t('onboarding.location.lookupUnavailable')
+                  : label || t('onboarding.location.tapToAdjust')}
               </p>
               <button
                 type="button"
                 className={styles.secondary}
                 onClick={() => coords && onConfirm(coords, label)}
               >
-                {confirmedLabel ? `Confirmed: ${confirmedLabel}` : 'Confirm this location'}
+                {confirmedLabel ? t('onboarding.location.confirmedPrefix', { label: confirmedLabel }) : t('onboarding.location.confirmLocation')}
               </button>
             </>
           )}

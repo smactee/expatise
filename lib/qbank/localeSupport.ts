@@ -1,3 +1,5 @@
+import { getMessage } from '@/lib/i18n/messages';
+
 const BASE_QUESTION_URL = '/qbank/2023-test1/questions.json';
 
 const PRODUCTION_TRANSLATION_URLS: Record<string, string> = {
@@ -8,6 +10,9 @@ const PRODUCTION_TRANSLATION_URLS: Record<string, string> = {
   ru: '/qbank/2023-test1/translations.ru.json',
   es: '/qbank/2023-test1/translations.es.json',
   de: '/qbank/2023-test1/translations.de.json',
+  ar: '/qbank/2023-test1/translations.ar.json',
+  // zh ships as a partial bank (197/1004 as of v3.7.1) and fills in as batches land.
+  zh: '/qbank/2023-test1/translations.zh.json',
 };
 
 const TRANSLATION_NOTICE_LABELS: Record<string, string> = {
@@ -18,15 +23,13 @@ const TRANSLATION_NOTICE_LABELS: Record<string, string> = {
   ru: 'Russian',
   es: 'Spanish',
   de: 'German',
+  ar: 'Arabic',
+  zh: 'Chinese',
 };
 
 export const showLanguageDebugCounts =
   process.env.NODE_ENV !== 'production' ||
   process.env.NEXT_PUBLIC_SHOW_LANGUAGE_DEBUG_COUNTS === '1';
-
-function isDevelopmentVisibilityEnabled(): boolean {
-  return process.env.NODE_ENV !== 'production';
-}
 
 export function hasProductionQuestionTranslations(locale: string | null | undefined): boolean {
   return normalizeLocale(locale) in PRODUCTION_TRANSLATION_URLS;
@@ -34,11 +37,12 @@ export function hasProductionQuestionTranslations(locale: string | null | undefi
 
 export function isTranslatedOnlyQuestionLocale(locale: string | null | undefined): boolean {
   const normalized = normalizeLocale(locale);
-  // ja (partial translation) and en-orig (only the 969 questions that exist in the
-  // source PDF) intentionally show ONLY their translated questions, in every build —
-  // so British Chinglish drops the 35 master questions that aren't in the PDF.
-  if (normalized === 'ja' || normalized === 'en-orig' || normalized === 'de') return true;
-  return isDevelopmentVisibilityEnabled() && hasProductionQuestionTranslations(normalized);
+  // Data-driven, no per-language list: every non-English locale shows ONLY its
+  // translated questions. A complete bank shows all of them; a partial bank (e.g.
+  // Arabic mid-build) shows just the translated subset; an empty bank (no batches
+  // yet, e.g. Chinese) shows none — instead of silently falling back to the English
+  // master. 'en' is the source locale (all questions); '' guards null/unknown input.
+  return normalized !== '' && normalized !== 'en';
 }
 
 export function getTranslatedOnlyLocaleNotice(locale: string | null | undefined, count: number): string | null {
@@ -53,7 +57,7 @@ export function getTranslatedOnlyLocaleNotice(locale: string | null | undefined,
   }
 
   const label = TRANSLATION_NOTICE_LABELS[normalized] ?? normalized.toUpperCase();
-  return `${label} beta currently has ${count} translated questions available.`;
+  return getMessage(normalized, 'qbank.betaNotice', { count, label });
 }
 
 export function getLanguageQuestionCountNotice(locale: string | null | undefined, count: number): string | null {

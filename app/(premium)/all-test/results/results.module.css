@@ -68,6 +68,12 @@
   position: relative;
 }
 
+/* RTL: the back arrow points right in Arabic (back button itself already
+   mirrors via inset-inline-start). Flip the whole drawn glyph. */
+:global([dir="rtl"]) .backChevron {
+  transform: scaleX(-1);
+}
+
 .backChevron::before {
   content: '';
   position: absolute;

@@ -491,6 +491,12 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   line-height: 1;
   transform: translateY(1px); /* optional: nicer optical alignment */
 }
+
+/* RTL: the → next arrow points left in Arabic (keeps the optical translateY). */
+:global([dir="rtl"]) .nextArrow {
+  display: inline-block;
+  transform: translateY(1px) scaleX(-1);
+}
 .nextBtn::before {
   content: "";
   position: absolute;
