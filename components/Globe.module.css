@@ -15,7 +15,9 @@
 /* Floating zoom-out / back button — gesture-only zoom-out is undiscoverable. */
 .zoomOut {
   position: absolute;
-  right: max(16px, env(safe-area-inset-right));
+  /* Logical inset so the control mirrors to the top-left in RTL (Arabic);
+     identical to `right` in LTR. */
+  inset-inline-end: max(16px, env(safe-area-inset-right));
   top: max(16px, env(safe-area-inset-top));
   width: 52px;
   height: 58px;
