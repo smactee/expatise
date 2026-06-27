@@ -339,7 +339,11 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
           imageSrc,
           options: opts.map((opt: any, idx: number) => {
             const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
-            const text = `${key}. ${opt?.text ?? ""}`;
+            // Isolate the Latin enumeration key ("A.") as LTR so its trailing
+            // period doesn't reorder to ".A" in RTL/Arabic. The key+text render
+            // as one string here, so use Unicode isolates (LRI…PDI) rather than
+            // a styled span — invisible, and covers both the list and swipe views.
+            const text = `⁦${key}.⁩ ${opt?.text ?? ""}`;
             let tone: "neutral" | "correct" | "wrong" = "neutral";
             if (correctKey && key === correctKey) tone = "correct";
             if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
