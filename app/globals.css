@@ -138,9 +138,17 @@ html,
 body {
   margin: 0;
   padding: 0;
+  /* Kill the document-level rubber-band so the page never bounces into empty
+     space past its content. Per-screen wrappers below size to the *visible*
+     viewport (dvh/svh), so a screen only scrolls when content genuinely
+     overflows — never into nothing. */
+  overscroll-behavior: none;
 }
 
 body {
+  /* Fill the visible viewport for the background, without forcing extra height
+     that would create phantom scroll (svh = the smallest stable visible height). */
+  min-height: 100svh;
   /* This is what will visually change when theme changes */
   background-color: var(--bg-app);
   color: var(--text-main);

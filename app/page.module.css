@@ -3,6 +3,7 @@
 /* Overall page */
 .page {
   min-height: 100vh;
+  min-height: 100dvh; /* mobile-accurate: never taller than the visible viewport */
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
@@ -421,6 +422,7 @@
   width: 100%;
   max-width: 420px;
   max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px); /* mobile-accurate sheet cap; scrolls inside if taller */
   border-radius: 36px;
   padding: 20px 20px 28px;
   background: linear-gradient(180deg, #e6f3ff 0%, #f4f0dc 100%);
@@ -654,6 +656,7 @@
     border-radius: 0;
     max-width: 100%;
     max-height: 100vh;
+    max-height: 100dvh;
   }
 }
 

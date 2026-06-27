@@ -1102,18 +1102,21 @@ if (!item) {
         })}
     </div>
 
-    {/* Next */}
-    <button
-      type="button"
-      className={styles.nextBtn}
-      onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
-      disabled={!selectedKey}
-    >
-      <span className={styles.nextLabel}>{t('shared.common.next')}</span>
-      <span className={styles.nextArrow} aria-hidden="true">→</span>
-    </button>
   </div>
 </div>
+
+{/* Next — pinned to the frame bottom (sibling of .contentArea) so it stays
+    reachable when the content area scrolls on short viewports, instead of
+    scrolling out of view with the question/answers. */}
+<button
+  type="button"
+  className={styles.nextBtn}
+  onClick={() => selectedKey && void commitAndAdvance(selectedKey)}
+  disabled={!selectedKey}
+>
+  <span className={styles.nextLabel}>{t('shared.common.next')}</span>
+  <span className={styles.nextArrow} aria-hidden="true">→</span>
+</button>
 
 
       </div>

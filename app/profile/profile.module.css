@@ -2,6 +2,7 @@
 
 .page {
   min-height: 100vh;
+  min-height: 100dvh; /* mobile-accurate: scrolls only when settings exceed the viewport */
   display: flex;
   flex-direction: column;   /* ✅ add */
   align-items: center;      /* ✅ add */

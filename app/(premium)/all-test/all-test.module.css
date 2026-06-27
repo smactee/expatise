@@ -1,5 +1,6 @@
 .page {
   min-height: 100vh;
+  min-height: 100dvh; /* match the .frame (100dvh); no phantom scroll past the fold */
   display: flex;
   justify-content: center;
   background: var(--color-page-bg);
@@ -460,6 +461,7 @@ height: min(clamp(180px, 45vw, 280px), 30vh);
   margin-inline-start: auto;
   margin-inline-end: auto;
   height: 41px;
+  flex-shrink: 0; /* pinned frame child: hold height, never compress when content scrolls */
   border-radius: 14px;
   cursor: pointer;
 
