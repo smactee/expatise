@@ -701,3 +701,51 @@ git status --short
 See the "Finalizing a Localization Run" and "Completed-batch cleanup" sections of
 `qbank-tools/README.md` for the full checklist (it verifies zero missing qids,
 ship-readiness, and zero tracked screenshots before moving anything).
+
+## Shipping to Google Play — release notes (multi-language)
+
+Once a build is release-ready, the owner uploads a signed AAB + multi-language release
+notes in the Play Console. When asked to draft those notes, two gotchas bite every time:
+
+**1. Format: ONE fenced code block, every `<lang>` tag on its OWN line.** Play's
+release-notes field parses line-by-line. If the pasted text collapses onto a single line
+— which happens when the owner copies plain chat text, *especially* across RTL/Arabic
+blocks where bidi visually scrambles the tags — Play rejects it with **"tag not closed
+for en-US"** and **"Release notes provided for 0 of 14 languages."** ALWAYS hand the notes
+back inside a ``` code block so the newlines survive the copy, and keep each opening/closing
+tag alone on its own line (the content between them can wrap freely):
+
+```
+<en-US>
+What's new in X.Y.Z
+• ...
+</en-US>
+<ar>
+...
+</ar>
+```
+
+**2. Version-sync: the version in the notes MUST match `android/app/build.gradle`.**
+Read it first — `grep -E "versionName|versionCode" android/app/build.gradle` — and use that
+exact `versionName` in every locale's "What's new in X.Y.Z" line. (Real miss once: notes
+said 4.0.0 while the build had been bumped to versionName 5.0.0 / versionCode 22 — the
+gradle file is edited out-of-band, so never assume the version, always re-grep it.)
+
+**Play Console store-locale tags (14 — a SUPERSET of the app's 8 UI languages).** Provide
+notes for every tag even though the app only localizes ar/de/es/fr/ja/ko/ru/zh (+en):
+
+```
+en-US  ar  be  de-DE  es-419  es-ES  es-US  fr-CA  fr-FR  ja-JP  ko-KR  ru-RU  zh-CN  zh-HK
+```
+
+`be` (Belarusian) and the regional splits — es-419 (Latin America) / es-ES (Spain) / es-US,
+fr-CA / fr-FR, zh-CN (Simplified) / zh-HK (Traditional) — are *store* locales, not app UI
+locales; still fill them. Stay under Play's 500-char-per-locale limit. These notes are
+model-drafted, like the qbank translations — flag that they want a native skim.
+
+**Release-readiness reminders (owner-only steps you cannot do).** The AAB produced by
+`next build` is UNSIGNED — the owner signs it in Android Studio. Make sure it's rebuilt
++ signed from current HEAD, not a stale artifact. If `minifyEnabled`/R8 was newly enabled,
+the minified build must be smoke-tested on a real device (launch + a full test flow +
+RevenueCat purchase/restore) — R8 can break reflection-loaded paths at runtime only, so
+prefer a staged rollout (internal test → small %) rather than 100% day one.
