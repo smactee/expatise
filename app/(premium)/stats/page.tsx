@@ -29,7 +29,7 @@ import InfoTip from '@/components/InfoTip.client';
 import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import { fetchAttemptsFromSupabase } from '@/lib/sync/fetchAttemptsFromSupabase';
-import { createClient } from "@/lib/supabase/client";
+import { callSupabaseFunction, CallSupabaseFunctionError } from "@/lib/supabase/callSupabaseFunction";
 import { fetchTimeLogsFromSupabase } from '@/lib/sync/timeLogs.client';
 import PremiumFeatureModal from "@/components/PremiumFeatureModal";
 import { useEntitlements } from "@/components/EntitlementsProvider.client";
@@ -639,50 +639,30 @@ async function handleResetCoachCooldown() {
 
   setCoachCooldownResetLoading(true);
   try {
-    const supabase = createClient();
-
-    const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
-    if (sessionErr) {
-      window.alert(t('stats.coach.errors.sessionRead', { message: sessionErr.message }));
-      return;
-    }
-
-    let token = sessionData.session?.access_token ?? null;
-    if (!token) {
-      const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
-      if (refreshErr) {
-        window.alert(t('stats.coach.errors.sessionRefresh', { message: refreshErr.message }));
-        return;
+    let res: Response;
+    try {
+      res = await callSupabaseFunction("reset-stats", { scope: "coach_cooldown" });
+    } catch (e) {
+      if (e instanceof CallSupabaseFunctionError) {
+        if (e.stage === "session_read") {
+          window.alert(t('stats.coach.errors.sessionRead', { message: e.authMessage ?? "" }));
+          return;
+        }
+        if (e.stage === "session_refresh") {
+          window.alert(t('stats.coach.errors.sessionRefresh', { message: e.authMessage ?? "" }));
+          return;
+        }
+        if (e.stage === "no_token") {
+          window.alert(t("stats.reset.mustBeLoggedIn"));
+          return;
+        }
+        if (e.stage === "missing_env") {
+          window.alert(t("stats.reset.missingEnv"));
+          return;
+        }
       }
-      token = refreshed.session?.access_token ?? null;
+      throw e;
     }
-
-    if (!token) {
-      window.alert(t("stats.reset.mustBeLoggedIn"));
-      return;
-    }
-
-    const supabaseUrl = String(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
-    const anonKey = String(
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-      ""
-    ).trim();
-
-    if (!supabaseUrl || !anonKey) {
-      window.alert(t("stats.reset.missingEnv"));
-      return;
-    }
-
-    const res = await fetch(`${supabaseUrl}/functions/v1/reset-stats`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        apikey: anonKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ scope: "coach_cooldown" }),
-    });
     const data = await res.json().catch(() => null);
 
     if (process.env.NODE_ENV !== "production") {
@@ -760,50 +740,30 @@ async function handleGenerateCoach() {
       },
     };
 
-const supabase = createClient();
-
-const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
-if (sessionErr) {
-  setCoachError(t('stats.coach.errors.sessionRead', { message: sessionErr.message }));
-  return;
-}
-
-let token = sessionData.session?.access_token ?? null;
-if (!token) {
-  const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
-  if (refreshErr) {
-    setCoachError(t('stats.coach.errors.sessionRefresh', { message: refreshErr.message }));
-    return;
+let res: Response;
+try {
+  res = await callSupabaseFunction("coach", payload);
+} catch (e) {
+  if (e instanceof CallSupabaseFunctionError) {
+    if (e.stage === "session_read") {
+      setCoachError(t('stats.coach.errors.sessionRead', { message: e.authMessage ?? "" }));
+      return;
+    }
+    if (e.stage === "session_refresh") {
+      setCoachError(t('stats.coach.errors.sessionRefresh', { message: e.authMessage ?? "" }));
+      return;
+    }
+    if (e.stage === "no_token") {
+      setCoachError(t('stats.coach.errors.loginRequired'));
+      return;
+    }
+    if (e.stage === "missing_env") {
+      setCoachError(t('stats.coach.errors.missingEnv'));
+      return;
+    }
   }
-  token = refreshed.session?.access_token ?? null;
+  throw e;
 }
-
-if (!token) {
-  setCoachError(t('stats.coach.errors.loginRequired'));
-  return;
-}
-
-const supabaseUrl = String(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
-const anonKey = String(
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-  ""
-).trim();
-
-if (!supabaseUrl || !anonKey) {
-  setCoachError(t('stats.coach.errors.missingEnv'));
-  return;
-}
-
-const res = await fetch(`${supabaseUrl}/functions/v1/coach`, {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${token}`,
-    apikey: anonKey,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(payload),
-});
 const j = await res.json().catch(() => null);
 
 if (j?.error === "cooldown" && j?.nextAllowedAt) {
@@ -907,50 +867,30 @@ try {
   if ((typed ?? "").trim().toUpperCase() !== "RESET") return;
 
  try {
-  const supabase = createClient();
-
-  const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
-  if (sessionErr) {
-    window.alert(t('stats.coach.errors.sessionRead', { message: sessionErr.message }));
-    return;
-  }
-
-  let token = sessionData.session?.access_token ?? null;
-  if (!token) {
-    const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
-    if (refreshErr) {
-      window.alert(t('stats.coach.errors.sessionRefresh', { message: refreshErr.message }));
-      return;
+  let res: Response;
+  try {
+    res = await callSupabaseFunction("reset-stats", {});
+  } catch (e) {
+    if (e instanceof CallSupabaseFunctionError) {
+      if (e.stage === "session_read") {
+        window.alert(t('stats.coach.errors.sessionRead', { message: e.authMessage ?? "" }));
+        return;
+      }
+      if (e.stage === "session_refresh") {
+        window.alert(t('stats.coach.errors.sessionRefresh', { message: e.authMessage ?? "" }));
+        return;
+      }
+      if (e.stage === "no_token") {
+        window.alert(t("stats.reset.mustBeLoggedIn"));
+        return;
+      }
+      if (e.stage === "missing_env") {
+        window.alert(t("stats.reset.missingEnv"));
+        return;
+      }
     }
-    token = refreshed.session?.access_token ?? null;
+    throw e;
   }
-
-  if (!token) {
-    window.alert(t("stats.reset.mustBeLoggedIn"));
-    return;
-  }
-
-  const supabaseUrl = String(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
-  const anonKey = String(
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-    ""
-  ).trim();
-
-  if (!supabaseUrl || !anonKey) {
-    window.alert(t("stats.reset.missingEnv"));
-    return;
-  }
-
-  const res = await fetch(`${supabaseUrl}/functions/v1/reset-stats`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      apikey: anonKey,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}),
-  });
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
