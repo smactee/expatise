@@ -6,6 +6,8 @@ import React, { useId, useRef, useState, useEffect, type ChangeEvent } from 'rea
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './profile.module.css';
+import SettingsRow from './SettingsRow';
+import ProfileToast from './ProfileToast';
 import BottomNav from '@/components/BottomNav';
 import { useTheme } from '@/components/ThemeProvider';
 import { useUserProfile } from '@/components/UserProfile';
@@ -437,137 +439,90 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
         {/* Settings list */}
       <div className={styles.settingsList}>
                     {/* Light / Dark Mode */}
-            <button
-              type="button"
-              className={styles.settingsRow}
+            <SettingsRow
               onClick={toggleTheme}
-            >
-              <div className={styles.settingsLeft}>
-                <span className={styles.settingsIcon}>
-                  <Image
-                    src="/images/profile/lightdarkmode-icon.png"
-                    alt={t('profile.lightDarkModeIconAlt')}
-                    width={24}
-                    height={24}
-                  />
-                </span>
-                <span className={styles.settingsLabel}>
-                  {t('profile.lightDarkMode')}
-                </span>
-              </div>
-              <div
-                className={`${styles.toggle} ${
-                  theme === 'dark' ? styles.toggleOn : ''
-                }`}
-              >
+              icon={{
+                src: '/images/profile/lightdarkmode-icon.png',
+                alt: t('profile.lightDarkModeIconAlt'),
+                width: 24,
+                height: 24,
+              }}
+              label={t('profile.lightDarkMode')}
+              trailing={
                 <div
-                  className={`${styles.toggleKnob} ${
-                    theme === 'dark' ? styles.toggleKnobOn : ''
+                  className={`${styles.toggle} ${
+                    theme === 'dark' ? styles.toggleOn : ''
                   }`}
-                />
-              </div>
-            </button>
+                >
+                  <div
+                    className={`${styles.toggleKnob} ${
+                      theme === 'dark' ? styles.toggleKnobOn : ''
+                    }`}
+                  />
+                </div>
+              }
+            />
 
 {canManageCredentials && (
-  <button
-    type="button"
-    className={styles.settingsRow}
+  <SettingsRow
     onClick={() => router.push("/account-security")}
-  >
-    <div className={styles.settingsLeft}>
-      <span className={styles.settingsIcon}>
-        <Image
-          src="/images/profile/lock-icon.png"
-          alt={t('profile.accountSecurityIconAlt')}
-          width={24}
-          height={24}
-        />
-      </span>
-
-      <span className={styles.settingsLabel}>{t('profile.changeCredentials')}</span>
-    </div>
-
-    <span className={styles.chevron}>›</span>
-  </button>
+    icon={{
+      src: '/images/profile/lock-icon.png',
+      alt: t('profile.accountSecurityIconAlt'),
+      width: 24,
+      height: 24,
+    }}
+    label={t('profile.changeCredentials')}
+  />
 )}
 
-<button
-  type="button"
-  className={styles.settingsRow}
+<SettingsRow
   onClick={(e) => handleRestorePurchases(e)}
   disabled={restoring || authLoading}
->
-  <div className={styles.settingsLeft}>
-   <span
-  className={`${styles.settingsIcon} ${styles.restoreIcon}`}
-  aria-hidden="true"
+  iconNode={
+    <span
+      className={`${styles.settingsIcon} ${styles.restoreIcon}`}
+      aria-hidden="true"
+    />
+  }
+  label={restoring ? t('profile.restoring') : t('profile.restorePurchases')}
 />
-    <span className={styles.settingsLabel}>
-      {restoring ? t('profile.restoring') : t('profile.restorePurchases')}
-    </span>
-  </div>
-  <span className={styles.chevron}>›</span>
-</button>
 
-<button
-  type="button"
-  className={styles.settingsRow}
+<SettingsRow
   onClick={() => router.push("/privacy")}
->
-  <div className={styles.settingsLeft}>
-    <span className={styles.settingsIcon}>
-      <Image
-        src="/images/profile/privacypolicy-icon.png"
-        alt={t('profile.privacyPolicyIconAlt')}
-        width={24}
-        height={24}
-      />
-    </span>
-    <span className={styles.settingsLabel}>{t('profile.privacyPolicy')}</span>
-  </div>
-  <span className={styles.chevron}>›</span>
-</button>
+  icon={{
+    src: '/images/profile/privacypolicy-icon.png',
+    alt: t('profile.privacyPolicyIconAlt'),
+    width: 24,
+    height: 24,
+  }}
+  label={t('profile.privacyPolicy')}
+/>
 
-<button
-  type="button"
-  className={styles.settingsRow}
+<SettingsRow
   onClick={() => router.push("/terms")}
->
-  <div className={styles.settingsLeft}>
-    <span className={styles.settingsIcon}>
-      <Image
-        src="/images/profile/privacypolicy-icon.png"
-        alt={t('profile.termsIconAlt')}
-        width={24}
-        height={24}
-      />
-    </span>
-    <span className={styles.settingsLabel}>{t('profile.terms')}</span>
-  </div>
-  <span className={styles.chevron}>›</span>
-</button>
+  icon={{
+    src: '/images/profile/privacypolicy-icon.png',
+    alt: t('profile.termsIconAlt'),
+    width: 24,
+    height: 24,
+  }}
+  label={t('profile.terms')}
+/>
 
-<button
-  type="button"
-  className={styles.settingsRow}
+<SettingsRow
   onClick={(e) => {
     if (!requireLogin(e)) return;
     router.push("/account/delete-account");
   }}
->
-  <div className={styles.settingsLeft}>
-    <span className={styles.settingsIcon}>
-      <Image
-        src="/images/profile/privacypolicy-icon.png"
-        alt={t('profile.deleteAccountIconAlt')}
-        width={24}
-        height={24}
-      />
-    </span>
-    <span className={styles.settingsLabel}>{t('profile.deleteAccount')}</span>
-  </div>
-  <span className={styles.chevron}>›</span>
-</button>
+  icon={{
+    src: '/images/profile/privacypolicy-icon.png',
+    alt: t('profile.deleteAccountIconAlt'),
+    width: 24,
+    height: 24,
+  }}
+  label={t('profile.deleteAccount')}
+/>
         <div
           className={`${styles.settingsMenuBlock} ${languageMenuOpen ? styles.settingsMenuBlockOpen : ''}`}
           ref={languageMenuRef}
@@ -655,24 +610,16 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 
 
 
-        <button
-  type="button"
-  className={styles.settingsRow}
-  onClick={() => goComingSoon(t('comingSoon.notificationsKey'))}
->
-          <div className={styles.settingsLeft}>
-            <span className={styles.settingsIcon}>
-              <Image 
-                src="/images/profile/bell-icon.png"
-                alt={t('profile.notificationsIconAlt')}
-                width={24}
-                height={24}
-              />
-            </span>
-            <span className={styles.settingsLabel}>{t('profile.notifications')}</span>
-          </div>
-          <span className={styles.chevron}>›</span>
-        </button>
+        <SettingsRow
+          onClick={() => goComingSoon(t('comingSoon.notificationsKey'))}
+          icon={{
+            src: '/images/profile/bell-icon.png',
+            alt: t('profile.notificationsIconAlt'),
+            width: 24,
+            height: 24,
+          }}
+          label={t('profile.notifications')}
+        />
       </div>
 
 </section>
@@ -697,35 +644,11 @@ const handleRestorePurchases = async (e: React.SyntheticEvent) => {
 </div>
 
 {saveMsg ? (
-  <div className={styles.toastOverlay} aria-live="polite">
-    <div className={styles.toastCard}>
-      <Image
-        src="/images/profile/greencheck-icon.png"
-        alt={t('profile.toastCheckAlt')}
-        width={16}
-        height={16}
-        className={styles.toastIcon}
-        priority
-      />
-      <span className={styles.toastText}>{saveMsg}</span>
-      </div>
-  </div>
+  <ProfileToast message={saveMsg} alt={t('profile.toastCheckAlt')} />
 ) : null}
 
 {restoreMsg ? (
-  <div className={styles.toastOverlay} aria-live="polite">
-    <div className={styles.toastCard}>
-      <Image
-        src="/images/profile/greencheck-icon.png"
-        alt={t('profile.toastInfoAlt')}
-        width={16}
-        height={16}
-        className={styles.toastIcon}
-        priority
-      />
-      <span className={styles.toastText}>{restoreMsg}</span>
-    </div>
-  </div>
+  <ProfileToast message={restoreMsg} alt={t('profile.toastInfoAlt')} />
 ) : null}
 
 <PremiumFeatureModal
