@@ -14,19 +14,20 @@ import type { TestAttemptV1 } from '@/lib/test-engine/attemptStorage';
 import { useUserKey } from '@/components/useUserKey.client';
 import { computeStats } from '@/lib/stats/computeStats';
 import { labelForTag } from '@/lib/qbank/tagTaxonomy';
-import TimeframeChips, { type Timeframe } from '@/components/stats/TimeframeChips';
-import ScreenTimeChart, {ScreenTimeLegend} from '@/components/stats/ScreenTimeChart.client';
+import { type Timeframe } from '@/components/stats/TimeframeChips';
 import ReadinessRing from '@/app/(premium)/stats/ReadinessRing.client';
-import ScoreChart, { ScoreLegend } from '@/components/stats/ScoreChart.client';
 import { dateLocale } from "@/lib/i18n/dateLocale";
-import DailyProgressChart, { DailyProgressLegend } from '@/components/stats/DailyProgressChart';
-import Heatmap from '@/components/stats/Heatmap.client';
-import TopicMasteryChart from '@/components/stats/TopicMasteryChart.client';
 import { resetAllLocalData } from '@/lib/stats/resetLocalData';
 import { timeKey } from "@/lib/stats/timeKeys"
 import { seedAdminDemoDataIfNeeded, reenableDemoSeed } from '@/lib/demo/seedAdminDemoData';
-import InfoTip from '@/components/InfoTip.client';
 import CoachReportRich from '@/app/(premium)/stats/CoachReportRich.client';
+import ReadinessSummaryCard from '@/app/(premium)/stats/ReadinessSummaryCard';
+import ScreenTimeCard from '@/app/(premium)/stats/ScreenTimeCard';
+import ScoreCard from '@/app/(premium)/stats/ScoreCard';
+import DailyProgressCard from '@/app/(premium)/stats/DailyProgressCard';
+import HeatmapCard from '@/app/(premium)/stats/HeatmapCard';
+import TopicMasteryCard from '@/app/(premium)/stats/TopicMasteryCard';
+import CoachCard from '@/app/(premium)/stats/CoachCard';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import { fetchAttemptsFromSupabase } from '@/lib/sync/fetchAttemptsFromSupabase';
 import { callSupabaseFunction, CallSupabaseFunctionError } from "@/lib/supabase/callSupabaseFunction";
@@ -962,50 +963,27 @@ try {
 
 
         {/* ==== Top Accuracy / Gauge Card ==== */}
-<section className={styles.statsSummaryCard}>
-  <div className={styles.statsSummaryInner}>
-    <div className={styles.readinessTitleRow}>
-      <span className={styles.statsTitleRow}>
-      </span>
-    </div>
-
-   <ReadinessRing
-  key={`${userKey}:${tfReadiness}`}   // stable key (or you can remove key entirely)
-  valuePct={statsReadiness.readinessPct}
-  enabled={!loading && questions.length > 0 && attemptsHydrated}
-  onDone={handleReadinessRingDone}
+<ReadinessSummaryCard
+  readinessRing={
+    <ReadinessRing
+      key={`${userKey}:${tfReadiness}`}   // stable key (or you can remove key entirely)
+      valuePct={statsReadiness.readinessPct}
+      enabled={!loading && questions.length > 0 && attemptsHydrated}
+      onDone={handleReadinessRingDone}
+    />
+  }
+  readinessDone={readinessDone}
+  summaryText={t('stats.readiness.summary', {
+    timeframe: tfShortLabel(tfReadiness),
+    accuracy: statsReadiness.accuracyPct,
+    count: statsReadiness.attemptsCount,
+  })}
+  basedOnText={t('stats.readiness.basedOn', { count: statsReadiness.attemptedTotal })}
+  takeTestLabel={t('stats.readiness.takeTest')}
+  onTakeTest={() => router.push('/test/real')}
+  tf={tfReadiness}
+  onTfChange={setTfReadiness}
 />
-
-    {/* 👇 Everything below stays hidden until the ring finishes */}
-    <div
-      className={styles.readinessReveal}
-      data-show={readinessDone ? '1' : '0'}
-    >
-      <div className={styles.readinessMetaBlock}>
-        <div className={styles.statsSummaryMeta}>
-          {t('stats.readiness.summary', {
-            timeframe: tfShortLabel(tfReadiness),
-            accuracy: statsReadiness.accuracyPct,
-            count: statsReadiness.attemptsCount,
-          })}
-        </div>
-        <div className={styles.readinessMetaLine}>
-          {t('stats.readiness.basedOn', { count: statsReadiness.attemptedTotal })}
-        </div>
-      </div>
-
-      <button
-        type="button"
-        className={styles.statsTestButton}
-        onClick={() => router.push('/test/real')}
-      >
-        {t('stats.readiness.takeTest')} <span className={styles.takeTestArrow} aria-hidden="true">▸</span>
-      </button>
-
-      <TimeframeChips value={tfReadiness} onChange={setTfReadiness} align="center" />
-    </div>
-  </div>
-</section>
 </div>
 
 
@@ -1016,203 +994,108 @@ try {
 
 
 {/* Screen Time */}
-<article className={styles.statsCard}>
-  <header className={styles.statsCardHeader}>
-  <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>{t('stats.cards.screenTime')}</h2>
-    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, 7)} />
-  </div>
-  <ScreenTimeLegend animate={screenLegendReady} />
-
-
-</header>
-
-
-  <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
-<div
-  className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`}
-  style={{ width: "100%" }}
->
-      {loading ? (
-        t('shared.common.loading')
-      ) : (
-        <ScreenTimeChart
-  data={statsScreen.timeDailySeries}
-  height={120}
+<ScreenTimeCard
+  title={t('stats.cards.screenTime')}
+  tooltip={statsTooltip(LEARNING_MODE_KEYS, 7)}
+  loadingLabel={t('shared.common.loading')}
+  loading={loading}
+  legendReady={screenLegendReady}
+  series={statsScreen.timeDailySeries}
   timedTestMinutesEstimate={Math.round(statsScreen.timeInTimedTestsSec / 60)}
   streakDays={statsScreen.timeStreakDays}
   onLegendReveal={() => setScreenLegendReady(true)}
 />
 
-      )}
-    </div>
-  </div>
-</article>
-
 
 {/* Score Card */}
-            <article className={styles.statsCard}>
-             <header className={styles.statsCardHeader}>
-  <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>{t('stats.cards.score')}</h2>
-    <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfScore)} />
-  </div>
-
-  <ScoreLegend animate={scoreLegendReady} />
-</header>
-
-
-
-              <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
-  <div className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`} style={{ width: '100%' }}>
-    {loading ? (
-      t('shared.common.loading')
-    ) : statsScore.attemptsCount === 0 ? (
-      t('stats.scoreCard.noTests', { timeframe: tfLabel(tfScore) })
-    ) : (
-      <ScoreChart
-        series={statsScore.scoreSeries}
-        scoreAvg={statsScore.scoreAvg}
-        scoreBest={statsScore.scoreBest}
-        scoreLatest={statsScore.scoreLatest}
-        attemptsCount={statsScore.attemptsCount}
-        attemptedTotal={statsScore.attemptedTotal}
-        passLine={90}
-        height={150}
-        onLegendReveal={() => setScoreLegendReady(true)}
-      />
-    )}
-  </div>
-</div>
-<TimeframeChips value={tfScore} onChange={setTfScore} />
-</article>
+<ScoreCard
+  title={t('stats.cards.score')}
+  tooltip={statsTooltip(REAL_ONLY_MODE_KEYS, tfScore)}
+  loadingLabel={t('shared.common.loading')}
+  noTestsLabel={t('stats.scoreCard.noTests', { timeframe: tfLabel(tfScore) })}
+  loading={loading}
+  legendReady={scoreLegendReady}
+  stats={statsScore}
+  tf={tfScore}
+  onTfChange={setTfScore}
+  onLegendReveal={() => setScoreLegendReady(true)}
+/>
 
 {/* Daily Progress */}
-<article className={styles.statsCard}>
-  <header className={styles.statsCardHeader}>
-  <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>{t('stats.cards.dailyProgress')}</h2>
-    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfWeekly)} />
-  </div>
-  <DailyProgressLegend animate={dailyLegendReady} />
-</header>
-
-
-
-  <div className={`${styles.statsGraphArea} ${styles.statsGraphClean}`}>
-    <div
-      className={`${styles.statsGraphPlaceholder} ${styles.statsGraphClean}`}
-      style={{ width: "100%" }}
-    >
-      {loading ? (
-        t('shared.common.loading')
-      ) : statsWeekly.attemptsCount === 0 ? (
-        t('stats.dailyProgressCard.noData')
-      ) : (
-        <DailyProgressChart
-          series={statsWeekly.dailySeries}
-          bestDayQuestions={statsWeekly.bestDayQuestions}
-          streakDays={statsWeekly.consistencyStreakDays}
-          rows={tfWeekly === "all" ? 30 : tfWeekly}
-          onLegendReveal={() => setDailyLegendReady(true)}
-        />
-      )}
-    </div>
-  </div>
-
-  <TimeframeChips value={tfWeekly} onChange={setTfWeekly} />
-</article>
+<DailyProgressCard
+  title={t('stats.cards.dailyProgress')}
+  tooltip={statsTooltip(LEARNING_MODE_KEYS, tfWeekly)}
+  loadingLabel={t('shared.common.loading')}
+  noDataLabel={t('stats.dailyProgressCard.noData')}
+  loading={loading}
+  legendReady={dailyLegendReady}
+  stats={statsWeekly}
+  tf={tfWeekly}
+  onTfChange={setTfWeekly}
+  onLegendReveal={() => setDailyLegendReady(true)}
+/>
 
 
 {/* Heatmap */}
-<article className={styles.statsCard}>
-  <header className={styles.statsCardHeader}>
-  <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>{t('stats.cards.heatmap')}</h2>
-    <InfoTip text={statsTooltip(REAL_ONLY_MODE_KEYS, tfBestTime)} />
-  </div>
-  </header>
-
-  <div className={styles.statsGraphArea}>
-    {loading ? (
-      t('shared.common.loading')
-    ) : !statsBestTime.Heatmap ? (
-      t('charts.heatmap.notEnoughData')
-    ) : (
-      <Heatmap data={statsBestTime.Heatmap} />
-    )}
-  </div>
-
-  <TimeframeChips value={tfBestTime} onChange={setTfBestTime} />
-</article>
+<HeatmapCard
+  title={t('stats.cards.heatmap')}
+  tooltip={statsTooltip(REAL_ONLY_MODE_KEYS, tfBestTime)}
+  loadingLabel={t('shared.common.loading')}
+  notEnoughDataLabel={t('charts.heatmap.notEnoughData')}
+  loading={loading}
+  stats={statsBestTime}
+  tf={tfBestTime}
+  onTfChange={setTfBestTime}
+/>
 
 
 
 {/* Topic Mastery */}
-<article className={styles.statsCard}>
-  <header className={`${styles.statsCardHeader} ${styles.statsCardHeaderRow}`}>
-  <div className={styles.statsTitleRow}>
-    <h2 className={styles.statsCardTitle}>{t('stats.cards.topicMastery')}</h2>
-    <InfoTip text={statsTooltip(LEARNING_MODE_KEYS, tfTopics)} />
-  </div>
-
-  <button
-    type="button"
-    className={styles.quizBtn}
-    disabled={
-      loading ||
-      !statsTopics.topicMastery ||
-      buildWeakSubtopicRankedTags(statsTopics.topicMastery).length === 0
-    }
-    onClick={() => {
-  if (!isPremium) {
-    setShowPremiumModal(true);
-    return;
+<TopicMasteryCard
+  title={t('stats.cards.topicMastery')}
+  tooltip={statsTooltip(LEARNING_MODE_KEYS, tfTopics)}
+  loadingLabel={t('shared.common.loading')}
+  noDataLabel={t('stats.topicMasteryCard.noData')}
+  quizTitle={t('stats.topicMasteryCard.quizTitle')}
+  quizButtonLabel={t('stats.topicMasteryCard.quizButton')}
+  loading={loading}
+  quizDisabled={
+    loading ||
+    !statsTopics.topicMastery ||
+    buildWeakSubtopicRankedTags(statsTopics.topicMastery).length === 0
   }
+  onQuizClick={() => {
+    if (!isPremium) {
+      setShowPremiumModal(true);
+      return;
+    }
 
-  if (!statsTopics.topicMastery) return;
+    if (!statsTopics.topicMastery) return;
 
-  // ✅ keep it to the “weakest 5” (as you intended)
-  const rankedTags = buildWeakSubtopicRankedTags(statsTopics.topicMastery)
-    .slice(0, 5)
-    .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
-    .filter(Boolean);
+    // ✅ keep it to the “weakest 5” (as you intended)
+    const rankedTags = buildWeakSubtopicRankedTags(statsTopics.topicMastery)
+      .slice(0, 5)
+      .map((t) => String(t ?? "").trim().replace(/^#/, "").toLowerCase())
+      .filter(Boolean);
 
-  const cfg = {
-    schemaVersion: 1,
-    createdAt: Date.now(),
-    tags: rankedTags,
-  };
+    const cfg = {
+      schemaVersion: 1,
+      createdAt: Date.now(),
+      tags: rankedTags,
+    };
 
-  // ✅ canonical key (what AllTestClient expects)
-  localStorage.setItem("expatise:topicQuiz:v1", JSON.stringify(cfg));
+    // ✅ canonical key (what AllTestClient expects)
+    localStorage.setItem("expatise:topicQuiz:v1", JSON.stringify(cfg));
 
-  // (optional) keep old key for a bit
-  localStorage.setItem("topicQuiz:v1", JSON.stringify({ v: 1, createdAt: cfg.createdAt, rankedTags }));
+    // (optional) keep old key for a bit
+    localStorage.setItem("topicQuiz:v1", JSON.stringify({ v: 1, createdAt: cfg.createdAt, rankedTags }));
 
-  router.push("/test/topics");
-}}
-
-    title={t('stats.topicMasteryCard.quizTitle')}
-  >
-    {t('stats.topicMasteryCard.quizButton')}
-  </button>
-</header>
-
-
-  <div className={`${styles.statsGraphArea} ${styles.topicMasteryArea}`}>
-  {loading ? (
-    t('shared.common.loading')
-  ) : !statsTopics.topicMastery || statsTopics.topicMastery.topics.length === 0 ? (
-    t('stats.topicMasteryCard.noData')
-  ) : (
-    <TopicMasteryChart data={statsTopics.topicMastery} />
-  )}
-</div>
-
-
-  <TimeframeChips value={tfTopics} onChange={setTfTopics} />
-</article>
+    router.push("/test/topics");
+  }}
+  stats={statsTopics}
+  tf={tfTopics}
+  onTfChange={setTfTopics}
+/>
 
           </div>
         </section>
@@ -1233,119 +1116,52 @@ try {
         </div>
 
 {/* GPT Coach */}
-<article className={styles.statsCard}>
-  <header className={styles.statsCardHeader}>
-    <h2 className={styles.statsCardTitle}>{t('stats.cards.aiCoach')}</h2>
-  </header>
-
-  {loading ? (
-    <p className={styles.coachSubtle}>{t('stats.coach.loading')}</p>
-  ) : !minimumMet ? (
-    <>
-      <p className={styles.coachSubtle}><strong>{t('stats.coach.needsDataTitle')}</strong></p>
-      <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.needsDataBody')}</p>
-      <p className={styles.coachHint}>{t('stats.coach.needsDataHint')}</p>
-
-      <div className={styles.coachRow}>
-        <button
-          type="button"
-          className={styles.coachBtnPrimary}
-          onClick={() => router.push("/test/real")}
-        >
-          {t('stats.readiness.takeTest')}
-        </button>
-        {!isPremium ? (
-          <button
-            type="button"
-            className={styles.coachBtnSecondary}
-            onClick={() => setShowPremiumModal(true)}
-          >
-            {t('stats.coach.upgradeToPremium')}
-          </button>
-        ) : null}
-      </div>
-    </>
-  ) : (
-    <>
-      {!bestResultsMet ? (
-        <>
-          <p className={styles.coachSubtle}>
-            <strong>{t('stats.coach.firstReportTitle')}</strong>
-          </p>
-          <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.firstReportBody')}</p>
-          <p className={styles.coachHint} style={{ whiteSpace: 'pre-line' }}>{t('stats.coach.firstReportNextSteps')}</p>
-        </>
-      ) : (
-        <p className={styles.coachSubtle}>
-          <strong>{t('stats.coach.readyText')}</strong>
-        </p>
-      )}
-
-      <div className={styles.coachRow}>
-        <button
-          type="button"
-          className={styles.coachBtnPrimary}
-          onClick={handleGenerateCoach}
-          disabled={coachLoading || cooldownActive}
-          title={
-            cooldownActive
-              ? t('stats.coach.nextAvailable', { time: formatRemaining(remainingMs) })
-              : t('stats.coach.generateTitle')
-          }
-        >
-          {coachLoading
-            ? (
-              <>
-                <span>{t('stats.coach.generating')}</span>
-                <span className={styles.loadingDots} aria-hidden="true">
-                  {".".repeat(coachLoadingDots)}
-                </span>
-              </>
-            )
-            : cooldownActive
-            ? t('stats.coach.locked')
-            : t('stats.coach.generateTitle')}
-        </button>
-
-        <button
-          type="button"
-          className={styles.coachBtnSecondary}
-          onClick={() => router.push("/test/real")}
-        >
-          {t('stats.readiness.takeTest')}
-        </button>
-      </div>
-
-      <div className={styles.coachMeta}>
-        {cooldownActive ? (
-          <>{t('stats.coach.cooldownActive', { time: formatRemaining(remainingMs) })}</>
-        ) : (
-          <>{t('stats.coach.cooldownIdle')}</>
-        )}
-      </div>
-
-      {coachError ? <div className={styles.coachError}>{coachError}</div> : null}
-
-      {coachReport ? (
-        <div className={styles.coachReportBox}>
-          <div className={styles.coachReportHeader}>
-            <p className={styles.coachReportTitle}>{t('stats.coach.reportTitle')}</p>
-            <p className={styles.coachReportStamp}>
-              {coachCreatedAt ? t('stats.coach.reportStamp', { stamp: formatStamp(coachCreatedAt) }) : ""}
-              {coachReportLocale
-                ? `${coachCreatedAt ? " · " : ""}${getCoachLocaleConfig(coachReportLocale).label}`
-                : ""}
-            </p>
-          </div>
-          <div className={styles.coachReportText}>
-  <CoachReportRich report={coachReport} />
-</div>
-
-        </div>
-      ) : null}
-    </>
-  )}
-</article>
+<CoachCard
+  title={t('stats.cards.aiCoach')}
+  loading={loading}
+  minimumMet={minimumMet}
+  bestResultsMet={bestResultsMet}
+  isPremium={isPremium}
+  coachLoading={coachLoading}
+  cooldownActive={cooldownActive}
+  coachLoadingDots={coachLoadingDots}
+  coachError={coachError}
+  coachReport={coachReport}
+  coachCreatedAt={coachCreatedAt}
+  loadingLabel={t('stats.coach.loading')}
+  needsDataTitle={t('stats.coach.needsDataTitle')}
+  needsDataBody={t('stats.coach.needsDataBody')}
+  needsDataHint={t('stats.coach.needsDataHint')}
+  takeTestLabel={t('stats.readiness.takeTest')}
+  upgradeLabel={t('stats.coach.upgradeToPremium')}
+  firstReportTitle={t('stats.coach.firstReportTitle')}
+  firstReportBody={t('stats.coach.firstReportBody')}
+  firstReportNextSteps={t('stats.coach.firstReportNextSteps')}
+  readyText={t('stats.coach.readyText')}
+  generateButtonTitle={
+    cooldownActive
+      ? t('stats.coach.nextAvailable', { time: formatRemaining(remainingMs) })
+      : t('stats.coach.generateTitle')
+  }
+  generateLabel={t('stats.coach.generateTitle')}
+  generatingLabel={t('stats.coach.generating')}
+  lockedLabel={t('stats.coach.locked')}
+  cooldownMetaText={
+    cooldownActive
+      ? t('stats.coach.cooldownActive', { time: formatRemaining(remainingMs) })
+      : t('stats.coach.cooldownIdle')
+  }
+  reportTitle={t('stats.coach.reportTitle')}
+  reportStampText={`${coachCreatedAt ? t('stats.coach.reportStamp', { stamp: formatStamp(coachCreatedAt) }) : ""}${
+    coachReportLocale
+      ? `${coachCreatedAt ? " · " : ""}${getCoachLocaleConfig(coachReportLocale).label}`
+      : ""
+  }`}
+  onTakeTest={() => router.push("/test/real")}
+  onUpgrade={() => setShowPremiumModal(true)}
+  onGenerate={handleGenerateCoach}
+  coachReportRich={coachReport ? <CoachReportRich report={coachReport} /> : null}
+/>
       </div>
       <BottomNav />
 
