@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 import styles from './Heatmap.module.css';
 import { useOnceInMidView } from './useOnceInView.client';
 import { useT } from '@/lib/i18n/useT';
+import { clamp } from '@/lib/stats/chartMath';
 
 type HeatmapVM = {
   weekdays: string[];
@@ -20,10 +21,6 @@ type HeatmapVM = {
   } | null;
   lowConfidenceNote: string | null;
 };
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
 
 function hexToRgb(hex: string) {
   const h = hex.replace('#', '').trim();

@@ -9,6 +9,7 @@ import { useBootSweepOnce } from './useBootSweepOnce.client';
 import { createPortal } from 'react-dom';
 import { useT } from '@/lib/i18n/useT';
 import { dateLocale } from "@/lib/i18n/dateLocale";
+import { clamp, easeOutCubic } from '@/lib/stats/chartMath';
 
 export function DailyProgressLegend({
   animate = true,
@@ -43,15 +44,6 @@ type DayRow = {
 function fmtDay(ms: number) {
   return new Date(ms).toLocaleDateString(dateLocale(), { month: 'short', day: 'numeric' });
 }
-
-function clamp(n: number, a: number, b: number) {
-  return Math.max(a, Math.min(b, n));
-}
-
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
-}
-
 
 export default function DailyProgressChart(props: {
   series: DayRow[];

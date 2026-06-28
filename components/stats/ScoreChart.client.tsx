@@ -8,6 +8,7 @@ import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import { createPortal } from 'react-dom';
 import { useT } from '@/lib/i18n/useT';
 import { dateLocale } from "@/lib/i18n/dateLocale";
+import { clamp, easeOutCubic } from '@/lib/stats/chartMath';
 
 
 export function ScoreLegend({
@@ -40,17 +41,9 @@ type Point = {
   totalQ: number;
 };
 
-function clamp(n: number, a: number, b: number) {
-  return Math.max(a, Math.min(b, n));
-}
-
 function fmtDayTime(t: number) {
   const d = new Date(t);
   return d.toLocaleString(dateLocale(), { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
 }
 
 type XY = { x: number; y: number };

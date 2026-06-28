@@ -7,6 +7,7 @@ import { useBootSweepOnce } from './useBootSweepOnce.client';
 import styles from './ScreenTimeChart.module.css';
 import { useT } from '@/lib/i18n/useT';
 import { dateLocale } from "@/lib/i18n/dateLocale";
+import { clamp, easeOutCubic } from '@/lib/stats/chartMath';
 
 // ✅ Legend for Screen Time card header (moved out of StatsPage)
 export function ScreenTimeLegend({
@@ -114,10 +115,6 @@ function buildLastNDays(n: number) {
   return days;
 }
 
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
-
 /**
  * Consistency score: 0..100
  * High if daily totals are even (low variance).
@@ -137,10 +134,6 @@ function consistencyScore(totals: number[]) {
 }
 
 type Pt = { x: number; y: number };
-
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
-}
 
 
 export default function ScreenTimeChart({

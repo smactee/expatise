@@ -9,12 +9,9 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import { useOnceInMidView } from '@/components/stats/useOnceInView.client';
 import type { CSSProperties } from 'react';
 import { useT } from '@/lib/i18n/useT';
+import { clamp } from '@/lib/stats/chartMath';
 
 
-
-function clamp(n: number, a: number, b: number) {
-  return Math.max(a, Math.min(b, n));
-}
 
 function confOpacity(attempted: number, maxAttempted: number) {
   const t = clamp(attempted / Math.max(1, maxAttempted), 0, 1);

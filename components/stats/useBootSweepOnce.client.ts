@@ -2,10 +2,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
-}
+import { easeOutCubic } from '@/lib/stats/chartMath';
 
 type Segment = {
   from: number;

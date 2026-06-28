@@ -23,10 +23,7 @@ import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
 import { migrateLocalAttemptsToCanonical } from "@/lib/test-engine/attemptStorage";
 import { useT } from "@/lib/i18n/useT";
 import { getRowDisplayLabel } from "@/lib/qbank/rowDisplay";
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
+import { clamp, easeOutCubic } from "@/lib/stats/chartMath";
 
 function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
   if (!v) return null;
@@ -385,8 +382,6 @@ const animatedPctFloat = useBootSweepOnce({
   segments: (target) => {
     const gap = Math.abs(100 - target);
     const settleMs = gap < 10 ? 450 : 800;
-
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
     return [
       { from: 0, to: 100, durationMs: 450, ease: easeOutCubic },
