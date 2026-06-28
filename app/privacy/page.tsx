@@ -1,15 +1,12 @@
 // app/privacy/page.tsx
 import Link from "next/link";
 
-import LegalLanguageNotice from "@/components/LegalLanguageNotice.client";
+import LegalPageShell, { legalH2Style } from "@/components/LegalPageShell";
+import { APP_NAME, DEVELOPER_ENTITY, CONTACT_EMAIL } from "@/lib/legal/constants";
 
 export const metadata = {
   title: "Privacy Policy · Expatise",
 };
-
-const APP_NAME = "Expatise";
-const DEVELOPER_ENTITY = "Maverix n Matrix";
-const CONTACT_EMAIL = "maverixnmatrix@gmail.com";
 
 const ACCOUNT_DELETION_URL = "/account-deletion";
 
@@ -18,37 +15,48 @@ const LAST_UPDATED = "2026-03-01";
 
 export default function PrivacyPolicyPage() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        padding: "24px 16px 60px",
-        maxWidth: 920,
-        margin: "0 auto",
-        fontFamily:
-          "system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif",
-        lineHeight: 1.6,
-      }}
+    <LegalPageShell
+      title="Privacy Policy"
+      effectiveDate={EFFECTIVE_DATE}
+      lastUpdated={LAST_UPDATED}
+      footer={
+        <section style={{ fontSize: 13, opacity: 0.75, lineHeight: 1.55 }}>
+  <p style={{ marginTop: 0 }}>
+    <b>Legal notes.</b> This Privacy Policy is provided for general
+    informational purposes and does not constitute legal advice. Your use of
+    the App is also subject to any applicable laws and our Terms of Service.
+  </p>
+
+  <p style={{ marginTop: 10 }}>
+    This policy applies only to <b>{APP_NAME}</b>. Third-party services we use
+    (such as authentication, hosting, payments, or AI providers) may process
+    data under their own privacy policies. We encourage you to review those
+    policies where relevant.
+  </p>
+
+  <p style={{ marginTop: 10 }}>
+    <b>Severability.</b> If any provision of this policy is found unenforceable,
+    the remaining provisions will remain in effect.
+  </p>
+
+  <p style={{ marginTop: 10 }}>
+    <b>Language.</b> If we provide translations, the English version controls in
+    case of any conflict or inconsistency.
+  </p>
+
+  <p style={{ marginTop: 10 }}>
+    Questions? Contact us at <b>{CONTACT_EMAIL}</b>.
+  </p>
+</section>
+      }
     >
-
-
-      <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 6 }}>
-        Privacy Policy
-      </h1>
-
-      <div style={{ opacity: 0.8, fontSize: 14 }}>
-        <div>Effective date: {EFFECTIVE_DATE}</div>
-        <div>Last updated: {LAST_UPDATED}</div>
-      </div>
-
-      <LegalLanguageNotice />
-
       <p style={{ marginTop: 16 }}>
         This Privacy Policy explains how <b>{APP_NAME}</b> (the “App”), operated
         by <b>{DEVELOPER_ENTITY}</b> (“we”, “us”), collects, uses, and shares
         information when you use the App.
       </p>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         1) Information we collect
       </h2>
 
@@ -89,7 +97,7 @@ export default function PrivacyPolicyPage() {
         </li>
       </ul>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         2) How we use information
       </h2>
 
@@ -103,7 +111,7 @@ export default function PrivacyPolicyPage() {
         <li>To improve performance and user experience.</li>
       </ul>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         3) How we share information
       </h2>
 
@@ -142,7 +150,7 @@ export default function PrivacyPolicyPage() {
         acquisition).
       </p>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         4) Data retention
       </h2>
 
@@ -152,7 +160,7 @@ export default function PrivacyPolicyPage() {
         where required for legal, security, or operational purposes.
       </p>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         5) Security
       </h2>
 
@@ -162,7 +170,7 @@ export default function PrivacyPolicyPage() {
         using HTTPS/TLS. (No system is 100% secure.)
       </p>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         6) Account deletion &amp; your choices
       </h2>
 
@@ -187,7 +195,7 @@ export default function PrivacyPolicyPage() {
         an in-app deletion path and an outside-the-app deletion link.
       </p>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         7) Children’s privacy
       </h2>
 
@@ -196,7 +204,7 @@ export default function PrivacyPolicyPage() {
         collect personal information from children under 13.
       </p>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         8) International transfers
       </h2>
 
@@ -205,7 +213,7 @@ export default function PrivacyPolicyPage() {
         processed in countries other than where you live.
       </p>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         9) Changes to this policy
       </h2>
 
@@ -214,44 +222,13 @@ export default function PrivacyPolicyPage() {
         page and revise the “Last updated” date above.
       </p>
 
-      <h2 style={{ marginTop: 28, fontSize: 18, fontWeight: 800 }}>
+      <h2 style={legalH2Style}>
         10) Contact
       </h2>
 
       <p>
         If you have questions, contact us at: <b>{CONTACT_EMAIL}</b>
       </p>
-
-      <hr style={{ margin: "28px 0" }} />
-
-      <section style={{ fontSize: 13, opacity: 0.75, lineHeight: 1.55 }}>
-  <p style={{ marginTop: 0 }}>
-    <b>Legal notes.</b> This Privacy Policy is provided for general
-    informational purposes and does not constitute legal advice. Your use of
-    the App is also subject to any applicable laws and our Terms of Service.
-  </p>
-
-  <p style={{ marginTop: 10 }}>
-    This policy applies only to <b>{APP_NAME}</b>. Third-party services we use
-    (such as authentication, hosting, payments, or AI providers) may process
-    data under their own privacy policies. We encourage you to review those
-    policies where relevant.
-  </p>
-
-  <p style={{ marginTop: 10 }}>
-    <b>Severability.</b> If any provision of this policy is found unenforceable,
-    the remaining provisions will remain in effect.
-  </p>
-
-  <p style={{ marginTop: 10 }}>
-    <b>Language.</b> If we provide translations, the English version controls in
-    case of any conflict or inconsistency.
-  </p>
-
-  <p style={{ marginTop: 10 }}>
-    Questions? Contact us at <b>{CONTACT_EMAIL}</b>.
-  </p>
-</section>
-    </main>
+    </LegalPageShell>
   );
 }

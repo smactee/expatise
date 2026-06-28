@@ -3,10 +3,9 @@
 import { useMemo, type CSSProperties } from 'react';
 import { useT } from '@/lib/i18n/useT';
 import { useSearchParams } from "next/navigation";
+import { APP_NAME, SUPPORT_EMAIL } from '@/lib/legal/constants';
 
-const APP_NAME = 'Expatise';
 const SUPPORT_TEAM = 'Expatise Support';
-const SUPPORT_EMAIL = 'maverixnmatrix@gmail.com';
 const PROCESSING_TIME_DAYS = 30;
 const LAST_UPDATED = '2026-03-01';
 
