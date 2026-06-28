@@ -25,7 +25,7 @@ const handleGetStarted = () => {
       <div className={styles.frame}>
         <div className={styles.hero}>
           <Image
-            src="/images/auth/onboarding-girl.png"
+            src="/images/auth/onboarding-girl.webp"
             alt={t('onboarding.heroAlt')}
             fill
             priority

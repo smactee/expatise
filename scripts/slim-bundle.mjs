@@ -110,15 +110,26 @@ async function main() {
     console.log(`  removed       ${orphanCount} orphan images          (-${KB(orphanBytes).trim()})`)
   }
 
-  // 4) Remove .DS_Store + *.map junk
+  // 4) Remove backups/scratch + .DS_Store + *.map junk (must never ship)
   let junkBytes = 0, junkCount = 0
   for (const f of await walk(OUT)) {
-    if (path.basename(f) === '.DS_Store' || f.endsWith('.map')) {
+    const base = path.basename(f)
+    if (base === '.DS_Store' || f.endsWith('.map') || base.includes('.bak') || base.includes('.pre-')) {
       junkBytes += await size(f); await fs.rm(f); junkCount++
     }
   }
   saved += junkBytes
-  if (junkCount) console.log(`  removed       ${junkCount} junk (.DS_Store/.map)  (-${KB(junkBytes).trim()})`)
+  if (junkCount) console.log(`  removed       ${junkCount} junk (.bak/.pre-*/.map/.DS_Store)  (-${KB(junkBytes).trim()})`)
+
+  // 5) Remove dev-only routes (app/dev/* — never for production)
+  const devDir = path.join(OUT, 'dev')
+  if (await exists(devDir)) {
+    let devBytes = 0
+    for (const f of await walk(devDir)) devBytes += await size(f)
+    await fs.rm(devDir, { recursive: true, force: true })
+    saved += devBytes
+    console.log(`  removed       dev/ routes                (-${KB(devBytes).trim()})`)
+  }
 
   const afterBytes = beforeBytes - saved
   console.log(`\nslim-bundle: out/ ${(beforeBytes / 1024 / 1024).toFixed(1)} MB -> ${(afterBytes / 1024 / 1024).toFixed(1)} MB  (saved ${(saved / 1024 / 1024).toFixed(1)} MB)`)

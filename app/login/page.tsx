@@ -122,7 +122,7 @@ router.replace(nextParam);
       <div className={styles.frame}>
         <div className={styles.hero}>
           <Image
-            src="/images/auth/login-screen.png"
+            src="/images/auth/login-screen.webp"
             alt={t('login.heroAlt')}
             fill
             priority
