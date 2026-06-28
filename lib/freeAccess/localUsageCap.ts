@@ -1,6 +1,8 @@
 // lib/freeAccess/localUsageCap.ts
 "use client";
 
+import { safeParse } from "@/lib/storage/json";
+
 export const FREE_CAPS = {
   questionsShown: 420,
   examStarts: 10,
@@ -35,15 +37,6 @@ function baseMigrationRecord(): UsageCapMigrationRecord {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === "object";
-}
-
-function safeParse(raw: string | null): unknown {
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
 }
 
 function baseState(): UsageCapState {
@@ -103,7 +96,7 @@ function hasStateData(state: UsageCapState) {
 function readMigrationRecord(userKey: string): UsageCapMigrationRecord {
   if (typeof window === "undefined") return baseMigrationRecord();
 
-  const parsed = safeParse(localStorage.getItem(migrationKeyFor(userKey)));
+  const parsed = safeParse<unknown>(localStorage.getItem(migrationKeyFor(userKey)));
   if (!isRecord(parsed) || parsed.version !== 1 || !isRecord(parsed.absorbed)) {
     return baseMigrationRecord();
   }
@@ -140,7 +133,7 @@ function writeMigrationRecord(userKey: string, record: UsageCapMigrationRecord) 
 function readState(userKey: string): UsageCapState {
   if (typeof window === "undefined") return baseState();
 
-  const parsed = safeParse(localStorage.getItem(keyFor(userKey)));
+  const parsed = safeParse<unknown>(localStorage.getItem(keyFor(userKey)));
 
   // migrate from v1 (shownKeys)
   if (isRecord(parsed) && Array.isArray(parsed.shownKeys)) {

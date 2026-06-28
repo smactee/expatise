@@ -1,5 +1,7 @@
 // lib/test-engine/attemptStorage.ts
 
+import { safeParse } from '@/lib/storage/json';
+
 export type AttemptStatus = 'in_progress' | 'paused' | 'submitted' | 'expired';
 
 export type AnswerRecord = {
@@ -46,15 +48,6 @@ export function normalizeUserKey(email: string | null | undefined) {
 }
 
 
-
-function safeParse(raw: string | null): any {
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
-}
 
 function safeStringify(v: any): string | null {
   try {
@@ -151,7 +144,7 @@ export function migrateLocalAttemptsToCanonical(params: {
   }
 
   for (const key of attemptKeys) {
-    const parsed = safeParse(window.localStorage.getItem(key));
+    const parsed = safeParse<any>(window.localStorage.getItem(key));
     if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) continue;
 
     const attempt = parsed as TestAttemptV1;
@@ -245,7 +238,7 @@ export function migrateLocalAttemptsToCanonical(params: {
 
 export function readAttemptById(attemptId: string): TestAttemptV1 | null {
   if (typeof window === 'undefined') return null;
-  const parsed = safeParse(window.localStorage.getItem(attemptKeyById(attemptId)));
+  const parsed = safeParse<any>(window.localStorage.getItem(attemptKeyById(attemptId)));
   if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) return null;
   return parsed as TestAttemptV1;
 }
@@ -573,7 +566,7 @@ export function listAttempts(filter?: {
     // only attempt records
     if (!key.startsWith(`${ATTEMPT_KEY_PREFIX}:`)) continue;
 
-    const parsed = safeParse(window.localStorage.getItem(key));
+    const parsed = safeParse<any>(window.localStorage.getItem(key));
     if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) continue;
 
     const a = parsed as TestAttemptV1;

@@ -1,18 +1,15 @@
 // lib/bookmarks/localBookmarkStore.ts
 import type { BookmarkStore } from "./bookmarkStore";
 import { Preferences } from "@capacitor/preferences";
+import { safeParse } from "@/lib/storage/json";
 
 const legacyKeyFor = (datasetId: string) => `expatise:bookmarks:${datasetId}`;
 const keyFor = (userKey: string, datasetId: string) =>
   `expatise:bookmarks:v1:user:${userKey}:dataset:${datasetId}`;
 
-function safeParseIds(raw: string | null): string[] {
-  try {
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed.map(String) : [];
-  } catch {
-    return [];
-  }
+function safeParseIds(raw: string | null | undefined): string[] {
+  const parsed = safeParse<unknown>(raw);
+  return Array.isArray(parsed) ? parsed.map(String) : [];
 }
 
 export class LocalBookmarkStore implements BookmarkStore {

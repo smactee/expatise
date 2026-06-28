@@ -1,16 +1,12 @@
 //lib/entitlements/localStore.ts
 
 import { FREE_ENTITLEMENTS, type Entitlements, isExpired } from "./types";
+import { safeParse } from "@/lib/storage/json";
 
 const NS = "expatise:entitlements";
 
 function keyFor(userKey: string) {
   return `${NS}:${userKey || "guest"}`;
-}
-
-function safeParse<T>(raw: string | null): T | null {
-  if (!raw) return null;
-  try { return JSON.parse(raw) as T; } catch { return null; }
 }
 
 export function getLocalEntitlements(userKey = "guest"): Entitlements {

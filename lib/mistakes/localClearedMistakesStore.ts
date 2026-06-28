@@ -1,6 +1,7 @@
 // lib/mistakes/localClearedMistakesStore.ts
 import type { ClearedMistakesStore } from "./store";
 import { Preferences } from "@capacitor/preferences";
+import { safeParse } from "@/lib/storage/json";
 
 // legacy (your old key) — we’ll migrate from this if it exists
 const legacyKeyFor = (userKey: string, datasetId: string) =>
@@ -10,13 +11,9 @@ const legacyKeyFor = (userKey: string, datasetId: string) =>
 const keyFor = (userKey: string, datasetId: string) =>
   `expatise:mistakesCleared:v1:user:${userKey}:dataset:${datasetId}`;
 
-function safeParseIds(raw: string | null): string[] {
-  try {
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed.map(String) : [];
-  } catch {
-    return [];
-  }
+function safeParseIds(raw: string | null | undefined): string[] {
+  const parsed = safeParse<unknown>(raw);
+  return Array.isArray(parsed) ? parsed.map(String) : [];
 }
 
 function uniqSorted(ids: string[]) {
