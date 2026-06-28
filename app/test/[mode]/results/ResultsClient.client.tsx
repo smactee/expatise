@@ -22,8 +22,8 @@ import CSRBoundary from "@/components/CSRBoundary";
 import { useBootSweepOnce } from "@/components/stats/useBootSweepOnce.client";
 import { migrateLocalAttemptsToCanonical } from "@/lib/test-engine/attemptStorage";
 import { useT } from "@/lib/i18n/useT";
-import { getRowDisplayLabel } from "@/lib/qbank/rowDisplay";
 import { clamp, easeOutCubic } from "@/lib/stats/chartMath";
+import { buildReviewItems, type ReviewItem } from "@/lib/test-engine/buildReviewItems";
 
 function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
   if (!v) return null;
@@ -32,15 +32,6 @@ function normalizeRowChoice(v: string | null | undefined): "R" | "W" | null {
   if (t === "w" || t === "wrong") return "W";
   return null;
 }
-
-type ReviewItem = {
-  qid: string;
-  testNo: number;
-  prompt: string;
-  imageSrc?: string;
-  options: { key: string; text: string; tone: "neutral" | "correct" | "wrong" }[];
-  explanation?: string;
-};
 
 function Inner() {
   const router = useRouter();
@@ -238,7 +229,7 @@ for (const q of picked) {
 
   if (q.type === "ROW") {
     const chosen = normalizeRowChoice(chosenKey);
-    const expected = normalizeRowChoice((q as any).correctRow ?? null);
+    const expected = normalizeRowChoice(q.correctRow ?? null);
     isCorrect = !!(chosen && expected && chosen === expected);
   } else {
     const chosenOpt = q.options.find((opt, idx) => {
@@ -246,7 +237,7 @@ for (const q of picked) {
       return k === chosenKey;
     });
 
-    if (chosenOpt && (q as any).correctOptionId && chosenOpt.id === (q as any).correctOptionId) {
+    if (chosenOpt && q.correctOptionId && chosenOpt.id === q.correctOptionId) {
       isCorrect = true;
     }
   }
@@ -266,92 +257,10 @@ if (modeId === "mistakes" && !didAutoClearRef.current) {
 }
 
 
-      // WRONG-only review items
-      const items: ReviewItem[] = [];
-      for (let i = 0; i < picked.length; i++) {
-        const q = picked[i];
-        const testNo = i + 1;
-
-        const chosenKey = a.answersByQid[q.id]?.choice ?? null;
-        const qType = String((q as any).type ?? "").toUpperCase();
-
-        const assets = (q as any).assets;
-        const imageAsset = Array.isArray(assets)
-          ? assets.find((x: any) => x?.kind === "image" && typeof x?.src === "string")
-          : null;
-        const imageSrc = imageAsset?.src as string | undefined;
-
-        if (qType === "ROW") {
-          const correctRow = normalizeRowChoice((q as any).correctRow ?? null);
-          const chosenRow = normalizeRowChoice(chosenKey);
-          const isCorrect = !!(chosenRow && correctRow && chosenRow === correctRow);
-          if (isCorrect) continue;
-
-          items.push({
-            qid: (q as any).id,
-            testNo,
-            prompt: (q as any).prompt,
-            imageSrc,
-            options: [
-              {
-                key: "R",
-                text: getRowDisplayLabel("R", locale),
-                tone: correctRow === "R" ? "correct" : chosenRow === "R" ? "wrong" : "neutral",
-              },
-              {
-                key: "W",
-                text: getRowDisplayLabel("W", locale),
-                tone: correctRow === "W" ? "correct" : chosenRow === "W" ? "wrong" : "neutral",
-              },
-            ],
-            explanation: (q as any).explanation ?? (q as any).sourceExplanation,
-          });
-          continue;
-        }
-
-        const correctOptionId = (q as any).correctOptionId as string | undefined;
-        const opts = Array.isArray((q as any).options) ? (q as any).options : [];
-
-        const chosenOpt =
-          chosenKey
-            ? opts.find((opt: any, idx: number) => {
-                const k = opt?.originalKey ?? String.fromCharCode(65 + idx);
-                return k === chosenKey;
-              })
-            : null;
-
-        const isCorrect = !!(chosenOpt && correctOptionId && chosenOpt.id === correctOptionId);
-        if (isCorrect) continue;
-
-        const correctIndex = opts.findIndex((opt: any) => opt?.id === correctOptionId);
-        const correctKey =
-          correctIndex >= 0
-            ? (opts[correctIndex].originalKey ?? String.fromCharCode(65 + correctIndex))
-            : null;
-
-        items.push({
-          qid: (q as any).id,
-          testNo,
-          prompt: (q as any).prompt,
-          imageSrc,
-          options: opts.map((opt: any, idx: number) => {
-            const key = opt?.originalKey ?? String.fromCharCode(65 + idx);
-            // Isolate the Latin enumeration key ("A.") as LTR so its trailing
-            // period doesn't reorder to ".A" in RTL/Arabic. The key+text render
-            // as one string here, so use Unicode isolates (LRI…PDI) rather than
-            // a styled span — invisible, and covers both the list and swipe views.
-            const text = `⁦${key}.⁩ ${opt?.text ?? ""}`;
-            let tone: "neutral" | "correct" | "wrong" = "neutral";
-            if (correctKey && key === correctKey) tone = "correct";
-            if (chosenKey && key === chosenKey && key !== correctKey) tone = "wrong";
-            return { key, text, tone };
-          }),
-          explanation: (q as any).explanation ?? (q as any).sourceExplanation,
-        });
-      }
+      // WRONG-only review items (pure transformation)
+      const items = buildReviewItems(picked, a.answersByQid, locale);
 
       setBrokenImages({});
-      items.sort((x, y) => x.testNo - y.testNo);
       setReviewItems(items);
     })();
   }, [attemptId, attemptUserKey, legacyAttemptUserKey, locale, modeId, clearMistakesMany, t]);
