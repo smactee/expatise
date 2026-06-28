@@ -96,7 +96,6 @@ describe("computeStats", () => {
       // Scalar zeros
       expect(vm.attemptsCount).toBe(0);
       expect(vm.attemptedTotal).toBe(0);
-      expect(vm.correctTotal).toBe(0);
       expect(vm.accuracy).toBe(0);
       expect(vm.accuracyPct).toBe(0);
       expect(vm.scoreAvg).toBe(0);
@@ -107,31 +106,13 @@ describe("computeStats", () => {
 
       // Series exist and are empty (except the always-filled windows)
       expect(vm.scoreSeries).toEqual([]);
-      expect(vm.weeklySeries).toEqual([]);
-      expect(vm.bestWeekQuestions).toBe(0);
-      expect(vm.consistencyStreakWeeks).toBe(0);
       expect(vm.bestDayQuestions).toBe(0);
       expect(vm.consistencyStreakDays).toBe(0);
 
       // dailySeries (all-timeframe, no data) -> a single day (today)
       expect(vm.dailySeries).toHaveLength(1);
 
-      // bestTimeSeries always has the 7 fixed buckets
-      expect(vm.bestTimeSeries).toHaveLength(7);
-      expect(vm.bestTimeSeries.map((b) => b.label)).toEqual([
-        "6–9",
-        "9–12",
-        "12–15",
-        "15–18",
-        "18–21",
-        "21–24",
-        "0–6",
-      ]);
-      expect(vm.bestTimeLabel).toBeNull();
-      expect(vm.bestTimeAvgScore).toBe(0);
-
       // Topic mastery present but empty
-      expect(vm.weakTopics).toEqual([]);
       expect(vm.topicMastery).toBeDefined();
       expect(vm.topicMastery!.minAttempted).toBe(10);
       expect(vm.topicMastery!.topics).toEqual([]);
@@ -155,8 +136,6 @@ describe("computeStats", () => {
       expect(vm.timeThisWeekMin).toBe(0);
       expect(vm.timeBestDayMin).toBe(0);
       expect(vm.timeStreakDays).toBe(0);
-      expect(vm.deliberateThisWeekMin).toBe(0);
-      expect(vm.studyThisWeekMin).toBe(0);
     });
   });
 
@@ -204,7 +183,6 @@ describe("computeStats", () => {
 
       expect(vm.attemptsCount).toBe(1);
       expect(vm.attemptedTotal).toBe(1);
-      expect(vm.correctTotal).toBe(1);
     });
   });
 
@@ -257,7 +235,6 @@ describe("computeStats", () => {
       const vm = run();
       expect(vm.attemptsCount).toBe(2);
       expect(vm.attemptedTotal).toBe(4); // 2 + 2 answered
-      expect(vm.correctTotal).toBe(3); // 1 + 2 correct
     });
 
     it("computes accuracy = correct/attempted and its percent", () => {
@@ -306,20 +283,6 @@ describe("computeStats", () => {
       expect(vm.timeInTimedTestsSec).toBe(400);
     });
 
-    it("buckets best-time-of-day by local submit hour", () => {
-      const vm = run();
-      const byLabel = Object.fromEntries(
-        vm.bestTimeSeries.map((b) => [b.label, b]),
-      );
-      expect(byLabel["9–12"].attemptsCount).toBe(1); // today 09:00 -> 50
-      expect(byLabel["9–12"].avgScore).toBe(50);
-      expect(byLabel["18–21"].attemptsCount).toBe(1); // yesterday 20:00 -> 100
-      expect(byLabel["18–21"].avgScore).toBe(100);
-      // best time = highest avgScore bucket
-      expect(vm.bestTimeLabel).toBe("18–21");
-      expect(vm.bestTimeAvgScore).toBe(100);
-    });
-
     it("buckets daily series and reports best day + day streak", () => {
       const vm = run();
       // timeframe 7 -> 7 day window ending today
@@ -330,16 +293,6 @@ describe("computeStats", () => {
       expect(vm.bestDayQuestions).toBe(2);
       // consecutive days ending today with answers: today + yesterday = 2
       expect(vm.consistencyStreakDays).toBe(2);
-    });
-
-    it("buckets weekly series and reports best week + week streak", () => {
-      const vm = run();
-      // both attempts in the same Mon-anchored week
-      expect(vm.weeklySeries).toHaveLength(1);
-      expect(vm.weeklySeries[0].testsCompleted).toBe(2);
-      expect(vm.weeklySeries[0].questionsAnswered).toBe(4);
-      expect(vm.bestWeekQuestions).toBe(4);
-      expect(vm.consistencyStreakWeeks).toBe(1);
     });
 
     it("populates the heatmap cells for the active (weekday, dayPart) buckets and picks a best", () => {
@@ -362,7 +315,7 @@ describe("computeStats", () => {
   });
 
   describe("topic mastery thresholding (MIN_TOPIC_ATTEMPTED = 10)", () => {
-    it("includes a subtopic in weakTopics/weakestSubtopics only once attempted >= 10", () => {
+    it("includes a subtopic in weakestSubtopics only once attempted >= 10", () => {
       // Build ONE attempt that answers 12 distinct license questions (10 correct,
       // 2 wrong) -> subtopic road-safety:license attempted=12.
       const questions: Question[] = [];
@@ -392,15 +345,6 @@ describe("computeStats", () => {
         filters: { timeframeDays: "all", includeModeKeys: ["real-test"] },
       });
 
-      // weakTopics: subtopic-level entries with attempted >= 10
-      expect(vm.weakTopics).toHaveLength(1);
-      expect(vm.weakTopics[0]).toEqual({
-        tag: "road-safety:license",
-        attempted: 12,
-        correct: 10,
-        accuracyPct: 83, // round(100*10/12)
-      });
-
       // topicMastery grouping under parent topicKey "road-safety"
       expect(vm.topicMastery!.topics).toHaveLength(1);
       const topic = vm.topicMastery!.topics[0];
@@ -414,7 +358,7 @@ describe("computeStats", () => {
       expect(vm.topicMastery!.weakestSubtopics[0].tag).toBe("road-safety:license");
     });
 
-    it("excludes a subtopic with fewer than 10 attempts from weakTopics/weakestSubtopics", () => {
+    it("excludes a subtopic with fewer than 10 attempts from weakestSubtopics", () => {
       const q = accidentMcq("acc1", "acc1-a");
       const t = new Date(2024, 5, 12, 9, 0, 0, 0).getTime();
       const vm = computeStats({
@@ -432,7 +376,6 @@ describe("computeStats", () => {
       });
 
       // Only 1 attempt of the accidents subtopic -> below MIN_TOPIC_ATTEMPTED.
-      expect(vm.weakTopics).toEqual([]);
       expect(vm.topicMastery!.weakestSubtopics).toEqual([]);
       // But the topic IS still grouped (topicMastery.topics has no min filter).
       expect(vm.topicMastery!.topics).toHaveLength(1);
@@ -479,8 +422,6 @@ describe("computeStats", () => {
       expect(yesterdayEntry.deliberateMin).toBe(5);
       expect(yesterdayEntry.totalMin).toBe(5);
 
-      expect(vm.deliberateThisWeekMin).toBe(15); // 10 + 5
-      expect(vm.studyThisWeekMin).toBe(2);
       expect(vm.timeThisWeekMin).toBe(17);
       expect(vm.timeBestDayMin).toBe(12); // today total
       // streak ending today: today(12) + yesterday(5) = 2 consecutive days

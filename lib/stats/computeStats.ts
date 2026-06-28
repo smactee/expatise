@@ -40,7 +40,6 @@ export type StatsVM = {
 
   // Grading totals (timeframe+mode filtered)
   attemptedTotal: number;
-  correctTotal: number;
 
   accuracy: number; // 0..1
   accuracyPct: number; // 0..100
@@ -59,14 +58,6 @@ export type StatsVM = {
   // Minimal series we can chart later
 scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: number }>;
 
-    // Weekly Progress (Consistency)
-  weeklySeries: Array<{
-    weekStart: number;          // ms timestamp (Mon 00:00 local)
-    testsCompleted: number;
-    questionsAnswered: number;  // answered count (attempted)
-    avgScore: number;           // 0..100
-  }>;
-
     // Daily Progress (Consistency)
   dailySeries: Array<{
     dayStart: number;           // ms timestamp (local midnight)
@@ -77,22 +68,6 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
 
   bestDayQuestions: number;        // max questionsAnswered in a day
   consistencyStreakDays: number;   // current streak (consecutive days with >0)
-
-
-    // Best Time (Performance by time-of-day)
-  bestTimeSeries: Array<{
-    label: string;        // e.g. "6–9"
-    avgScore: number;     // 0..100
-    attemptsCount: number;
-  }>;
-
-  bestTimeLabel: string | null;   // e.g. "9–12"
-  bestTimeAvgScore: number;       // 0..100
-
-
-  bestWeekQuestions: number;        // max questionsAnswered in a week
-  consistencyStreakWeeks: number;   // current streak (consecutive weeks with >0)
-
 
 
   Heatmap: {
@@ -116,15 +91,6 @@ scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: numb
     lowConfidenceNote: string | null;
   };
 
-
-    // Topic Mastery (Weakest topics)
-  weakTopics: Array<{
-    tag: string;         // e.g. "road-safety:accidents"
-    attempted: number;   // answered count
-    correct: number;
-    accuracyPct: number; // 0..100
-  }>;
-
   timeDailySeries: Array<{
   dayStart: number;      // local midnight ms
   deliberateMin: number; // test minutes
@@ -138,8 +104,6 @@ topicMastery?: TopicMasteryVM;
 timeThisWeekMin: number;
 timeBestDayMin: number;
 timeStreakDays: number;
-deliberateThisWeekMin: number;
-studyThisWeekMin: number;
 
 
 };
@@ -234,15 +198,6 @@ function inTimeframe(t: number, timeframeDays: StatsFilters["timeframeDays"]) {
   return t >= now - ms;
 }
 
-function startOfWeekMs(t: number) {
-  const d = new Date(t);
-  d.setHours(0, 0, 0, 0);
-  const day = d.getDay(); // 0=Sun, 1=Mon...
-  const diffToMonday = (day + 6) % 7; // Mon->0, Tue->1, Sun->6
-  d.setDate(d.getDate() - diffToMonday);
-  return d.getTime();
-}
-
 function startOfDayMs(t: number) {
   const d = new Date(t);
   d.setHours(0, 0, 0, 0);
@@ -299,33 +254,10 @@ export function computeStats(params: {
 const scoreSeries: Array<{ t: number; scorePct: number; answered: number; totalQ: number }> = [];
   const scoreList: number[] = [];
 
-  const weekly = new Map<
-    number,
-    { tests: number; answered: number; scoreSum: number; scoreCount: number }
-  >();
-
     const daily = new Map<
     number,
     { tests: number; answered: number; scoreSum: number; scoreCount: number }
   >();
-
-
-  // Best Time buckets (local hour of submittedAt)
-  const TIME_BUCKETS = [
-    { label: "6–9", start: 6, end: 9 },
-    { label: "9–12", start: 9, end: 12 },
-    { label: "12–15", start: 12, end: 15 },
-    { label: "15–18", start: 15, end: 18 },
-    { label: "18–21", start: 18, end: 21 },
-    { label: "21–24", start: 21, end: 24 },
-    { label: "0–6", start: 0, end: 6 },
-  ] as const;
-
-  const timeBuckets = TIME_BUCKETS.map((b) => ({
-    ...b,
-    scoreSum: 0,
-    count: 0,
-  }));
 
   const WEEKDAYS = localizedWeekdaysMonFirst();
 
@@ -395,27 +327,6 @@ if (Number.isFinite(scorePct)) scoreList.push(scorePct);
   heat[pi][wd].count += 1;
 }
 
-
-
-
-    // Best Time bucket update
-    const hour = new Date(t).getHours();
-    const bi = timeBuckets.findIndex((b) => hour >= b.start && hour < b.end);
-    if (bi >= 0) {
-      timeBuckets[bi].scoreSum += scorePct;
-      timeBuckets[bi].count += 1;
-    }
-
-    // Weekly bucket
-    const ws = startOfWeekMs(t);
-    const w =
-      weekly.get(ws) ?? { tests: 0, answered: 0, scoreSum: 0, scoreCount: 0 };
-    w.tests += 1;
-    w.answered += attempted;
-    w.scoreSum += scorePct;
-    w.scoreCount += 1;
-    weekly.set(ws, w);
-
         // Daily bucket
     const ds = startOfDayMs(t);
     const drec =
@@ -472,37 +383,6 @@ const lowConfidenceNote =
     : best.attemptsCount < 3
     ? `Low confidence: only ${best.attemptsCount} test${best.attemptsCount === 1 ? "" : "s"} in this window.`
     : null;
-
-  // Best Time outputs
-  const bestTimeSeries = timeBuckets.map((b) => ({
-    label: b.label,
-    avgScore: b.count ? Math.round(b.scoreSum / b.count) : 0,
-    attemptsCount: b.count,
-  }));
-
-  let bestTimeLabel: string | null = null;
-  let bestTimeAvgScore = 0;
-
-  for (const b of bestTimeSeries) {
-    if (b.attemptsCount <= 0) continue;
-    if (b.avgScore > bestTimeAvgScore) {
-      bestTimeAvgScore = b.avgScore;
-      bestTimeLabel = b.label;
-    }
-  }
-
-  // Topic Mastery outputs
-  const weakTopics = Array.from(mastery.entries())
-    .map(([tag, m]) => ({
-      tag,
-      attempted: m.attempted,
-      correct: m.correct,
-      accuracyPct: m.attempted ? Math.round((100 * m.correct) / m.attempted) : 0,
-    }))
-    .filter((x) => x.attempted >= MIN_TOPIC_ATTEMPTED)
-    .sort((a, b) => a.accuracyPct - b.accuracyPct || b.attempted - a.attempted)
-    .slice(0, 5);
-
 
     // ===== Topic Mastery (grouped topics + subtopics) =====
 
@@ -604,31 +484,6 @@ const readiness01 = clamp01(0.7 * safeAcc01 + 0.3 * medianScore01);
 const readinessPct = Math.max(0, Math.min(100, Math.round(100 * readiness01)));
 
 
-  // Weekly outputs
-  const weeklySeries = Array.from(weekly.entries())
-    .map(([weekStart, w]) => ({
-      weekStart,
-      testsCompleted: w.tests,
-      questionsAnswered: w.answered,
-      avgScore: w.scoreCount ? Math.round(w.scoreSum / w.scoreCount) : 0,
-    }))
-    .sort((a, b) => a.weekStart - b.weekStart);
-
-  const bestWeekQuestions = weeklySeries.length
-    ? Math.max(...weeklySeries.map((x) => x.questionsAnswered))
-    : 0;
-
-  let consistencyStreakWeeks = 0;
-  let cursor = startOfWeekMs(Date.now());
-  const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-
-  while (true) {
-    const w = weekly.get(cursor);
-    if (!w || w.answered <= 0) break;
-    consistencyStreakWeeks += 1;
-    cursor -= WEEK_MS;
-  }
-
   function readDailySeconds(kind: "test" | "study", ymd: string) {
   if (typeof window === "undefined") return 0;
   try {
@@ -674,9 +529,7 @@ for (let i = DAYS - 1; i >= 0; i--) {
   });
 }
 
-const deliberateThisWeekMin = timeDailySeries.reduce((s, d) => s + d.deliberateMin, 0);
-const studyThisWeekMin = timeDailySeries.reduce((s, d) => s + d.studyMin, 0);
-const timeThisWeekMin = deliberateThisWeekMin + studyThisWeekMin;
+const timeThisWeekMin = timeDailySeries.reduce((s, d) => s + d.totalMin, 0);
 
 const timeBestDayMin = timeDailySeries.length
   ? Math.max(...timeDailySeries.map((d) => d.totalMin))
@@ -748,7 +601,6 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
   return {
     attemptsCount: filtered.length,
     attemptedTotal,
-    correctTotal,
     accuracy,
     accuracyPct,
     scoreAvg,
@@ -758,20 +610,12 @@ for (let i = timeDailySeries.length - 1; i >= 0; i--) {
     timeInTimedTestsSec,
     scoreSeries,
 
-    weeklySeries,
-    bestWeekQuestions,
-    consistencyStreakWeeks,
-
     dailySeries,
     bestDayQuestions,
     consistencyStreakDays,
 
-    bestTimeSeries,
-    bestTimeLabel,
-    bestTimeAvgScore,
-    weakTopics,
     topicMastery,
-    
+
 Heatmap: {
     weekdays: [...WEEKDAYS],
     dayParts: DAY_PARTS.map((p) => ({ key: p.key, label: p.label })),
@@ -784,7 +628,5 @@ Heatmap: {
     timeThisWeekMin,
     timeBestDayMin,
     timeStreakDays,
-    deliberateThisWeekMin,
-    studyThisWeekMin,
   };
 }
