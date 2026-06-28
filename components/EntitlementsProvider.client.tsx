@@ -24,6 +24,7 @@ import {
 } from "@/lib/entitlements/localStore";
 import { useUserKey } from "@/components/useUserKey.client";
 import { getEntitlements } from "@/lib/entitlements/getEntitlements";
+import { notifySessionChanged } from "@/lib/auth/notifySessionChanged";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -226,9 +227,7 @@ const source: EntitlementSource =
     const supabase = createClient();
 
     const { data } = supabase.auth.onAuthStateChange(() => {
-      try {
-        window.dispatchEvent(new Event("expatise:session-changed"));
-      } catch {}
+      notifySessionChanged();
       refresh();
     });
 

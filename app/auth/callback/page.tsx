@@ -6,6 +6,7 @@ import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useT } from '@/lib/i18n/useT';
+import { notifySessionChanged } from '@/lib/auth/notifySessionChanged';
 
 function safeNextPathClient(nextRaw: string | null | undefined, fallback = '/') {
   const v = String(nextRaw ?? '').trim();
@@ -40,7 +41,7 @@ export default function AuthCallbackPage() {
       if (done) return;
       done = true;
 
-      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      notifySessionChanged();
       try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
 
       // Clean URL (optional)

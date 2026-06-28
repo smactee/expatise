@@ -12,6 +12,7 @@ import CreateAccountModal from './CreateAccountModal';
 import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
 import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
 import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
+import { notifySessionChanged } from '@/lib/auth/notifySessionChanged';
 import CSRBoundary from '@/components/CSRBoundary';
 import { createClient } from '@/lib/supabase/client';
 import { useT } from '@/lib/i18n/useT';
@@ -94,7 +95,7 @@ const comingSoon = (provider: string) => showToast(t('login.social.comingSoon', 
   }
 
   // ✅ tell the rest of the app "session changed"
-try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+notifySessionChanged();
 try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
 // ✅ force App Router to re-evaluate any cookie/session-based server state
@@ -242,7 +243,7 @@ router.replace(nextParam);
     } catch {
       // keep guest mode local-only even if cleanup fails
     }
-    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+    notifySessionChanged();
     try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
     router.refresh();
     router.replace(nextParam);

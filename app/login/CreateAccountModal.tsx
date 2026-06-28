@@ -11,6 +11,7 @@ import { isValidEmail, normalizeEmail } from '@/lib/auth';
 import { buildAuthCallbackUrl, NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import { createClient } from '@/lib/supabase/client';
 import { useT } from '@/lib/i18n/useT';
+import { notifySessionChanged } from '@/lib/auth/notifySessionChanged';
 
 type Props = {
   open: boolean;
@@ -84,7 +85,7 @@ export default function CreateAccountModal({ open, onClose, onCreated }: Props) 
         return;
       }
 
-      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      notifySessionChanged();
       try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
 
       router.refresh();

@@ -9,6 +9,7 @@ import { useAuthStatus } from '../../components/useAuthStatus';
 import { createClient } from '@/lib/supabase/client';
 import { isValidEmail, normalizeEmail } from '@/lib/auth';
 import { buildAuthCallbackUrl } from '@/lib/auth/oauth';
+import { notifySessionChanged } from '@/lib/auth/notifySessionChanged';
 import { useT } from '@/lib/i18n/useT';
 
 export default function AccountSecurityPage() {
@@ -73,7 +74,7 @@ export default function AccountSecurityPage() {
       setPwNext2('');
       setMsg(t('accountSecurity.messages.passwordUpdated'));
 
-      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      notifySessionChanged();
       try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
       router.refresh();
     } catch (e: any) {
@@ -119,7 +120,7 @@ export default function AccountSecurityPage() {
       // Supabase often sends a confirmation email for email change.
       setMsg(t('accountSecurity.messages.emailUpdateRequested'));
 
-      try { window.dispatchEvent(new Event('expatise:session-changed')); } catch {}
+      notifySessionChanged();
       try { window.dispatchEvent(new Event('expatise:entitlements-changed')); } catch {}
       router.refresh();
     } catch (e: any) {

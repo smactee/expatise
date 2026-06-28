@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { resetAllLocalData } from "@/lib/stats/resetLocalData";
+import { notifySessionChanged } from "@/lib/auth/notifySessionChanged";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { useT } from "@/lib/i18n/useT";
 
@@ -77,7 +78,7 @@ async function onDelete() {
       await resetAllLocalData({ includeCaches: true });
     } catch {}
 
-    try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+    notifySessionChanged();
     try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
     setDone(true);

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { safeNextPath } from "@/lib/auth";
+import { notifySessionChanged } from "@/lib/auth/notifySessionChanged";
 import { createClient } from "@/lib/supabase/client";
 
 const OAUTH_NEXT_KEY = "expatise:oauth:next";
@@ -62,7 +63,7 @@ try {
   }
   await Browser.close().catch(() => {});
 
-  try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+  notifySessionChanged();
   try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
   const nextFromUrl = safeNextPath(pickParam("next"), "");

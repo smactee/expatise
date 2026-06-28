@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { logout } from "@/lib/auth/logout.client";
+import { notifySessionChanged } from "@/lib/auth/notifySessionChanged";
 import { useT } from "@/lib/i18n/useT";
 
 export default function LogoutButton({ className }: { className?: string }) {
@@ -20,7 +21,7 @@ export default function LogoutButton({ className }: { className?: string }) {
       await supabase.auth.signOut();
       await logout();
 
-      try { window.dispatchEvent(new Event("expatise:session-changed")); } catch {}
+      notifySessionChanged();
       try { window.dispatchEvent(new Event("expatise:entitlements-changed")); } catch {}
 
       router.refresh();
