@@ -31,7 +31,7 @@ import { getLanguageQuestionCountNotice, loadLanguageQuestionCounts } from '@/li
 
 
 function Inner() {
-  const { avatarUrl, setAvatarUrl, name, setName, email, setEmail, saveProfile, clearProfile } = useUserProfile(); // from context
+  const { avatarUrl, setAvatarUrl, name, setName, email, saveProfile } = useUserProfile(); // from context
   const { locale, setLocale, t } = useT();
 
   // ---- avatar upload state + handlers ----
@@ -157,12 +157,6 @@ const handleNameBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
     setName(trimmed);
   }
 };
-
-// ---- email state + handlers ----
-
-
-// true when there's something in the field, no error, and it passes regex
-
 
 const router = useRouter();
 const pathname = usePathname();

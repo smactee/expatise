@@ -138,76 +138,9 @@ function consistencyScore(totals: number[]) {
 
 type Pt = { x: number; y: number };
 
-function smoothPathCatmullRom(points: Pt[], clampMin = 0, clampMax = 100) {
-  if (points.length < 2) return '';
-  const d: string[] = [`M ${points[0].x} ${points[0].y}`];
-
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i - 1] ?? points[i];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[i + 2] ?? p2;
-
-    // Catmull-Rom → Bezier
-    let cp1x = p1.x + (p2.x - p0.x) / 6;
-    let cp1y = p1.y + (p2.y - p0.y) / 6;
-    let cp2x = p2.x - (p3.x - p1.x) / 6;
-    let cp2y = p2.y - (p3.y - p1.y) / 6;
-
-    // Clamp control points to avoid overshoot
-    cp1x = clamp(cp1x, clampMin, clampMax);
-    cp2x = clamp(cp2x, clampMin, clampMax);
-    cp1y = clamp(cp1y, clampMin, clampMax);
-    cp2y = clamp(cp2y, clampMin, clampMax);
-
-    d.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`);
-  }
-
-  
-
-  return d.join(' ');
-}
-
-function smoothPathCatmullRomXY(points: Pt[], xMin: number, xMax: number, yMin: number, yMax: number) {
-  if (points.length < 2) return '';
-  const d: string[] = [`M ${points[0].x} ${points[0].y}`];
-
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i - 1] ?? points[i];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[i + 2] ?? p2;
-
-    let cp1x = p1.x + (p2.x - p0.x) / 6;
-    let cp1y = p1.y + (p2.y - p0.y) / 6;
-    let cp2x = p2.x - (p3.x - p1.x) / 6;
-    let cp2y = p2.y - (p3.y - p1.y) / 6;
-
-    // Clamp control points separately for x and y
-    cp1x = clamp(cp1x, xMin, xMax);
-    cp2x = clamp(cp2x, xMin, xMax);
-    cp1y = clamp(cp1y, yMin, yMax);
-    cp2y = clamp(cp2y, yMin, yMax);
-
-    d.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`);
-  }
-
-  return d.join(' ');
-}
-
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
-
-function pathLinear(points: Pt[]) {
-  if (points.length < 2) return '';
-  return (
-    `M ${points[0].x} ${points[0].y}` +
-    points.slice(1).map((p) => ` L ${p.x} ${p.y}`).join('')
-  );
-}
-
-
 
 
 export default function ScreenTimeChart({

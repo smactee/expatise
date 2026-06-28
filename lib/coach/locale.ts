@@ -116,12 +116,6 @@ export type CoachLocale = keyof typeof COACH_LOCALE_REGISTRY;
 
 export const DEFAULT_COACH_LOCALE = "en" as const satisfies CoachLocale;
 
-function unique<T>(values: readonly T[]): T[] {
-  return Array.from(new Set(values));
-}
-
-const localeConfigs = Object.values(COACH_LOCALE_REGISTRY);
-
 export const LEGACY_COACH_SECTION_HEADINGS = [
   "Summary",
   "Snapshot",
@@ -130,28 +124,6 @@ export const LEGACY_COACH_SECTION_HEADINGS = [
   "Next 7 days",
   "The One thing",
 ] as const;
-
-export const ALL_COACH_SECTION_HEADINGS = unique([
-  ...localeConfigs.flatMap((config) => Object.values(config.sectionHeadings)),
-  ...LEGACY_COACH_SECTION_HEADINGS,
-]);
-
-export const ALL_COACH_ONE_TARGET_HEADINGS = unique([
-  ...localeConfigs.map((config) => config.sectionHeadings.oneTarget),
-  "The One thing",
-]);
-
-export const ALL_COACH_KEY_LABELS = unique(
-  localeConfigs.flatMap((config) => [
-    ...config.emphasisLabels.why,
-    ...config.emphasisLabels.next,
-    ...config.emphasisLabels.target,
-  ])
-);
-
-export const ALL_COACH_WINDOW_LABELS = unique(
-  localeConfigs.flatMap((config) => Object.values(config.windowLabels))
-);
 
 export function isCoachLocale(value: string | null | undefined): value is CoachLocale {
   return typeof value === "string" && value in COACH_LOCALE_REGISTRY;

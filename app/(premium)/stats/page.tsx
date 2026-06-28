@@ -85,22 +85,6 @@ function buildWeakSubtopicRankedTags(topicMastery: any) {
   return arr.map((x) => x.tag);
 }
 
-function saveTopicQuizConfig(topicMastery: any) {
-  const rankedTags = buildWeakSubtopicRankedTags(topicMastery);
-
-  const cfg = {
-    v: 1,
-    createdAt: Date.now(),
-    rankedTags,          // weakest -> strongest
-    questionCount: 20,
-    timeLimitSec: 600,   // 10 min
-  };
-
-  localStorage.setItem('topicQuiz:v1', JSON.stringify(cfg));
-  return cfg;
-}
-
-
 function startOfDayKey(t: number) {
   const d = new Date(t);
   d.setHours(0, 0, 0, 0);

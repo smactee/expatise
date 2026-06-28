@@ -666,36 +666,6 @@ useEffect(() => {
 
 
 
-const correctCount = useMemo(() => {
-  let correct = 0;
-
-  for (const q of items) {
-    const chosenKey = answers[q.id];
-    if (!chosenKey) continue;
-
-    if (q.type === 'ROW') {
-      const chosen = normalizeRowChoice(chosenKey);
-      const expected = normalizeRowChoice(q.correctRow ?? null);
-      if (chosen && expected && chosen === expected) correct += 1;
-      continue;
-    }
-
-    // MCQ
-    const chosenOpt = q.options.find((opt, idx) => {
-      const k = opt.originalKey ?? String.fromCharCode(65 + idx);
-      return k === chosenKey;
-    });
-
-    if (chosenOpt && q.correctOptionId && chosenOpt.id === q.correctOptionId) {
-      correct += 1;
-    }
-  }
-
-  return correct;
-}, [items, answers]);
-
-
-
 const commitAndAdvance = async (choiceKey: string) => {
   if (!items.length || !item) return;
   if (!choiceKey) return;
