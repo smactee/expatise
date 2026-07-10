@@ -100,13 +100,11 @@ export const zh = {
       ...en.login.providers,
       google: 'Google',
       apple: 'Apple',
-      wechat: '微信',
     },
     social: {
       ...en.login.social,
       googleAria: '使用 Google 继续',
       appleAria: '使用 Apple 继续',
-      wechatAria: '使用微信继续',
       comingSoon: '{provider} 登录即将上线。',
       comingSoonTitle: '即将上线',
     },
@@ -142,7 +140,6 @@ export const zh = {
       ...en.createAccount.social,
       googleAria: '使用 Google 注册',
       appleAria: '使用 Apple 注册',
-      wechatAria: '使用微信注册',
     },
     closeAria: '关闭',
     errors: {
@@ -349,7 +346,6 @@ export const zh = {
       email: '邮箱登录',
       google: 'Google 登录',
       apple: 'Apple ID',
-      wechat: '微信',
       social: '社交账户登录',
     },
     messages: {

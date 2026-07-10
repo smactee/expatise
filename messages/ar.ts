@@ -134,13 +134,11 @@ export const ar = {
       ...en.login.providers,
       google: 'Google',
       apple: 'Apple',
-      wechat: 'WeChat',
     },
     social: {
       ...en.login.social,
       googleAria: 'المتابعة باستخدام Google',
       appleAria: 'المتابعة باستخدام Apple',
-      wechatAria: 'المتابعة باستخدام WeChat',
       comingSoon: 'تسجيل الدخول عبر {provider} سيتوفّر قريبًا.',
       comingSoonTitle: 'قريبًا',
     },
@@ -176,7 +174,6 @@ export const ar = {
       ...en.createAccount.social,
       googleAria: 'التسجيل باستخدام Google',
       appleAria: 'التسجيل باستخدام Apple',
-      wechatAria: 'التسجيل باستخدام WeChat',
     },
     closeAria: 'إغلاق',
     errors: {
@@ -383,7 +380,6 @@ export const ar = {
       email: 'تسجيل الدخول بالبريد الإلكتروني',
       google: 'تسجيل الدخول عبر Google',
       apple: 'Apple ID',
-      wechat: 'WeChat',
       social: 'تسجيل الدخول عبر التواصل الاجتماعي',
     },
     messages: {

@@ -16,7 +16,7 @@ import { useAuthStatus } from '@/components/useAuthStatus';
 import BackButton from '@/components/BackButton';
 import CSRBoundary from '@/components/CSRBoundary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle, faApple, faWeixin} from '@fortawesome/free-brands-svg-icons';
+import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import LogoutButton from '@/components/LogoutButton.client';
 import PremiumFeatureModal from '@/components/PremiumFeatureModal';
@@ -86,9 +86,6 @@ const signInDisplay = (() => {
   }
   if (provider === "apple") {
     return { label: t('profile.signIn.apple'), icon: faApple };
-  }
-  if (provider === "wechat") {
-    return { label: t('profile.signIn.wechat'), icon: faWeixin };
   }
 
   return { label: t('profile.signIn.social'), icon: null as any };

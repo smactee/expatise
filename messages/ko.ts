@@ -91,12 +91,10 @@ export const ko = {
     providers: {
       google: 'Google',
       apple: 'Apple',
-      wechat: 'WeChat',
     },
     social: {
       googleAria: 'Google로 계속하기',
       appleAria: 'Apple로 계속하기',
-      wechatAria: 'WeChat으로 계속하기',
       comingSoon: '{provider} 로그인은 곧 지원됩니다.',
       comingSoonTitle: '곧 지원 예정',
     },
@@ -129,7 +127,6 @@ export const ko = {
     social: {
       googleAria: 'Google로 가입하기',
       appleAria: 'Apple로 가입하기',
-      wechatAria: 'WeChat으로 가입하기',
     },
     closeAria: '닫기',
     errors: {
@@ -303,7 +300,6 @@ export const ko = {
       email: '이메일 로그인',
       google: 'Google 로그인',
       apple: 'Apple ID',
-      wechat: 'WeChat',
       social: '소셜 로그인',
     },
     messages: {

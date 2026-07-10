@@ -100,13 +100,11 @@ export const ru = {
       ...en.login.providers,
       google: 'Google',
       apple: 'Apple',
-      wechat: 'WeChat',
     },
     social: {
       ...en.login.social,
       googleAria: 'Продолжить с Google',
       appleAria: 'Продолжить с Apple',
-      wechatAria: 'Продолжить с WeChat',
       comingSoon: 'Вход через {provider} скоро появится.',
       comingSoonTitle: 'Скоро',
     },
@@ -142,7 +140,6 @@ export const ru = {
       ...en.createAccount.social,
       googleAria: 'Зарегистрироваться через Google',
       appleAria: 'Зарегистрироваться через Apple',
-      wechatAria: 'Зарегистрироваться через WeChat',
     },
     closeAria: 'Закрыть',
     errors: {
@@ -349,7 +346,6 @@ export const ru = {
       email: 'Вход по эл. почте',
       google: 'Вход через Google',
       apple: 'Apple ID',
-      wechat: 'WeChat',
       social: 'Вход через соцсеть',
     },
     messages: {

@@ -11,7 +11,7 @@ type AuthState = {
   method: "guest" | "email" | "social";
   userId: string | null; // ✅ Supabase user.id (UUID)
   email: string | null;
-  provider: string | null; // "google" | "apple" | "wechat" | "email" | "anonymous" | null
+  provider: string | null; // "google" | "apple" | "email" | "anonymous" | null
 };
 
 function detectProvider(user: User | null): string | null {

@@ -121,12 +121,10 @@ export const en = {
     providers: {
       google: 'Google',
       apple: 'Apple',
-      wechat: 'WeChat',
     },
     social: {
       googleAria: 'Continue with Google',
       appleAria: 'Continue with Apple',
-      wechatAria: 'Continue with WeChat',
       comingSoon: '{provider} sign-in is coming soon.',
       comingSoonTitle: 'Coming soon',
     },
@@ -159,7 +157,6 @@ export const en = {
     social: {
       googleAria: 'Sign up with Google',
       appleAria: 'Sign up with Apple',
-      wechatAria: 'Sign up with WeChat',
     },
     closeAria: 'Close',
     errors: {
@@ -336,7 +333,6 @@ export const en = {
       email: 'Email sign-in',
       google: 'Google sign-in',
       apple: 'Apple ID',
-      wechat: 'WeChat',
       social: 'Social sign-in',
     },
     messages: {

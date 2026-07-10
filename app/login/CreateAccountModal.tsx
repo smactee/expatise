@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
+import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './create-account-modal.module.css';
@@ -281,10 +281,6 @@ return;
 
           <button type="button" className={styles.snsBtn} aria-label={t('createAccount.social.appleAria')}>
             <FontAwesomeIcon icon={faApple} />
-          </button>
-
-          <button type="button" className={styles.snsBtn} aria-label={t('createAccount.social.wechatAria')}>
-            <FontAwesomeIcon icon={faWeixin} />
           </button>
         </div>
       </div>

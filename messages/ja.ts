@@ -98,7 +98,6 @@ export const ja = {
       ...en.login.social,
       googleAria: 'Googleで続ける',
       appleAria: 'Appleで続ける',
-      wechatAria: 'WeChatで続ける',
       comingSoon: '{provider}ログインは近日対応予定です。',
       comingSoonTitle: '近日対応',
     },
@@ -130,7 +129,6 @@ export const ja = {
     social: {
       googleAria: 'Googleで登録',
       appleAria: 'Appleで登録',
-      wechatAria: 'WeChatで登録',
     },
     closeAria: '閉じる',
     errors: {
@@ -314,7 +312,6 @@ export const ja = {
       email: 'メールログイン',
       google: 'Googleログイン',
       apple: 'Apple ID',
-      wechat: 'WeChat',
       social: 'SNSログイン',
     },
     messages: {

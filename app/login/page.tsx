@@ -9,7 +9,7 @@ import styles from './login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import CreateAccountModal from './CreateAccountModal';
-import { faGoogle, faApple, faWeixin } from '@fortawesome/free-brands-svg-icons';
+import { faGoogle, faApple } from '@fortawesome/free-brands-svg-icons';
 import { isValidEmail, normalizeEmail, safeNextPath } from '@/lib/auth';
 import { NATIVE_OAUTH_REDIRECT_URI } from '@/lib/auth/oauth';
 import { notifySessionChanged } from '@/lib/auth/notifySessionChanged';
@@ -356,19 +356,6 @@ return;
   title={t('login.social.comingSoonTitle')}
 >
   <FontAwesomeIcon icon={faApple} />
-</button>
-
-
-
-<button
-  type="button"
-  className={`${styles.snsBtnSmall} ${styles.snsBtnSoon}`}
-  aria-label={t('login.social.wechatAria')}
-  aria-disabled="true"
-  onClick={() => comingSoon(t('login.providers.wechat'))}
-  title={t('login.social.comingSoonTitle')}
->
-  <FontAwesomeIcon icon={faWeixin} />
 </button>
 
   </div>

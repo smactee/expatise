@@ -92,12 +92,10 @@ export const fr = {
     providers: {
       google: 'Google',
       apple: 'Apple',
-      wechat: 'WeChat',
     },
     social: {
       googleAria: 'Continuer avec Google',
       appleAria: 'Continuer avec Apple',
-      wechatAria: 'Continuer avec WeChat',
       comingSoon: 'La connexion avec {provider} arrive bientôt.',
       comingSoonTitle: 'Bientôt disponible',
     },
@@ -130,7 +128,6 @@ export const fr = {
     social: {
       googleAria: 'S’inscrire avec Google',
       appleAria: 'S’inscrire avec Apple',
-      wechatAria: 'S’inscrire avec WeChat',
     },
     closeAria: 'Fermer',
     errors: {
@@ -307,7 +304,6 @@ export const fr = {
       email: 'Connexion par e-mail',
       google: 'Connexion Google',
       apple: 'Apple ID',
-      wechat: 'WeChat',
       social: 'Connexion sociale',
     },
     messages: {
