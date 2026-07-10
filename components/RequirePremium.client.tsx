@@ -11,13 +11,32 @@ function currentPath(pathname: string, qs: string) {
   return qs ? `${pathname}?${qs}` : pathname;
 }
 
+// Independent doors: the question cap gates the question-VIEWING pages; the exam
+// cap gates the test entry. Everything else premium keeps the combined behavior.
+const QUESTION_CAP_PREFIXES = ["/all-questions", "/my-mistakes", "/bookmarks"];
+const EXAM_CAP_PREFIXES = ["/all-test"];
+
+function matchesPrefix(pathname: string, prefixes: string[]) {
+  return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function gateBlocked(
+  pathname: string,
+  caps: { isOverCap: boolean; isOverQuestionCap: boolean; isOverExamCap: boolean }
+) {
+  if (matchesPrefix(pathname, QUESTION_CAP_PREFIXES)) return caps.isOverQuestionCap;
+  if (matchesPrefix(pathname, EXAM_CAP_PREFIXES)) return caps.isOverExamCap;
+  return caps.isOverCap;
+}
+
 function Inner({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
 
   const { isPremium, loading: entitlementsLoading } = useEntitlements();
-  const { isOverCap } = useUsageCap();
+  const { isOverCap, isOverQuestionCap, isOverExamCap } = useUsageCap();
+  const blocked = gateBlocked(pathname, { isOverCap, isOverQuestionCap, isOverExamCap });
 
   const redirectedRef = useRef<string>("");
   const modalAllowedPathRef = useRef<string>("");
@@ -38,7 +57,7 @@ function Inner({ children }: { children: React.ReactNode }) {
     const key = `${pathname}?${qs}`;
 
     if (isPremium) return;
-    if (!isOverCap) return;
+    if (!blocked) return;
     if (allowTriggeredRender) return;
 
     if (redirectedRef.current === key) return;
@@ -46,12 +65,12 @@ function Inner({ children }: { children: React.ReactNode }) {
 
     const next = encodeURIComponent(currentPath(pathname, qs));
     router.replace(`/premium?next=${next}`);
-  }, [allowTriggeredRender, entitlementsLoading, isPremium, isOverCap, pathname, qs, router]);
+  }, [allowTriggeredRender, entitlementsLoading, isPremium, blocked, pathname, qs, router]);
 
   if (!PUBLIC_FLAGS.enablePremiumGates) return <>{children}</>;
   if (entitlementsLoading) return null;
   if (isPremium) return <>{children}</>;
-  if (!isOverCap) return <>{children}</>;
+  if (!blocked) return <>{children}</>;
   if (allowTriggeredRender) return <>{children}</>;
 
   return null;

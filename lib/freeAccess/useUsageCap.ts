@@ -40,9 +40,12 @@ export function useUsageCap(userKeyOverride?: string) {
     const questionsShown = state.shown; // ✅ new model
     const examsStarted = state.examStarts;
 
-    const over =
-      questionsShown >= FREE_CAPS.questionsShown ||
-      examsStarted >= FREE_CAPS.examStarts;
+    // Cap-type-specific flags so each door can gate on only its own cap
+    // (question cap -> browse pages, exam cap -> test modes). isOverCap stays the
+    // combined value for callers that intentionally gate on either.
+    const isOverQuestionCap = questionsShown >= FREE_CAPS.questionsShown;
+    const isOverExamCap = examsStarted >= FREE_CAPS.examStarts;
+    const over = isOverQuestionCap || isOverExamCap;
 
     return {
       userKey,
@@ -51,6 +54,8 @@ export function useUsageCap(userKeyOverride?: string) {
       questionsShown,
       examsStarted,
       isOverCap: over,
+      isOverQuestionCap,
+      isOverExamCap,
       progressText: `${questionsShown}/${FREE_CAPS.questionsShown} questions · ${examsStarted}/${FREE_CAPS.examStarts} exams`,
     };
   }, [state, userKey]);

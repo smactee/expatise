@@ -27,6 +27,7 @@ import PremiumFeatureModal from '@/components/PremiumFeatureModal';
 import { useAuthStatus } from '@/components/useAuthStatus';
 import { useEntitlements } from '@/components/EntitlementsProvider.client';
 import { useUsageCap } from '@/lib/freeAccess/useUsageCap';
+import { markQuestionShown, canShowQuestion } from '@/lib/freeAccess/localUsageCap';
 import { userKeyFromEmail } from '@/lib/identity/userKey';
 import { migrateLocalAttemptsToCanonical } from '@/lib/test-engine/attemptStorage';
 import { useT } from '@/lib/i18n/useT';
@@ -264,7 +265,7 @@ const userKey = useUserKey();
   const pathname = usePathname();
   const sp = useSearchParams();
   const { isPremium } = useEntitlements();
-  const { isOverCap } = useUsageCap();
+  const { isOverQuestionCap } = useUsageCap();
   const premiumModalRequested = sp.get('premiumModal') === '1';
 
   // ✅ 3) now it's safe to use userKey
@@ -298,7 +299,7 @@ const legacyAttemptUserKey = userKeyFromEmail(email);
 useEffect(() => {
   if (!premiumModalRequested) return;
 
-  if (!isPremium && isOverCap) {
+  if (!isPremium && isOverQuestionCap) {
     setShowPremiumModal(true);
   }
 
@@ -306,7 +307,7 @@ useEffect(() => {
   next.delete('premiumModal');
   const nextUrl = next.toString() ? `${pathname}?${next.toString()}` : pathname;
   router.replace(nextUrl, { scroll: false });
-}, [isOverCap, isPremium, pathname, premiumModalRequested, router, sp]);
+}, [isOverQuestionCap, isPremium, pathname, premiumModalRequested, router, sp]);
 
 
 
@@ -555,6 +556,39 @@ function clearMistakesSelected() {
 
 
 const visibleIds = useMemo(() => visible.map((x) => x.id), [visible]);
+
+// ── Free-trial question counting for the browse pages (all-questions /
+// my-mistakes / bookmarks). Viewport-based: a question counts toward the shared
+// questionsShown cap only when its card actually scrolls into view, once per
+// question per session (countedQuestionIdsRef). Premium users are never counted.
+// An empty list (no article[data-qid] cards) observes nothing → counts nothing.
+const listRef = useRef<HTMLElement | null>(null);
+const countedQuestionIdsRef = useRef<Set<string>>(new Set());
+
+useEffect(() => {
+  if (isPremium) return; // premium: never counted
+  const root = listRef.current;
+  if (!root || typeof IntersectionObserver === "undefined") return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const qid = (entry.target as HTMLElement).dataset.qid;
+        if (!qid || countedQuestionIdsRef.current.has(qid)) continue;
+        if (!canShowQuestion(userKey)) continue; // question cap reached; stop counting
+        countedQuestionIdsRef.current.add(qid);
+        markQuestionShown(userKey, qid); // same questionsShown counter as tests
+      }
+    },
+    { threshold: 0.5 } // count when the card is genuinely on screen, not merely mounted
+  );
+
+  root
+    .querySelectorAll<HTMLElement>("article[data-qid]")
+    .forEach((el) => observer.observe(el));
+  return () => observer.disconnect();
+}, [isPremium, userKey, visible]);
 
 const allVisibleSelected = useMemo(() => {
   return visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id));
@@ -821,10 +855,11 @@ const betaNotice = getTranslatedOnlyLocaleNotice(locale, q.length);
 )}
 
 
-        <section className={styles.list}>
+        <section ref={listRef} className={styles.list}>
           {visible.map((item) => (
 <article
   key={item.id}
+  data-qid={item.id}
   className={`${styles.card} ${selectedIds.has(item.id) ? styles.cardSelected : ""}`}
   onClick={(e) => {
     // Only allow toggling when you're in bulk-select mode

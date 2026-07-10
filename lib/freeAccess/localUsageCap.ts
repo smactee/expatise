@@ -4,7 +4,10 @@
 import { safeParse } from "@/lib/storage/json";
 
 export const FREE_CAPS = {
-  questionsShown: 420,
+  // Unified "distinct questions viewed" budget across tests AND the browse pages
+  // (all-questions / my-mistakes / bookmarks). Raised from 420 when browsing began
+  // to consume it in Phase 1.
+  questionsShown: 550,
   examStarts: 10,
 } as const;
 

@@ -15,7 +15,7 @@ import {
 // ---------------------------------------------------------------------------
 // CHARACTERIZATION tests for lib/freeAccess/localUsageCap.ts
 //
-// Free-tier accounting: `shown` (question displays, cap 420) and `examStarts`
+// Free-tier accounting: `shown` (question displays, cap 550) and `examStarts`
 // (cap 10). State key: expatise:usagecap:v2:user:<userKey || "guest">.
 // `safeParse`, `readState`/`writeState` are private and characterized via the
 // public getters/mutators and migrate function.
@@ -26,7 +26,7 @@ const stateKey = (userKey: string) =>
 
 describe("FREE_CAPS + event name", () => {
   it("exposes the current cap constants", () => {
-    expect(FREE_CAPS.questionsShown).toBe(420);
+    expect(FREE_CAPS.questionsShown).toBe(550);
     expect(FREE_CAPS.examStarts).toBe(10);
   });
   it("exposes the change event name", () => {
@@ -46,14 +46,14 @@ describe("baseline (no stored state)", () => {
   it("getUsageCapProgress reports zero usage against the caps", () => {
     expect(getUsageCapProgress("u@x.com")).toEqual({
       shown: 0,
-      shownMax: 420,
+      shownMax: 550,
       examStarts: 0,
       examStartsMax: 10,
     });
   });
 
   it("remainingQuestions is the full cap", () => {
-    expect(remainingQuestions("guest")).toBe(420);
+    expect(remainingQuestions("guest")).toBe(550);
   });
 
   it("canShowQuestion is true and canStartExam is true at baseline", () => {
@@ -67,7 +67,7 @@ describe("markQuestionShown", () => {
     const next = markQuestionShown("guest");
     expect(next.shown).toBe(1);
     expect(next.updatedAt).toBeGreaterThan(0);
-    expect(remainingQuestions("guest")).toBe(419);
+    expect(remainingQuestions("guest")).toBe(549);
   });
 
   it("records lastView when a viewSig is provided", () => {
@@ -111,15 +111,15 @@ describe("markQuestionShown", () => {
   });
 
   it("counts up to the cap and then blocks the next display", () => {
-    // Seed near the cap directly to avoid 420 iterations.
+    // Seed near the cap directly to avoid 550 iterations.
     window.localStorage.setItem(
       stateKey("guest"),
-      JSON.stringify({ shown: 419, examStarts: 0, updatedAt: 1 }),
+      JSON.stringify({ shown: 549, examStarts: 0, updatedAt: 1 }),
     );
-    expect(canShowQuestion("guest")).toBe(true); // 419 < 420
-    markQuestionShown("guest"); // -> 420
+    expect(canShowQuestion("guest")).toBe(true); // 549 < 550
+    markQuestionShown("guest"); // -> 550
     expect(remainingQuestions("guest")).toBe(0);
-    expect(canShowQuestion("guest")).toBe(false); // 420 is NOT < 420
+    expect(canShowQuestion("guest")).toBe(false); // 550 is NOT < 550
   });
 });
 
@@ -142,7 +142,7 @@ describe("exam-start accounting", () => {
   it("canStartExam with requiredQuestions preflight blocks when remaining < required", () => {
     window.localStorage.setItem(
       stateKey("guest"),
-      JSON.stringify({ shown: 400, examStarts: 0, updatedAt: 1 }),
+      JSON.stringify({ shown: 530, examStarts: 0, updatedAt: 1 }),
     );
     // remaining = 20
     expect(canStartExam("guest", { requiredQuestions: 50 })).toBe(false);
