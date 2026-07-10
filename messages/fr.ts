@@ -297,6 +297,8 @@ export const fr = {
       purchaseFailed: 'L’achat a échoué. Veuillez réessayer.',
       mobileOnly:
         'Les achats Premium sont actuellement disponibles uniquement dans l’app mobile. Utilisez l’app pour acheter ou restaurer l’accès.',
+      purchaseNotReflected:
+        'Votre achat a bien été effectué, mais Premium n’est pas encore activé. Cela peut prendre un instant — rouvrez l’app ou touchez Restaurer les achats. Contactez le support si le problème persiste.',
     },
   },
   profile: {

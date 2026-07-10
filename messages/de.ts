@@ -297,6 +297,8 @@ export const de = {
       purchaseFailed: 'Kauf fehlgeschlagen. Bitte versuche es erneut.',
       mobileOnly:
         'Premium-Käufe sind momentan nur in der mobilen App verfügbar. Nutze die App zum Kauf oder um Zugang wiederherzustellen, falls nötig.',
+      purchaseNotReflected:
+        'Dein Kauf war erfolgreich, aber Premium ist noch nicht aktiviert. Das kann einen Moment dauern — öffne die App neu oder tippe auf Käufe wiederherstellen. Kontaktiere den Support, falls es weiterhin auftritt.',
     },
   },
   profile: {

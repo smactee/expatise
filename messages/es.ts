@@ -297,6 +297,8 @@ export const es = {
       purchaseFailed: 'La compra falló. Inténtalo de nuevo.',
       mobileOnly:
         'Las compras Premium están disponibles por ahora solo en la app móvil. Usa la app para comprar o restaurar el acceso.',
+      purchaseNotReflected:
+        'Tu compra se realizó, pero Premium aún no se ha activado. Puede tardar un momento: vuelve a abrir la app o toca Restaurar compras. Contacta con soporte si continúa.',
     },
   },
   profile: {

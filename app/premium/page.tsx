@@ -91,23 +91,60 @@ function PremiumInner() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
+    // ── [RC-DIAG] observability only — logs the RevenueCat state so a real-device
+    // logcat can show whether offerings come back empty or populated. Does NOT
+    // change any purchase logic. Filter on a device with:  adb logcat | grep RC-DIAG
+    if (!Capacitor.isNativePlatform()) {
+      console.info("[RC-DIAG] not a native platform — RevenueCat purchases unavailable in this context");
+      return;
+    }
 
     (async () => {
       try {
-        await ensureRevenueCat();
+        const configured = await ensureRevenueCat();
+        console.info(`[RC-DIAG] ensureRevenueCat -> ${configured} (platform=${Capacitor.getPlatform()})`);
 
         const offerings = await Purchases.getOfferings();
         const o = offerings.current;
-        if (!o) return;
 
-        setPriceByPlanId({
-          monthly: o.monthly?.product.priceString,
-          three_month: o.threeMonth?.product.priceString,
-          six_month: o.sixMonth?.product.priceString,
-          lifetime: o.lifetime?.product.priceString,
-        });
-      } catch {
+        if (!o) {
+          const allIds = Object.keys(offerings.all ?? {}).join(", ") || "(none)";
+          console.warn(
+            `[RC-DIAG] getOfferings: current offering is NULL. all offerings=[${allIds}]. ` +
+              "No purchasable packages -> check RevenueCat 'current' Offering + Play products.",
+          );
+        } else {
+          const ids = o.availablePackages.map((p) => p.identifier).join(", ") || "(none)";
+          console.info(
+            `[RC-DIAG] getOfferings: current="${o.identifier}" packages=${o.availablePackages.length} [${ids}] ` +
+              `monthly=${o.monthly?.product.priceString ?? "-"} threeMonth=${o.threeMonth?.product.priceString ?? "-"} ` +
+              `sixMonth=${o.sixMonth?.product.priceString ?? "-"} lifetime=${o.lifetime?.product.priceString ?? "-"}`,
+          );
+
+          // Unchanged price-display behavior.
+          setPriceByPlanId({
+            monthly: o.monthly?.product.priceString,
+            three_month: o.threeMonth?.product.priceString,
+            six_month: o.sixMonth?.product.priceString,
+            lifetime: o.lifetime?.product.priceString,
+          });
+        }
+
+        // Read-only entitlement check (observability; independent of purchasing).
+        try {
+          const { customerInfo } = await Purchases.getCustomerInfo();
+          const active = customerInfo.entitlements.active?.[RC_ENTITLEMENT_ID];
+          console.info(
+            `[RC-DIAG] entitlement "${RC_ENTITLEMENT_ID}" active=${!!active}` +
+              (active
+                ? ` (periodType=${active.periodType}, expires=${active.expirationDateMillis ?? "never"})`
+                : ""),
+          );
+        } catch (e) {
+          console.warn(`[RC-DIAG] getCustomerInfo failed: ${e instanceof Error ? e.message : String(e)}`);
+        }
+      } catch (err) {
+        console.error(`[RC-DIAG] offerings/init error: ${err instanceof Error ? err.message : String(err)}`);
         // fallback prices will display
       }
     })();
@@ -363,7 +400,15 @@ function PremiumInner() {
                       aPackage: pkg,
                     });
                     const premiumData = premiumSourceFromCustomerInfo(customerInfo);
-                    if (!premiumData) return;
+                    if (!premiumData) {
+                      // Purchase succeeded but the "Premium" entitlement isn't active on
+                      // the returned customerInfo yet (e.g. product not mapped to the
+                      // entitlement in RevenueCat). Don't strand the user on a dead screen:
+                      // let the entitlement listener reconcile, and surface a real message.
+                      refresh();
+                      setPlanError(t("premium.errors.purchaseNotReflected"));
+                      return;
+                    }
 
                     grantPremium(premiumData.source, premiumData.expiresAt);
                     refresh();

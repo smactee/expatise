@@ -326,6 +326,8 @@ export const en = {
       purchaseFailed: 'Purchase failed. Please try again.',
       mobileOnly:
         'Premium purchases are currently available only in the mobile app. Use the app to purchase or restore access.',
+      purchaseNotReflected:
+        'Your purchase went through, but Premium hasn’t activated yet. This can take a moment — reopen the app or tap Restore Purchases. Contact support if it persists.',
     },
   },
   profile: {

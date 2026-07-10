@@ -294,6 +294,7 @@ export const ko = {
       packageUnavailable: '선택한 플랜을 현재 이용할 수 없습니다.',
       purchaseFailed: '구매에 실패했습니다. 다시 시도해주세요.',
       mobileOnly: '프리미엄 구매는 현재 모바일 앱에서만 가능합니다. 앱에서 구매하거나 복원해주세요.',
+      purchaseNotReflected: '결제는 완료되었지만 프리미엄이 아직 활성화되지 않았습니다. 잠시 걸릴 수 있으니 앱을 다시 열거나 구매 복원을 눌러주세요. 문제가 계속되면 고객지원에 문의해주세요.',
     },
   },
   profile: {

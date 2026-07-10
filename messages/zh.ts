@@ -337,6 +337,8 @@ export const zh = {
       purchaseFailed: '购买失败，请重试。',
       mobileOnly:
         'Premium 购买目前仅在手机应用中提供。请使用手机应用购买或恢复访问权限。',
+      purchaseNotReflected:
+        '购买已完成，但 Premium 尚未激活。可能需要稍等片刻——请重新打开应用或点按“恢复购买”。若问题持续，请联系客服。',
     },
   },
   profile: {
