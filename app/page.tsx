@@ -221,17 +221,10 @@ const overallCards = [
     topText: t('home.cards.overall.allQuestions.topText'),
     title: t('home.cards.overall.allQuestions.title'),
   },
-  {
-    key: "global-mistakes",
-    href: ROUTES.globalCommonMistakes,
-    ariaLabel: t('home.cards.overall.globalMistakes.ariaLabel'),
-    bgSrc: "/images/home/cards/globalmistakes-bg.webp",
-    bgAlt: t('home.cards.overall.globalMistakes.bgAlt'),
-    iconSrc: "/images/home/icons/globalmistake-icon.png",
-    iconAlt: t('home.cards.overall.globalMistakes.iconAlt'),
-    topText: t('home.cards.overall.globalMistakes.topText'),
-    title: t('home.cards.overall.globalMistakes.title'),
-  },
+  // NOTE: "Global Common Mistakes" card intentionally removed — the feature is
+  // parked (no aggregated answer data is being collected yet), so it's hidden from
+  // the UI. Route + page component are left intact-but-unlinked for a later revisit.
+  // See ROUTES.globalCommonMistakes / app/(premium)/global-common-mistakes/.
 ] as const;
 
 const myCards = [
