@@ -202,7 +202,6 @@ function buildQuestionSearchIndex(
   locale: string,
   t: ReturnType<typeof useT>["t"],
 ): QuestionSearchIndex {
-  const tagLabels = derivedTags.map((tag) => labelForTag(tag, t));
   const colorTags = colorEntry?.colorTags ?? [];
   const imageMetadataTerms = searchableImageMetadataTerms(colorEntry);
   const localizedImageTagTerms = getImageTagSearchTerms(colorEntry, locale, imageTagLocales);
@@ -224,20 +223,24 @@ function buildQuestionSearchIndex(
     }
   }
 
+  // Search matches only what the user can SEE: the displayed question text + options +
+  // image tags + number/type. Deliberately EXCLUDES two hidden sources that used to
+  // pollute results:
+  //   (a) the English *source* duplicates (sourcePrompt / sourceOptions / sourceExplanation)
+  //       — these can differ from the localized text actually on screen; and
+  //   (b) internal *classification* tags (item.tags / autoTags / derivedTags / tagLabels),
+  //       e.g. the hidden "#right-of-way" tag. normalizeSearchText splits hyphens to spaces,
+  //       so "right-of-way" tokenized to ["right","of","way"] and a query for "right" matched
+  //       questions that never show the word — exactly the reported bug.
+  // Topic chips + the image/mcq/row filters already cover classification; user-facing image
+  // tags ("traffic light", "crosswalk", colored signs) stay via the image fields below.
   const parts = [
     item.id,
     String(item.number),
     item.prompt,
-    item.sourcePrompt,
-    item.explanation,
-    item.sourceExplanation,
+    item.explanation ?? item.sourceExplanation,
     item.type,
     ...item.options.map((option) => option.text),
-    ...item.sourceOptions.map((option) => option.text),
-    ...item.tags,
-    ...item.autoTags,
-    ...derivedTags,
-    ...tagLabels,
     ...localizedImageTagTerms,
     ...imageMetadataTerms,
     ...roadSignHeuristics,
