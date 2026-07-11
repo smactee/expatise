@@ -23,6 +23,10 @@ export const DATASETS: Record<DatasetId, DatasetConfig> = {
       ru: '/qbank/2023-test1/translations.ru.json',
       es: '/qbank/2023-test1/translations.es.json',
       de: '/qbank/2023-test1/translations.de.json',
+      ar: '/qbank/2023-test1/translations.ar.json',
+      // ar + zh banks are complete (1113/1113). The loader still tolerates a missing
+      // file as an empty bank (404 -> zero translated questions), but both ship full.
+      zh: '/qbank/2023-test1/translations.zh.json',
     },
   },
 } as const;

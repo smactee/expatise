@@ -16,11 +16,12 @@ type LanguageOptionBase = {
 export type LanguageOption = LanguageOptionBase;
 export type LanguageOptionCode = LanguageOption['code'];
 
-// ar + zh have full UI message bundles but their QUESTION banks are still being
-// built, so they stay dev-only (selectable/testable in dev, "Not ready" in
-// production). ru was promoted to production once its bundle landed (its 1004-q
-// bank is complete), so it is intentionally absent here.
-const DEV_LANGUAGE_CODES = new Set<DevLanguageCode>(['ar', 'zh']);
+// Readiness is no longer gated by language: every registered locale is selectable,
+// even with zero questions, and fills in as its question batches land (availability
+// is data-driven via the loader — see isTranslatedOnlyQuestionLocale + datasets.ts).
+// This set is intentionally empty; keep the type so a locale can be re-gated if ever
+// needed without reshaping the module.
+const DEV_LANGUAGE_CODES = new Set<DevLanguageCode>([]);
 
 export function areDevLanguagesEnabled(): boolean {
   return process.env.NODE_ENV !== 'production';
